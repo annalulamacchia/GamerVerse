@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "298603606997",
+    "project_id": "gamerverse-6fc6f",
+    "storage_bucket": "gamerverse-6fc6f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298603606997:android:3bb47b2a5acb3c2a1e835c",
+        "android_client_info": {
+          "package_name": "com.gamerverse.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKbzV4jp9xADRoqrN12DxIKLgTjM5vWJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
