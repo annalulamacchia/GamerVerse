@@ -1,4 +1,4 @@
-package com.gamerverse.app.gamerverse
+package com.gamerverse.app
 
 import io.flutter.embedding.android.FlutterActivity
 
