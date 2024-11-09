@@ -1,9 +1,10 @@
 // lib/widgets/custom_bottom_nav_bar.dart
 
 import 'package:flutter/material.dart';
+import 'package:gamerverse/views/user_profile_page.dart';
 import '../views/home_page.dart';
 //import '../views/community_page.dart';
-//import '../views/profile_page.dart';
+import '../views/profile_page.dart';
 import '../views/login_page.dart';
 
 
@@ -41,10 +42,10 @@ class CustomBottomNavBar extends StatelessWidget {
     } else if (index == 2) {
       if (isLoggedIn) {
         // Navigate to Profile page if logged in
-        //Navigator.pushReplacement(
-          //context,
-          //MaterialPageRoute(builder: (context) => ProfilePage()),
-        //);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ProfilePage()),
+        );
       } else {
         // Redirect to Login page if not logged in
         Navigator.pushReplacement(
