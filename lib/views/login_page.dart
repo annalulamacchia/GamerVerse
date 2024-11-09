@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'loginEmail_page.dart'; // Ensure you have this page created as shown before.
+import 'loginEmail_page.dart';
 import '../widgets/bottom_navbar.dart';
-import '../utils/colors.dart'; // Custom colors based on the green theme image
+import '../utils/colors.dart';
+import 'resetPassword_page.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -24,7 +25,7 @@ class LoginPage extends StatelessWidget {
               children: [
                 // App Icon
                 Icon(
-                  Icons.videogame_asset, // Placeholder for app icon
+                  Icons.videogame_asset,
                   size: 100,
                   color: AppColors.lightestGreen,
                 ),
@@ -98,7 +99,10 @@ class LoginPage extends StatelessWidget {
                 // Forgot Password Link
                 GestureDetector(
                   onTap: () {
-                    // Implement forgot password functionality or redirection here
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ResetPasswordPage()),
+                    );
                   },
                   child: Text(
                     "Forgot the password? Reset",

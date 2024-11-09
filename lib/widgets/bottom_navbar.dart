@@ -5,7 +5,7 @@ import '../views/home_page.dart';
 //import '../views/community_page.dart';
 //import '../views/profile_page.dart';
 import '../views/login_page.dart';
-//import '../views/signup_page.dart';
+
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;

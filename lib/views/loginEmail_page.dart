@@ -3,7 +3,20 @@ import 'signup_page.dart';
 import '../widgets/bottom_navbar.dart';
 import '../utils/colors.dart';
 
-class LoginEmailPage extends StatelessWidget {
+class LoginEmailPage extends StatefulWidget {
+  @override
+  _LoginEmailPageState createState() => _LoginEmailPageState();
+}
+
+class _LoginEmailPageState extends State<LoginEmailPage> {
+  bool _isLoggedIn = false; // Track login status
+
+  void _handleLogin() {
+    setState(() {
+      _isLoggedIn = true; // Change login status when the button is pressed
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,9 +75,7 @@ class LoginEmailPage extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    // Handle login action here
-                  },
+                  onPressed: _handleLogin, // Handle the login action here
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.lightestGreen,
                     foregroundColor: AppColors.darkGreen,
@@ -99,7 +110,7 @@ class LoginEmailPage extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 1,
-        isLoggedIn: false,
+        isLoggedIn: _isLoggedIn, // Pass the login status to the bottom navbar
       ),
     );
   }
