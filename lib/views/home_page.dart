@@ -1,6 +1,9 @@
+// lib/pages/home_page.dart
+
 import 'package:flutter/material.dart';
 import '../widgets/category_section.dart';
-import 'search_page.dart';  // Updated path
+import '../widgets/bottom_navbar.dart';
+import 'search_page.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -14,7 +17,7 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SearchPage()),  // Updated name
+                MaterialPageRoute(builder: (context) => SearchPage()),
               );
             },
           ),
@@ -28,21 +31,9 @@ class HomePage extends StatelessWidget {
           CategorySection(title: 'Upcoming Games'),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Community',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 1,       // Highlight 'Home' by default
+        isLoggedIn: false,      // Replace with actual login status
       ),
     );
   }

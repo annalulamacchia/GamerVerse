@@ -1,4 +1,7 @@
+// lib/pages/search_page.dart
+
 import 'package:flutter/material.dart';
+import '../widgets/bottom_navbar.dart';  // Import the CustomBottomNavBar widget
 import '../widgets/videogame_results.dart';
 import '../widgets/user_results.dart';
 
@@ -62,6 +65,10 @@ class _SearchPageState extends State<SearchPage> {
             child: isVideoGameSearch ? VideoGameResults() : UserResults(),
           ),
         ],
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 1,        // Set the index based on its position (e.g., 'Home' might be 1)
+        isLoggedIn: false,        // Replace with actual login status (true/false)
       ),
     );
   }
