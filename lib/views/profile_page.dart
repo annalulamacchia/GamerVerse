@@ -3,6 +3,7 @@ import '../widgets/profile_info_card.dart';
 import '../widgets/tab_bar.dart';
 import '../widgets/wishing_favorite_completed.dart';
 import 'followers_or_following_page.dart';
+import 'account_settings_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage() : super();
@@ -15,18 +16,16 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: const Color(0xff163832),
         title: const Text('Username', style: TextStyle(color: Colors.white)),
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'report') {
-                // Naviga alla pagina di report
-              } else if (value == 'block') {
-                // Naviga alla pagina di blocco
-              }
+          IconButton(
+            icon: const Icon(Icons.settings), // Icona a forma di ingranaggio
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AccountSettingsPage(), // La pagina delle impostazioni
+                ),
+              );
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: 'report', child: Text('Report User')),
-              const PopupMenuItem(value: 'block', child: Text('Block User')),
-            ],
           ),
         ],
       ),
