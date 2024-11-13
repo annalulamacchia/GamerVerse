@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/profile_info_card.dart';
-// Import the custom widgets from your widgets folder
+// Importa i widget personalizzati dalla cartella widgets
 import '../widgets/bottom_navbar.dart';
 import '../widgets/user_info_card.dart';
 import '../widgets/tab_bar.dart';
-
+import '../widgets/newpostbottomsheet.dart'; // Importa il nuovo widget NewPostBottomSheet
+import 'profile_comment_page.dart';
 class ProfilePostPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20), // Dark page background
+      backgroundColor: const Color(0xff051f20), // Sfondo scuro della pagina
       appBar: AppBar(
-        title: const Text('Username'), // Replace with dynamic username if needed
-        backgroundColor: const Color(0xff3e6259), // Dark green for the app bar
+        title: const Text('Username'), // Sostituisci con il nome utente dinamico, se necessario
+        backgroundColor: const Color(0xff3e6259), // Verde scuro per l'app bar
       ),
       body: Column(
         children: [
-          const ProfileInfoCard(), // User info card
+          const ProfileInfoCard(), // Scheda informazioni utente
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: TabBarSection(), // Tab section
+            child: TabBarSection(), // Sezione Tab
           ),
           Expanded(
             child: ListView.builder(
@@ -28,29 +29,29 @@ class ProfilePostPage extends StatelessWidget {
                 return Stack(
                   children: [
                     Card(
-                      color: const Color(0xfff0f9f1), // Very light green background for cards
+                      color: const Color(0xfff0f9f1), // Sfondo verdino chiaro per le card
                       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      elevation: 8, // Increased elevation for stronger shadow effect
+                      elevation: 8, // Maggiore elevazione per un'ombra più marcata
                       shadowColor: Colors.black.withOpacity(0.5),
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom:10,top:15,left:10,right:10),
+                        padding: const EdgeInsets.all(10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Game image on the left
+                                // Immagine del gioco a sinistra
                                 Image.network(
-                                  'https://via.placeholder.com/150', // Placeholder image URL
+                                  'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.wired.it%2Fgallery%2Fnascondere-scritte-foto-immagini-ai%2F&psig=AOvVaw0KX_7VzYQmZ874L2OfbOwB&ust=1731514505952000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCPjD-M-m14kDFQAAAAAdAAAAABAI', // Placeholder per l'immagine
                                   width: 90,
                                   height: 90,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
-                                    return Icon(Icons.broken_image, color: Colors.grey[400]);
+                                    return Icon(Icons.broken_image, color: Colors.grey[400],size:90);
                                   },
                                 ),
                                 const SizedBox(width: 10),
@@ -58,7 +59,6 @@ class ProfilePostPage extends StatelessWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // Game name positioned next to the image
                                       Text(
                                         'Game Name',
                                         style: TextStyle(
@@ -68,12 +68,15 @@ class ProfilePostPage extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(height: 0),
-                                      // Game description text
                                       Text(
-                                        'Game description goes here. Details about the game...Game description goes here. Details about the game..Game description goes here. Details about the game...Game description goes here. Details about the game...Game description goes here. Details about the game..Game description goes here. Details about the game...',
+                                        'Game description goes here..asdsadasdsadasdsad'
+                                            'asdsadsadasd'
+                                            'asdsadadd'
+                                            'asdsadsadad'
+                                            'asdsadasd.',
                                         maxLines: 10,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(color: Colors.grey[700],fontSize: 15),
+                                        style: TextStyle(color: Colors.grey[700], fontSize: 15),
                                       ),
                                     ],
                                   ),
@@ -81,14 +84,13 @@ class ProfilePostPage extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 15),
-                            // Like and Comment icons at the bottom center
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 IconButton(
                                   icon: Icon(Icons.thumb_up, color: Colors.grey[700]),
                                   onPressed: () {
-                                    // Like button logic
+                                    // Logica per il like
                                   },
                                 ),
                                 Text("11", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
@@ -96,8 +98,12 @@ class ProfilePostPage extends StatelessWidget {
                                 IconButton(
                                   icon: Icon(Icons.comment, color: Colors.grey[700]),
                                   onPressed: () {
-                                    // Comment button logic
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => CommentsPage()),
+                                    );
                                   },
+
                                 ),
                                 Text("5", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
                               ],
@@ -106,14 +112,13 @@ class ProfilePostPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Positioned delete button in the top-right corner with margin
                     Positioned(
                       top: 20,
                       right: 20,
                       child: IconButton(
-                        icon: Icon(Icons.close, color: Colors.red,size:35),
+                        icon: Icon(Icons.close, color: Colors.red, size: 35),
                         onPressed: () {
-                          // Delete post logic
+                          // Logica per eliminare il post
                         },
                       ),
                     ),
@@ -125,29 +130,31 @@ class ProfilePostPage extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 1, // Highlight 'Home' for this page
-        isLoggedIn: true, // Replace with the actual login status
+        currentIndex: 1, // Seleziona 'Home' per questa pagina
+        isLoggedIn: true, // Sostituisci con lo stato di accesso effettivo
       ),
-      // Use the Stack to create an invisible area just above the footer
-      floatingActionButton: Stack(
-        children: [
-          Positioned(
-            bottom: 10, // Positioning above the footer
-            right: 10, // Aligning the button to the right
-            child: Container(
-              // A transparent container for the + button
-              color: Colors.transparent,
-              child: FloatingActionButton(
-                onPressed: () {
-                  // Logic to create a new post
-                },
-                backgroundColor: const Color(0xff3e6259), // Dark green for the "Add Post" button
-                child: const Icon(Icons.add),
-              ),
-            ),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showNewPostBottomSheet(context); // Mostra il bottom sheet per il nuovo post
+        },
+        backgroundColor: const Color(0xff3e6259),
+        child: const Icon(Icons.add,color: Colors.white),
       ),
+    );
+  }
+
+  // Funzione per mostrare il Modal Bottom Sheet per creare un nuovo post
+  void _showNewPostBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: const Color(0xff051f20),
+      builder: (BuildContext context) {
+        return NewPostBottomSheet(); // Usa il nuovo widget NewPostBottomSheet
+      },
     );
   }
 }
