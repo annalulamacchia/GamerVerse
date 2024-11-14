@@ -1,10 +1,10 @@
 // lib/widgets/custom_bottom_nav_bar.dart
 
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/user_profile_page.dart';
+import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
 import '../views/home_page.dart';
 //import '../views/community_page.dart';
-import '../views/profile_page.dart';
+import '../views/profile/profile_page.dart';
 import '../views/login_page.dart';
 
 

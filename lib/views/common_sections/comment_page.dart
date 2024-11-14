@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottom_navbar.dart'; // Importa il widget CustomBottomNavBar
+import '../../widgets/bottom_navbar.dart'; // Importa il widget CustomBottomNavBar
 
 class CommentsPage extends StatelessWidget {
   // Lista dei commenti per il debug
@@ -16,8 +16,8 @@ class CommentsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xff051f20), // Sfondo scuro per uniformità
       appBar: AppBar(
-        title: const Text('Comments'),
-        backgroundColor: const Color(0xff3e6259), // Colore verde scuro per l'AppBar
+        title: const Text('Comments',style:TextStyle(color:Colors.white)), // Sostituisci con il nome utente dinamico, se necessario
+        backgroundColor: const Color(0xff163832), // Colore verde scuro per l'AppBar
       ),
       body: Column(
         children: [

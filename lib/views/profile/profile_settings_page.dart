@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottom_navbar.dart';
+import '../../widgets/bottom_navbar.dart';
 class AccountSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

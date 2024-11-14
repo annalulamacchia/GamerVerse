@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/user_info_card.dart';
-import '../widgets/tab_bar.dart';
-import '../widgets/wishing_favorite_completed.dart';
-import 'followers_or_following_page.dart';
+import '../../widgets/user_info_card.dart';
+import '../../widgets/profile_tab_bar.dart';
+import '../../widgets/wishing_favorite_completed.dart';
+import '../common_sections/followers_or_following_page.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage() : super();
@@ -35,7 +35,7 @@ class UserProfilePage extends StatelessWidget {
         children: [
           UserInfoCard(), // Scheda informazioni utente
           const SizedBox(height: 20),
-          const TabBarSection(), // Tab Bar (Games, Reviews, Post)
+          const TabBarSection(mode:1), // Tab Bar (Games, Reviews, Post)
           Expanded(child: GameListSection()), // Sezione Lista Giochi
         ],
       ),

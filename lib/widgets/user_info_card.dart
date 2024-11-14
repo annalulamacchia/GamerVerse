@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../views/followers_or_following_page.dart';
+import '../views/common_sections/followers_or_following_page.dart';
 
 
 class UserInfoCard extends StatelessWidget {
@@ -74,11 +74,11 @@ class UserInfoCard extends StatelessWidget {
 
   Widget _buildNameAndFollowButton() {
     return Container(
-      margin: const EdgeInsets.only(left: 40.0, right: 8),
+      margin: const EdgeInsets.only(left: 20.0, right: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Name', style: TextStyle(fontSize: 16)),
+          const Text('Jack Bab', style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)),
           ElevatedButton(
             onPressed: () {
               // Azione per il bottone Follow
