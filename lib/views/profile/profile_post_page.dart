@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/profile_info_card.dart';
 // Importa i widget personalizzati dalla cartella widgets
 import '../../widgets/bottom_navbar.dart';
-import '../../widgets/user_info_card.dart';
 import '../../widgets/profile_tab_bar.dart';
 import '../../widgets/newpostbottomsheet.dart'; // Importa il nuovo widget NewPostBottomSheet
 import '../common_sections/comment_page.dart';
 import '../profile/profile_settings_page.dart';
 
 class ProfilePostPage extends StatelessWidget {
+  const ProfilePostPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +24,7 @@ class ProfilePostPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AccountSettingsPage(), // La pagina delle impostazioni
+                  builder: (context) => const AccountSettingsPage(), // La pagina delle impostazioni
                 ),
               );
             },
@@ -33,8 +34,8 @@ class ProfilePostPage extends StatelessWidget {
       body: Column(
         children: [
           const ProfileInfoCard(), // Scheda informazioni utente
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
             child: TabBarSection(mode:0), // Sezione Tab
           ),
           Expanded(
@@ -74,7 +75,7 @@ class ProfilePostPage extends StatelessWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      const Text(
                                         'Game Name',
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -108,7 +109,7 @@ class ProfilePostPage extends StatelessWidget {
                                     // Logica per il like
                                   },
                                 ),
-                                Text("11", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                                const Text("11", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
                                 const SizedBox(width: 20),
                                 IconButton(
                                   icon: Icon(Icons.comment, color: Colors.grey[700]),
@@ -120,7 +121,7 @@ class ProfilePostPage extends StatelessWidget {
                                   },
 
                                 ),
-                                Text("5", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                                const Text("5", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
                               ],
                             ),
                           ],
@@ -131,7 +132,7 @@ class ProfilePostPage extends StatelessWidget {
                       top: 20,
                       right: 20,
                       child: IconButton(
-                        icon: Icon(Icons.close, color: Colors.red, size: 35),
+                        icon: const Icon(Icons.close, color: Colors.red, size: 35),
                         onPressed: () {
                           // Logica per eliminare il post
                         },
@@ -144,7 +145,7 @@ class ProfilePostPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1, // Seleziona 'Home' per questa pagina
         isLoggedIn: true, // Sostituisci con lo stato di accesso effettivo
       ),

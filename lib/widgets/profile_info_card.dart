@@ -3,7 +3,7 @@ import '../views/common_sections/followers_or_following_page.dart';
 
 
 class ProfileInfoCard extends StatelessWidget {
-  const ProfileInfoCard({Key? key}) : super(key: key);
+  const ProfileInfoCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +29,8 @@ class ProfileInfoCard extends StatelessWidget {
               children: [
                 _buildAvatar(),
                 _buildStatColumn('10', 'Games'),
-                _buildClickableStatColumn(context, '10', 'Followed', FollowersPage()),
-                _buildClickableStatColumn(context, '10', 'Followers', FollowersPage()),
+                _buildClickableStatColumn(context, '10', 'Followed', const FollowersPage()),
+                _buildClickableStatColumn(context, '10', 'Followers', const FollowersPage()),
               ],
             ),
             _buildName()
@@ -75,10 +75,10 @@ class ProfileInfoCard extends StatelessWidget {
   Widget _buildName() {
     return Container(
       margin: const EdgeInsets.only(top:10,left: 25.0, right: 8),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Jack Bab', style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)),
+          Text('Jack Bab', style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)),
         ],
       ),
     );

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import '../../widgets/user_info_card.dart';
 import '../../widgets/profile_tab_bar.dart';
 import '../../widgets/wishing_favorite_completed.dart';
-import '../common_sections/followers_or_following_page.dart';
 
 class UserProfilePage extends StatelessWidget {
-  const UserProfilePage() : super();
+  const UserProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +29,12 @@ class UserProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
+      body: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           UserInfoCard(), // Scheda informazioni utente
-          const SizedBox(height: 20),
-          const TabBarSection(mode:1), // Tab Bar (Games, Reviews, Post)
+          SizedBox(height: 20),
+          TabBarSection(mode:1), // Tab Bar (Games, Reviews, Post)
           Expanded(child: GameListSection()), // Sezione Lista Giochi
         ],
       ),

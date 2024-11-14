@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AllgamesPage extends StatelessWidget {
   final List<String> imageUrls;
 
-  const AllgamesPage({required this.imageUrls}) : super();
+  const AllgamesPage({super.key, required this.imageUrls});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class AllgamesPage extends StatelessWidget {
         backgroundColor: const Color(0xff163832),
       ),
       body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,  // Due colonne per la griglia
           crossAxisSpacing: 3.0,  // Spazio tra le colonne
           mainAxisSpacing: 5.0,   // Spazio tra le righe
@@ -49,7 +49,7 @@ class AllgamesPage extends StatelessWidget {
                     }
                   },
                   errorBuilder: (context, error, stackTrace) {
-                    return Center(child: Icon(Icons.broken_image, size: 40, color: Colors.grey));
+                    return const Center(child: Icon(Icons.broken_image, size: 40, color: Colors.grey));
                   },
                 ),
               ),

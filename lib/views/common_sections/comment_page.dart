@@ -11,6 +11,8 @@ class CommentsPage extends StatelessWidget {
     // Puoi aggiungere altri commenti qui
   ];
 
+  CommentsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +40,7 @@ class CommentsPage extends StatelessWidget {
           _buildCommentInputField(context),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 2, // Imposta l'indice corretto per evidenziare la sezione Commenti
         isLoggedIn: true, // Sostituisci con il vero stato di login dell'utente
       ),
@@ -70,13 +72,13 @@ class CommentsPage extends StatelessWidget {
                       backgroundColor: const Color(0xff3e6259), // Colore verde per l'avatar
                       child: Text(
                         username[0],
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
                     const SizedBox(width: 10),
                     Text(
                       username,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                         fontSize: 16,
@@ -114,7 +116,7 @@ class CommentsPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 40), // Aumentato il padding orizzontale
               child: Text(
                 comment,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 16, // Aumentato il font size
                 ),
@@ -164,7 +166,7 @@ class CommentsPage extends StatelessWidget {
   void _showReportBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {

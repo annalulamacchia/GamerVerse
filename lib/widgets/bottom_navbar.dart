@@ -1,7 +1,6 @@
 // lib/widgets/custom_bottom_nav_bar.dart
 
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
 import '../views/home_page.dart';
 //import '../views/community_page.dart';
 import '../views/profile/profile_page.dart';
@@ -13,17 +12,17 @@ class CustomBottomNavBar extends StatelessWidget {
   final bool isLoggedIn;
 
   const CustomBottomNavBar({
-    Key? key,
+    super.key,
     required this.currentIndex,
     this.isLoggedIn = false,
-  }) : super(key: key);
+  });
 
   void _onItemTapped(BuildContext context, int index) {
     if (index == 1) {
       // Navigate to Home page
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
     } else if (index == 0) {
       if (isLoggedIn) {
@@ -36,7 +35,7 @@ class CustomBottomNavBar extends StatelessWidget {
         // Redirect to SignUp page if not logged in
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+          MaterialPageRoute(builder: (context) => const LoginPage()),
         );
       }
     } else if (index == 2) {
@@ -44,13 +43,13 @@ class CustomBottomNavBar extends StatelessWidget {
         // Navigate to Profile page if logged in
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ProfilePage()),
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
         );
       } else {
         // Redirect to Login page if not logged in
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+          MaterialPageRoute(builder: (context) => const LoginPage()),
         );
       }
     }

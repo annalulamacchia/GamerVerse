@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/views/complete_list_of_games_page.dart';
 
 class GameListSection extends StatelessWidget {
-  const GameListSection({Key? key}) : super(key: key);
+  const GameListSection({super.key});
 
   @override
   Widget build(BuildContext context) {

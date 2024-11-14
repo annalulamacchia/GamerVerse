@@ -5,6 +5,8 @@ import '../utils/colors.dart';
 import 'dart:io';
 
 class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
+
   @override
   _SignupPageState createState() => _SignupPageState();
 }
@@ -30,7 +32,7 @@ class _SignupPageState extends State<SignupPage> {
       backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         backgroundColor: AppColors.darkGreen,
-        title: Text(
+        title: const Text(
           'GamerVerse',
           style: TextStyle(color: AppColors.lightestGreen),
         ),
@@ -42,12 +44,12 @@ class _SignupPageState extends State<SignupPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context); // Navigate to login
                 },
-                child: Text(
+                child: const Text(
                   "Already Subscribed? Log-in",
                   style: TextStyle(
                     color: AppColors.lightestGreen,
@@ -56,10 +58,10 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Icon and "Signup" text in a row
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
@@ -78,7 +80,7 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // CircleAvatar with camera functionality
               GestureDetector(
@@ -88,7 +90,7 @@ class _SignupPageState extends State<SignupPage> {
                   backgroundColor: AppColors.lightestGreen,
                   backgroundImage: _selectedImage != null ? FileImage(_selectedImage!) : null,
                   child: _selectedImage == null
-                      ? Icon(
+                      ? const Icon(
                     Icons.add,
                     color: AppColors.darkGreen,
                     size: 32,
@@ -97,22 +99,22 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildTextField('E-mail', false, context),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildTextField('Username', false, context),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildTextField('Name', false, context),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildTextField('Password', true, context),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildTextField('Repeat Password', true, context),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: AppColors.lightGreen,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                     borderSide: BorderSide.none,
@@ -132,14 +134,14 @@ class _SignupPageState extends State<SignupPage> {
                 onChanged: (String? value) {
                   // Handle selection
                 },
-                hint: Text(
+                hint: const Text(
                   'Reset Password Question',
                   style: TextStyle(color: AppColors.darkGreen),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildTextField('Reset Password Answer', false, context),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   // Handle signup action here
@@ -147,18 +149,18 @@ class _SignupPageState extends State<SignupPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.lightestGreen,
                   foregroundColor: AppColors.darkGreen,
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
-                child: Text('Sign-up'),
+                child: const Text('Sign-up'),
               ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 2,
         isLoggedIn: false,
       ),
@@ -173,7 +175,7 @@ class _SignupPageState extends State<SignupPage> {
         hintText: hintText,
         filled: true,
         fillColor: AppColors.lightGreen,
-        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
           borderSide: BorderSide.none,

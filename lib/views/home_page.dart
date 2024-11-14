@@ -6,32 +6,34 @@ import '../widgets/bottom_navbar.dart';
 import 'search_page.dart';
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: const Text('Home'),
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SearchPage()),
+                MaterialPageRoute(builder: (context) => const SearchPage()),
               );
             },
           ),
         ],
       ),
       body: ListView(
-        children: [
+        children: const [
           CategorySection(title: 'All Games'),
           CategorySection(title: 'Popular Games'),
           CategorySection(title: 'Released this Month'),
           CategorySection(title: 'Upcoming Games'),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1,       // Highlight 'Home' by default
         isLoggedIn: false,      // Replace with actual login status
       ),

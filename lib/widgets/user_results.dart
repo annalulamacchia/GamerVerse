@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class UserResults extends StatelessWidget {
+  const UserResults({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(

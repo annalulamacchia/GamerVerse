@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../widgets/bottom_navbar.dart';
 class AccountSettingsPage extends StatelessWidget {
+  const AccountSettingsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,13 +39,13 @@ class AccountSettingsPage extends StatelessWidget {
                     ),
 
                     // Icona matita per modifica
-                    Positioned(
+                    const Positioned(
                       bottom: 0,
                       right: 0,
                       child: CircleAvatar(
                         radius: 12, // Piccolo cerchio per la matita
                         backgroundColor: Colors.blue, // Colore di sfondo per il cerchio della matita
-                        child: const Icon(
+                        child: Icon(
                           Icons.edit,
                           size: 14,
                           color: Colors.white, // Colore della matita
@@ -55,22 +57,22 @@ class AccountSettingsPage extends StatelessWidget {
 
 
                 const SizedBox(width: 16),
-                Expanded(
+                const Expanded(
                   child: Column(
                     children: [
                       TextField(
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Name',
                           labelStyle: TextStyle(color: Colors.white70),
                         ),
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white),
                       ),
                       TextField(
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Username',
                           labelStyle: TextStyle(color: Colors.white70),
                         ),
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ],
                   ),
@@ -87,36 +89,36 @@ class AccountSettingsPage extends StatelessWidget {
             const SizedBox(height: 10),
 
             // Campi Email e Password
-            TextField(
-              decoration: const InputDecoration(
+            const TextField(
+              decoration: InputDecoration(
                 labelText: 'Email',
                 labelStyle: TextStyle(color: Colors.white70),
               ),
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white),
             ),
-            TextField(
-              decoration: const InputDecoration(
+            const TextField(
+              decoration: InputDecoration(
                 labelText: 'Old Password',
                 labelStyle: TextStyle(color: Colors.white70),
               ),
               obscureText: true,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white),
             ),
-            TextField(
-              decoration: const InputDecoration(
+            const TextField(
+              decoration: InputDecoration(
                 labelText: 'New Password',
                 labelStyle: TextStyle(color: Colors.white70),
               ),
               obscureText: true,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white),
             ),
-            TextField(
-              decoration: const InputDecoration(
+            const TextField(
+              decoration: InputDecoration(
                 labelText: 'Repeat Password',
                 labelStyle: TextStyle(color: Colors.white70),
               ),
               obscureText: true,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 20),
 
@@ -185,7 +187,7 @@ class AccountSettingsPage extends StatelessWidget {
           ],
         ),
       ),
-        bottomNavigationBar: CustomBottomNavBar(
+        bottomNavigationBar: const CustomBottomNavBar(
           currentIndex: 2,
           isLoggedIn: true,
         ),

@@ -9,7 +9,7 @@ import '../views/other_user_profile/user_post_page.dart';
 class TabBarSection extends StatelessWidget {
   final int mode; // Aggiunto parametro `mode`
 
-  const TabBarSection({Key? key, required this.mode}) : super(key: key);
+  const TabBarSection({super.key, required this.mode});
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +26,12 @@ class TabBarSection extends StatelessWidget {
               if (mode == 0) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
                 );
               } else {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => UserProfilePage()),
+                  MaterialPageRoute(builder: (context) => const UserProfilePage()),
                 );
               }
             },
@@ -63,12 +63,12 @@ class TabBarSection extends StatelessWidget {
               if (mode == 0) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProfilePostPage()),
+                  MaterialPageRoute(builder: (context) => const ProfilePostPage()),
                 );
               } else {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => UserPostPage()),
+                  MaterialPageRoute(builder: (context) => const UserPostPage()),
                 );
               }
             },

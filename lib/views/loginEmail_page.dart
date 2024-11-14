@@ -4,6 +4,8 @@ import '../widgets/bottom_navbar.dart';
 import '../utils/colors.dart';
 
 class LoginEmailPage extends StatefulWidget {
+  const LoginEmailPage({super.key});
+
   @override
   _LoginEmailPageState createState() => _LoginEmailPageState();
 }
@@ -21,7 +23,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.darkestGreen, AppColors.veryDarkGreen],
             begin: Alignment.topCenter,
@@ -34,13 +36,13 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.videogame_asset,
                   size: 80,
                   color: AppColors.lightestGreen,
                 ),
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   'Login',
                   style: TextStyle(
                     fontSize: 28,
@@ -48,7 +50,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                     color: AppColors.lightestGreen,
                   ),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'E-mail',
@@ -60,7 +62,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 TextField(
                   obscureText: true,
                   decoration: InputDecoration(
@@ -73,28 +75,28 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _handleLogin, // Handle the login action here
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.lightestGreen,
                     foregroundColor: AppColors.darkGreen,
-                    minimumSize: Size(double.infinity, 50),
+                    minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: Text('Log-in'),
+                  child: const Text('Log-in'),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SignupPage()),
+                      MaterialPageRoute(builder: (context) => const SignupPage()),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     "Not subscribed? Sign-up",
                     style: TextStyle(
                       color: AppColors.lightestGreen,

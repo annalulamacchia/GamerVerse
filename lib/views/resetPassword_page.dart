@@ -14,6 +14,8 @@ class ResetPasswordPage extends StatelessWidget {
   ];
   String selectedQuestion = '';
 
+  ResetPasswordPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     selectedQuestion = securityQuestions[0]; // Default selected question
@@ -21,43 +23,43 @@ class ResetPasswordPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Reset Password',
           style: TextStyle(color: Colors.white), // White title color
         ),
         backgroundColor: AppColors.darkGreen,
-        iconTheme: IconThemeData(color: Colors.white), // White icon color
+        iconTheme: const IconThemeData(color: Colors.white), // White icon color
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.videogame_asset, size: 60, color: AppColors.lightestGreen),
-            SizedBox(height: 20),
-            Text(
+            const Icon(Icons.videogame_asset, size: 60, color: AppColors.lightestGreen),
+            const SizedBox(height: 20),
+            const Text(
               'Reset Password',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.lightestGreen),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
               controller: emailController,
               decoration: InputDecoration(
                 labelText: 'E-mail',
-                labelStyle: TextStyle(color: AppColors.lightestGreen),
+                labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
               ),
-              style: TextStyle(color: AppColors.lightestGreen),
+              style: const TextStyle(color: AppColors.lightestGreen),
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             DropdownButtonFormField<String>(
               value: selectedQuestion,
               items: securityQuestions.map((String question) {
                 return DropdownMenuItem<String>(
                   value: question,
-                  child: Text(question, style: TextStyle(color: AppColors.lightestGreen)),
+                  child: Text(question, style: const TextStyle(color: AppColors.lightestGreen)),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -65,26 +67,26 @@ class ResetPasswordPage extends StatelessWidget {
               },
               decoration: InputDecoration(
                 labelText: 'Reset Password Question',
-                labelStyle: TextStyle(color: AppColors.lightestGreen),
+                labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
               ),
               dropdownColor: AppColors.veryDarkGreen,
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             TextField(
               controller: answerController,
               decoration: InputDecoration(
                 labelText: 'Reset Password Answer',
-                labelStyle: TextStyle(color: AppColors.lightestGreen),
+                labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
               ),
-              style: TextStyle(color: AppColors.lightestGreen),
+              style: const TextStyle(color: AppColors.lightestGreen),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -94,24 +96,24 @@ class ResetPasswordPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.mediumGreen,
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               ),
-              child: Text('Reset', style: TextStyle(color: AppColors.lightestGreen)),
+              child: const Text('Reset', style: TextStyle(color: AppColors.lightestGreen)),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextButton(
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
               },
-              child: Text('Remembered Password? Login', style: TextStyle(color: AppColors.lightGreen)),
+              child: const Text('Remembered Password? Login', style: TextStyle(color: AppColors.lightGreen)),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1,
         isLoggedIn: false,
       ),

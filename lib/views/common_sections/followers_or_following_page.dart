@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../other_user_profile/user_profile_page.dart';
 
 class FollowersPage extends StatelessWidget {
+  const FollowersPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +29,7 @@ class FollowersPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => UserProfilePage(),
+                      builder: (context) => const UserProfilePage(),
                     ),
                   );
                 },

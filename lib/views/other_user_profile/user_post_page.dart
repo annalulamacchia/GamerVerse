@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/profile_info_card.dart';
 // Importa i widget personalizzati dalla cartella widgets
 import '../../widgets/bottom_navbar.dart';
 import '../../widgets/user_info_card.dart';
 import '../../widgets/profile_tab_bar.dart';
-import '../../widgets/newpostbottomsheet.dart'; // Importa il nuovo widget NewPostBottomSheet
+// Importa il nuovo widget NewPostBottomSheet
 import '../common_sections/comment_page.dart';
 class UserPostPage extends StatelessWidget {
+  const UserPostPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,8 +34,8 @@ class UserPostPage extends StatelessWidget {
       body: Column(
         children: [
           const UserInfoCard(), // Scheda informazioni utente
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
             child: TabBarSection(mode:1), // Sezione Tab
           ),
           Expanded(
@@ -74,7 +75,7 @@ class UserPostPage extends StatelessWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      const Text(
                                         'Game Name',
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -108,7 +109,7 @@ class UserPostPage extends StatelessWidget {
                                     // Logica per il like
                                   },
                                 ),
-                                Text("11", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                                const Text("11", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
                                 const SizedBox(width: 20),
                                 IconButton(
                                   icon: Icon(Icons.comment, color: Colors.grey[700]),
@@ -120,7 +121,7 @@ class UserPostPage extends StatelessWidget {
                                   },
 
                                 ),
-                                Text("5", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                                const Text("5", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
                               ],
                             ),
                           ],
@@ -135,7 +136,7 @@ class UserPostPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1, // Seleziona 'Home' per questa pagina
         isLoggedIn: true, // Sostituisci con lo stato di accesso effettivo
       ),

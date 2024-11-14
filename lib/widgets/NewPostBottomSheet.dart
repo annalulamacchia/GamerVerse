@@ -3,14 +3,16 @@
 import 'package:flutter/material.dart';
 
 class NewPostBottomSheet extends StatelessWidget {
-  final List<String> gameOptions = ['Game 1', 'Game 2', 'Game 3']; // Opzioni del menu a discesa per il campo "Game"
+  final List<String> gameOptions = ['Game 1', 'Game 2', 'Game 3'];
+
+  NewPostBottomSheet({super.key}); // Opzioni del menu a discesa per il campo "Game"
 
   @override
   Widget build(BuildContext context) {
     String? selectedGame;
 
     return Padding(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         bottom: 16,
         left: 16,
         right: 16,

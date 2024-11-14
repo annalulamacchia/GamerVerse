@@ -6,6 +6,8 @@ import '../widgets/videogame_results.dart';
 import '../widgets/user_results.dart';
 
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -17,16 +19,16 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search'),
+        title: const Text('Search'),
       ),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -45,9 +47,9 @@ class _SearchPageState extends State<SearchPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isVideoGameSearch ? Colors.green : Colors.grey,
                 ),
-                child: Text('Search Video Games'),
+                child: const Text('Search Video Games'),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
                   setState(() {
@@ -57,16 +59,16 @@ class _SearchPageState extends State<SearchPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isVideoGameSearch ? Colors.grey : Colors.green,
                 ),
-                child: Text('Search Users'),
+                child: const Text('Search Users'),
               ),
             ],
           ),
           Expanded(
-            child: isVideoGameSearch ? VideoGameResults() : UserResults(),
+            child: isVideoGameSearch ? const VideoGameResults() : const UserResults(),
           ),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1,        // Set the index based on its position (e.g., 'Home' might be 1)
         isLoggedIn: false,        // Replace with actual login status (true/false)
       ),
