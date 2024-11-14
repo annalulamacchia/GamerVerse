@@ -13,7 +13,7 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
         backgroundColor: const Color(0xff163832),
-        title: const Text('Username', style: TextStyle(color: Colors.white)),
+        title: const Text('Username'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings), // Icona a forma di ingranaggio

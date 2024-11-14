@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/views/specific_game/specific_game.dart';
 
 class CategorySection extends StatelessWidget {
   final String title;
@@ -29,11 +30,21 @@ class CategorySection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: 4,
             itemBuilder: (context, index) {
-              return Container(
-                width: 100,
-                margin: const EdgeInsets.all(8),
-                color: Colors.grey[300],
-                child: Center(child: Text('Image ${index + 1}')),
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SpecificGame(),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 100,
+                  margin: const EdgeInsets.all(8),
+                  color: Colors.grey[300],
+                  child: Center(child: Text('Image ${index + 1}')),
+                ),
               );
             },
           ),
