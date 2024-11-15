@@ -95,8 +95,8 @@ class _ProfilePostPageState extends State<ProfilePostPage> {
                                       ),
                                       const SizedBox(height: 5),
                                       Text(
-                                        'Game description goes here...',
-                                        maxLines: 3,
+                                        'riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2''riga 1Riga 2',
+                                        maxLines: 6,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(color: Colors.grey[700], fontSize: 15),
                                       ),

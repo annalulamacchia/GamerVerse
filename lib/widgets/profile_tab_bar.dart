@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../views/profile/profile_post_page.dart';
 import '../views/profile/profile_page.dart';
+import '../views/profile/profile_reviews_page.dart';
 import '../views/other_user_profile/user_profile_page.dart';
 import '../views/other_user_profile/user_post_page.dart';
 
@@ -86,11 +87,10 @@ class _TabBarSectionState extends State<TabBarSection> {
           MaterialPageRoute(builder: (context) => ProfilePage()), // Naviga alla pagina del profilo
         );
       } else if (index == 1) {
-        // Navigazione alla pagina dei commenti/recensioni (qui è stata commentata come richiesto)
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => ReviewsPage()), // Pagina delle recensioni
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ProfileReviewsPage()), // Naviga alla pagina dei post
+        );
       } else if (index == 2) {
         Navigator.push(
           context,
@@ -106,10 +106,10 @@ class _TabBarSectionState extends State<TabBarSection> {
         );
       } else if (index == 1) {
         // Navigazione alla pagina dei commenti/recensioni
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => ReviewsPage()), // Pagina delle recensioni
-        // );
+           Navigator.push(
+           context,
+          MaterialPageRoute(builder: (context) => ProfileReviewsPage()), // Pagina delle recensioni
+        );
       } else if (index == 2) {
         Navigator.push(
           context,
