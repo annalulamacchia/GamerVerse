@@ -27,11 +27,10 @@ class UserPostState extends State<UserPost> {
   @override
   void initState() {
     super.initState();
-    // Imposta il numero di like iniziale dal widget
     currentLikeCount = widget.likeCount;
   }
 
-  // Funzione per gestire il click sul pulsante like
+  //function to like and unlike a post
   void _toggleLike() {
     setState(() {
       if (isLiked) {
@@ -39,7 +38,7 @@ class UserPostState extends State<UserPost> {
       } else {
         currentLikeCount++;
       }
-      isLiked = !isLiked; // Inverte lo stato del like
+      isLiked = !isLiked;
     });
   }
 
@@ -60,32 +59,47 @@ class UserPostState extends State<UserPost> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Card(
+        color: const Color(0xfff0f9f1),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(15),
         ),
         elevation: 3,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Row con avatar, nome utente e icona opzioni
+
+              //Avatar, username and toggle report
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.grey[300],
-                    child: const Icon(Icons.person, color: Colors.white),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    widget.username,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+
+                        //Avatar
+                        CircleAvatar(
+                          radius: 22.5,
+                          backgroundColor: Colors.grey[300],
+                          child: const Icon(Icons.person, color: Colors.white),
+                        ),
+                        const SizedBox(width: 8),
+
+                        //Username
+                        Text(
+                          widget.username,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const Spacer(),
+
+                  //Toggle report
                   PopupMenuButton<String>(
                     onSelected: (value) {
                       if (value == 'Report') {
@@ -107,9 +121,9 @@ class UserPostState extends State<UserPost> {
                 ],
               ),
 
-              // Testo del commento
+              //Post
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 child: Text(
                   widget.commentText,
                   style: const TextStyle(color: Colors.black87),
@@ -117,30 +131,36 @@ class UserPostState extends State<UserPost> {
               ),
 
               const SizedBox(height: 8),
-              // Row per like e comment count
+
+              //Likes and comment
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Align(
                   alignment: Alignment.bottomRight,
                   child: Row(
-                    mainAxisSize: MainAxisSize.min, // Occupa solo lo spazio necessario
+                    mainAxisSize: MainAxisSize.min,
                     children: [
+                      //Likes
                       IconButton(
                         icon: Icon(
-                          isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+                          isLiked
+                              ? Icons.thumb_up
+                              : Icons.thumb_up_alt_outlined,
                           color: isLiked ? Colors.black : Colors.black54,
                         ),
-                        onPressed: _toggleLike, // Chiama _toggleLike al click
+                        onPressed: _toggleLike,
                       ),
                       Text(currentLikeCount.toString()),
                       const SizedBox(width: 16),
+
+                      //Comments
                       IconButton(
                         icon: const Icon(Icons.comment_outlined),
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CommentsPage(), // La pagina delle impostazioni
+                              builder: (context) => CommentsPage(),
                             ),
                           );
                         },
