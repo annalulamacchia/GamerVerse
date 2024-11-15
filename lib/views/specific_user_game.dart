@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/views/specific_game/specific_game.dart';
+import 'package:gamerverse/widgets/post_user_game.dart';
+import 'package:gamerverse/widgets/bottom_navbar.dart';
 
 class SpecificUserGame extends StatelessWidget {
+  const SpecificUserGame({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,109 +18,59 @@ class SpecificUserGame extends StatelessWidget {
         ),
         title: const Text('Game Name'),
       ),
-      body: Column(
-        children: [
-          // Image section
-          Container(
-            height: 200,
-            color: Colors.grey[300],
-            child: const Center(child: Text('Game Image Placeholder')),
-          ),
-          const SizedBox(height: 8),
-          GestureDetector(
-            onTap: () {
-              // Action for more details
-            },
-            child: const Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'More Details on the Game',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  Icon(Icons.arrow_forward, color: Colors.blue),
-                ],
-              ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            //Game Image
+            Container(
+              height: 200,
+              color: Colors.grey[300],
+              child: const Center(child: Text('Game Image Placeholder')),
             ),
-          ),
-          // Comments section
-          Expanded(
-            child: ListView.builder(
-              itemCount: 5, // Number of comments
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundColor: Colors.grey[300],
-                                child: const Icon(Icons.person, color: Colors.white),
-                              ),
-                              SizedBox(width: 8),
-                              Text('Username'),
-                              Spacer(),
-                              Icon(Icons.more_vert),
-                            ],
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'This is a placeholder text for user comment. '
-                                'It can be multiple lines and should wrap accordingly.',
-                            style: TextStyle(color: Colors.black87),
-                          ),
-                          SizedBox(height: 8),
-                          Row(
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.thumb_up_alt_outlined),
-                                onPressed: () {},
-                              ),
-                              Text('11'),
-                              SizedBox(width: 16),
-                              IconButton(
-                                icon: Icon(Icons.comment_outlined),
-                                onPressed: () {},
-                              ),
-                              Text('11'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+            const SizedBox(height: 8),
+
+            //More Details
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const SpecificGame(), // La pagina delle impostazioni
                   ),
                 );
               },
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'More Details on the Game',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    Icon(Icons.keyboard_arrow_right, color: Colors.black),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+
+            // Comments section
+            ...List.generate(5, (index) {
+              return const UserPost(
+                username: 'Username',
+                commentText: 'Ciao',
+                likeCount: 11,
+                commentCount: 12,
+              );
+            }),
+          ],
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Community',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        onTap: (index) {
-          // Handle navigation based on the index
-        },
+      bottomNavigationBar: const CustomBottomNavBar(
+        currentIndex: 2,
+        isLoggedIn: false,
       ),
     );
   }
