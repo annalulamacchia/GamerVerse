@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/category_section.dart';
 import '../widgets/bottom_navbar.dart';
+import 'general_games_page.dart'; // Import GeneralGamesPage
 import 'search_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -26,11 +27,23 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: ListView(
-        children: const [
-          CategorySection(title: 'All Games'),
-          CategorySection(title: 'Popular Games'),
-          CategorySection(title: 'Released this Month'),
-          CategorySection(title: 'Upcoming Games'),
+        children: [
+          // "All Games" category with navigation to GeneralGamesPage on arrow tap
+          CategorySection(
+            title: 'All Games',
+            onArrowTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GeneralGamesPage(),
+                ),
+              );
+            },
+          ),
+          // Other categories without navigation on arrow tap
+          const CategorySection(title: 'Popular Games'),
+          const CategorySection(title: 'Released this Month'),
+          const CategorySection(title: 'Upcoming Games'),
         ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(

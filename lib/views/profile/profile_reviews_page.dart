@@ -3,7 +3,7 @@ import 'package:gamerverse/widgets/profile_info_card.dart';
 // Importa i widget personalizzati dalla cartella widgets
 import '../../widgets/bottom_navbar.dart';
 import '../../widgets/profile_tab_bar.dart';
-import '../../widgets/newpostbottomsheet.dart'; // Importa il nuovo widget NewPostBottomSheet
+import '../../widgets/NewPostBottomSheet.dart'; // Importa il nuovo widget NewPostBottomSheet
 import '../common_sections/comment_page.dart';
 import '../profile/profile_settings_page.dart';
 

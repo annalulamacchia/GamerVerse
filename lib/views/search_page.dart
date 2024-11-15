@@ -1,7 +1,6 @@
-// lib/pages/search_page.dart
-
 import 'package:flutter/material.dart';
 import '../widgets/bottom_navbar.dart';  // Import the CustomBottomNavBar widget
+import '../widgets/card_game.dart'; // Import ImageCardWidget
 import '../widgets/videogame_results.dart';
 import '../widgets/user_results.dart';
 
