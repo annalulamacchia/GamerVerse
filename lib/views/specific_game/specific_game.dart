@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/bottom_navbar.dart';
-import 'package:gamerverse/widgets/specific_game_list.dart';
-import 'package:gamerverse/widgets/specific_game_section.dart';
-import 'package:gamerverse/widgets/single_review.dart';
+import 'package:gamerverse/widgets/specific_game/game_time.dart';
+import 'package:gamerverse/widgets/specific_game/play_completed_buttons.dart';
+import 'package:gamerverse/widgets/specific_game/specific_game_list.dart';
+import 'package:gamerverse/widgets/specific_game/specific_game_section.dart';
+import 'package:gamerverse/widgets/specific_game/single_review.dart';
 import 'package:gamerverse/views/specific_game/all_reviews.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:gamerverse/widgets/specific_game/favourite_button.dart';
 
 class SpecificGame extends StatelessWidget {
   const SpecificGame({super.key});
@@ -17,14 +21,8 @@ class SpecificGame extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xff163832),
         title: const Text('Game Name', style: TextStyle(color: Colors.white)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.favorite_border),
-            color: Colors.white,
-            onPressed: () {
-              // Funzionalità per aggiungere ai preferiti
-            },
-          ),
+        actions: const [
+          FavoriteButton(),
         ],
       ),
       body: SingleChildScrollView(
@@ -32,34 +30,21 @@ class SpecificGame extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Stack(
-                children: [
-                  Container(
-                    color: Colors.grey[300],
-                    height: 200.0,
-                    width: double.infinity,
-                    child: const Icon(Icons.image, size: 100),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.favorite_border),
-                      color: Colors.white,
-                      onPressed: () {
-                        // Funzionalità per aggiungere ai preferiti
-                      },
-                    ),
-                  ),
-                ],
+              child: Container(
+                color: Colors.grey[300],
+                height: 200.0,
+                width: double.infinity,
+                child: const Icon(Icons.image, size: 100),
               ),
             ),
+
+            //Name game and users rating
             const Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: const Row(
+              padding: EdgeInsets.all(10.0),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Nome del gioco a sinistra
+                  //Name Game
                   Text(
                     'Name Game',
                     style: TextStyle(
@@ -67,17 +52,21 @@ class SpecificGame extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
-                  // Icona fantasma, punteggio e "Users Rating" a destra
+
+                  //Users Rating
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.star, size: 24, color: Colors.white),
-                          // Icona fantasma
+                          HugeIcon(
+                            icon: HugeIcons.strokeRoundedPacman02,
+                            color: Colors.white,
+                            size: 24.0,
+                          ),
                           SizedBox(width: 4),
                           Text(
-                            '4.5', // Punteggio
+                            '4.5',
                             style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -95,43 +84,25 @@ class SpecificGame extends StatelessWidget {
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Azione quando si preme "Playing"
-                    },
-                    child: const Text('Playing'),
-                  ),
-                ),
-                // Spazio tra i bottoni
-                const SizedBox(width: 14),
-                // Bottone "Completed"
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Azione quando si preme "Completed"
-                    },
-                    child: const Text('Completed'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
+
+            const SizedBox(height: 5),
+
+            //Playing and Completed Buttons
+            const PlayCompleteButtons(),
+            const SizedBox(height: 12),
+
+            //Critics Rating, Liked and Played
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                //Critics Rating
                 Column(
                   children: [
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.star, color: Colors.white, size: 18),
-                        // Icona stella
+                        Icon(Icons.star, color: Colors.white, size: 20),
                         SizedBox(width: 4),
-                        // Spazio tra icona e testo
                         Text(
                           '5',
                           style: TextStyle(fontSize: 18, color: Colors.white),
@@ -144,16 +115,16 @@ class SpecificGame extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(width: 16),
+                SizedBox(width: 20),
+
+                //Liked
                 Column(
                   children: [
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.favorite, color: Colors.white, size: 18),
-                        // Icona stella
+                        Icon(Icons.favorite, color: Colors.white, size: 20),
                         SizedBox(width: 4),
-                        // Spazio tra icona e testo
                         Text(
                           '100',
                           style: TextStyle(fontSize: 18, color: Colors.white),
@@ -166,16 +137,20 @@ class SpecificGame extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(width: 16),
+                SizedBox(width: 20),
+
+                //Played
                 Column(
                   children: [
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.gamepad, color: Colors.white, size: 18),
-                        // Icona stella
+                        HugeIcon(
+                          icon: HugeIcons.strokeRoundedGameController03,
+                          color: Colors.white,
+                          size: 25.0,
+                        ),
                         SizedBox(width: 4),
-                        // Spazio tra icona e testo
                         Text(
                           '100',
                           style: TextStyle(fontSize: 18, color: Colors.white),
@@ -188,16 +163,21 @@ class SpecificGame extends StatelessWidget {
                 ),
               ],
             ),
-            const Divider(height: 25),
+            const Divider(height: 30),
+
+            //Series
             const SpecificGameSectionWidget(title: 'Series'),
             const SizedBox(height: 10),
+
+            //Storyline
             const SpecificGameSectionWidget(title: 'Storyline'),
-            const SizedBox(height: 16),
+            const SizedBox(height: 25),
+
+            //Media
             Padding(
               padding: const EdgeInsets.all(1.0),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                // Imposta la direzione di scroll orizzontale
                 child: Row(
                   children: List.generate(10, (index) {
                     return Container(
@@ -205,15 +185,12 @@ class SpecificGame extends StatelessWidget {
                       height: 100,
                       margin: const EdgeInsets.symmetric(horizontal: 6),
                       decoration: BoxDecoration(
-                        color:
-                            Colors.white,
-                        borderRadius: BorderRadius.circular(
-                            12), // Aggiungi i bordi arrotondati
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      // Margine tra i container
                       child: Center(
                         child: Text(
-                          'Item ${index + 1}', // Etichetta per ogni container
+                          'Item ${index + 1}',
                           style: const TextStyle(
                               color: Colors.black, fontSize: 16),
                         ),
@@ -223,16 +200,20 @@ class SpecificGame extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 25),
+
+            //Last Review
             const SingleReview(
               username: "Giocatore1",
               rating: 4.5,
               comment: "Questo gioco è fantastico, mi piace molto!",
-              avatarUrl: "https://www.example.com/avatar1.jpg", // Sostituconst isci con un URL valido
+              avatarUrl: "https://www.example.com/avatar1.jpg",
               likes: 11,
               dislikes: 11,
             ),
             const SizedBox(height: 2),
+
+            //All Reviews
             Container(
               alignment: Alignment.center,
               child: ElevatedButton(
@@ -246,118 +227,68 @@ class SpecificGame extends StatelessWidget {
                   },
                   child: const Text('All Reviews')),
             ),
+            const SizedBox(height: 20),
 
-            const SizedBox(height: 25),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey[800], // Fondo scuro per il contrasto
-                borderRadius: BorderRadius.circular(12), // Bordi arrotondati
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Icon(
-                    Icons.hourglass_empty,
-                    color: Colors.white70,
-                    size: 40,
-                  ),
-                  // Colonna al centro con il numero di ore di gioco
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '11 h', // Numero delle ore di gioco
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Average Playing Time', // Descrizione sotto le ore
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
-                        ),
-                      ),
-                    ],
-                  ),
+            //Playing Time
+            const GameTimeWidget(),
+            const Divider(height: 35),
 
-                  // Bottone per aggiungere tempo
-                  Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          // Azione per aggiungere tempo giocato
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange, // Colore del bottone
-                          shape: const CircleBorder(), // Forma circolare
-                        ),
-                        child: const Text(
-                          '+',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white, // Colore del simbolo +
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 2), // Spazio tra il bottone e il testo
-                      const Text(
-                        'Add your time',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white70,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Divider(),
-            const SizedBox(height: 5),
+            //Developers
             SpecificGameList(title: 'Developers', list: developers),
-            const SizedBox(height: 2.5),
-            SpecificGameList(title: 'Publisher', list: developers),
-            const SizedBox(height: 2.5),
-            SpecificGameList(title: 'Genre', list: developers),
-            const SizedBox(height: 2.5),
-            SpecificGameList(title: 'Platforms', list: developers),
-            const SizedBox(height: 2.5),
-            SpecificGameList(title: 'Release Date', list: developers),
-            const SizedBox(height: 5),
+            const SizedBox(height: 3),
 
-            const Divider(),
-            const Text('Suggested Games', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
+            //Publisher
+            SpecificGameList(title: 'Publisher', list: developers),
+            const SizedBox(height: 3),
+
+            //Genre
+            SpecificGameList(title: 'Genre', list: developers),
+            const SizedBox(height: 3),
+
+            //Platforms
+            SpecificGameList(title: 'Platforms', list: developers),
+            const SizedBox(height: 3),
+
+            //Release Date
+            SpecificGameList(title: 'Release Date', list: developers),
+            const Divider(height: 35),
+
+            //Suggested Games
+            const Text('Suggested Games',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold)),
+            const SizedBox(height: 7.5),
             Padding(
               padding: const EdgeInsets.all(1),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                // Imposta la direzione di scroll orizzontale
                 child: Row(
                   children: List.generate(10, (index) {
-                    return Container(
-                      width: 150,
-                      height: 200,
-                      margin: const EdgeInsets.symmetric(horizontal: 6),
-                      decoration: BoxDecoration(
-                        color:
-                        Colors.white,
-                        borderRadius: BorderRadius.circular(
-                            12), // Aggiungi i bordi arrotondati
-                      ),
-                      // Margine tra i container
-                      child: Center(
-                        child: Text(
-                          'Item ${index + 1}', // Etichetta per ogni container
-                          style: const TextStyle(
-                              color: Colors.black, fontSize: 16),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SpecificGame(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 150,
+                        height: 200,
+                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Item ${index + 1}',
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 16),
+                          ),
                         ),
                       ),
                     );
@@ -370,7 +301,7 @@ class SpecificGame extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1, // Set to Home index or adjust as needed
+        currentIndex: 1,
         isLoggedIn: false,
       ),
     );

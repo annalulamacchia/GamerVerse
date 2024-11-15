@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/views/complete_list_of_games_page.dart';
+import 'package:gamerverse/views/specific_user_game.dart';
 
 class GameListSection extends StatelessWidget {
   const GameListSection({super.key});
@@ -48,7 +49,17 @@ class GameListSection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: imageUrls.length,
             itemBuilder: (context, index) {
-              return _buildGameCard(imageUrls[index]);
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SpecificUserGame(),
+                    ),
+                  );
+                },
+                child: buildGameCard(imageUrls[index])
+              );
             },
           ),
         ),
@@ -56,12 +67,8 @@ class GameListSection extends StatelessWidget {
     );
   }
 
-  Widget _buildGameCard(String imageUrl) {
-    return GestureDetector(
-      onTap: () {
-        // Azione per aprire dettagli dell'immagine
-      },
-      child: Card(
+  Widget buildGameCard(String imageUrl) {
+      return Card(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -76,7 +83,6 @@ class GameListSection extends StatelessWidget {
             },
           ),
         ),
-      ),
-    );
+      );
   }
 }

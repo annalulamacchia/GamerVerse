@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/views/specific_game/add_review.dart';
-import 'package:gamerverse/widgets/single_review.dart';
+import 'package:gamerverse/widgets/specific_game/single_review.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ReviewPage extends StatelessWidget {
   const ReviewPage({super.key});
 
-  // Funzione per mostrare il bottom sheet
+  //function to show the modal to Add Review
   void _showAddReviewForm(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Permette al popup di occupare più spazio
-      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      backgroundColor: Colors.grey[900],
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -21,7 +22,7 @@ class ReviewPage extends StatelessWidget {
           ),
           child: AddReview(
             onSubmit: () {
-              Navigator.pop(context); // Chiude il bottom sheet dopo la pubblicazione
+              Navigator.pop(context);
             },
           ),
         );
@@ -41,7 +42,7 @@ class ReviewPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Immagine del gioco e titolo
+            //Game Image
             Container(
               color: Colors.grey[300],
               height: 200.0,
@@ -49,21 +50,33 @@ class ReviewPage extends StatelessWidget {
               child: const Icon(Icons.image, size: 100),
             ),
             const SizedBox(height: 8.0),
+
+            //Game Image and Users Rating
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  //Game Name
                   Text(
                     'Name',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
+
+                  //Users Rating
                   Column(
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.star, color: Colors.amber),
-                          SizedBox(width: 3),
+                          HugeIcon(
+                            icon: HugeIcons.strokeRoundedPacman02,
+                            color: Colors.white,
+                            size: 20.0,
+                          ),
+                          SizedBox(width: 5),
                           Text(
                             '4.5',
                             style: TextStyle(fontSize: 20, color: Colors.white),
@@ -81,7 +94,7 @@ class ReviewPage extends StatelessWidget {
             ),
             const Divider(),
 
-            // Lista delle recensioni
+            //All Reviews List
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -91,7 +104,7 @@ class ReviewPage extends StatelessWidget {
                   username: "Giocatore1",
                   rating: 4.5,
                   comment: "Questo gioco è fantastico, mi piace molto!",
-                  avatarUrl: "https://www.example.com/avatar1.jpg", // Sostituconst isci con un URL valido
+                  avatarUrl: "https://www.example.com/avatar1.jpg",
                   likes: 11,
                   dislikes: 11,
                 );
@@ -117,7 +130,7 @@ class ReviewPage extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddReviewForm(context), // Mostra il bottom sheet
+        onPressed: () => _showAddReviewForm(context),
         backgroundColor: const Color(0xff163832),
         child: const Icon(Icons.add, color: Colors.white),
       ),

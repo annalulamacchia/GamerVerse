@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const HomePage(),  // Now using HomeView from home_view.dart
+      home: const HomePage(), // Now using HomeView from home_view.dart
     );
   }
 }

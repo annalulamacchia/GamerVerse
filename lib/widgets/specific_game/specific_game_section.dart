@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/views/specific_game/series_games.dart';
+import 'package:gamerverse/views/specific_game/specific_game.dart';
 
 class SpecificGameSectionWidget extends StatefulWidget {
   final String title; // Titolo dinamico
@@ -6,11 +8,12 @@ class SpecificGameSectionWidget extends StatefulWidget {
   const SpecificGameSectionWidget({super.key, required this.title});
 
   @override
-  SpecificGameSectionWidgetState createState() => SpecificGameSectionWidgetState();
+  SpecificGameSectionWidgetState createState() =>
+      SpecificGameSectionWidgetState();
 }
 
 class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
-  // Funzione per mostrare il pop-up a discesa
+  //function to show bottom pop up if title == 'Storyline'
   void showSpecificGamePopup(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -18,14 +21,14 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Container(
-            height: 250,
-            padding: const EdgeInsets.all(12),
-            child: const Text(
-              'Questa è la storyline completa del gioco. '
-                  'Può essere un testo di più righe che descrive la trama in dettaglio.',
-              style: TextStyle(fontSize: 14, color: Colors.black87),
-            ),
-          ),
+              height: 250,
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              child: const Text(
+                'Questa è la storyline completa del gioco. '
+                'Può essere un testo di più righe che descrive la trama in dettaglio.',
+                style: TextStyle(fontSize: 14, color: Colors.black87),
+              )),
         );
       },
     );
@@ -36,11 +39,18 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Barra con testo e freccia
         InkWell(
           onTap: () {
-            // Mostra il pop-up a discesa
-            showSpecificGamePopup(context);
+            if (widget.title == 'Storyline') {
+              showSpecificGamePopup(context);
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SeriesGame(),
+                ),
+              );
+            }
           },
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -58,7 +68,7 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
                   style: const TextStyle(fontSize: 16),
                 ),
                 Icon(
-                  Icons.keyboard_arrow_right_outlined, // Mostra sempre la freccia verso il basso
+                  Icons.keyboard_arrow_right_outlined,
                   color: Colors.grey[600],
                 ),
               ],

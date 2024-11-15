@@ -35,7 +35,7 @@ class CategorySection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SpecificGame(),
+                      builder: (context) => const SpecificGame(),
                     ),
                   );
                 },
