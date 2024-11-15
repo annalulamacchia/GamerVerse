@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/views/profile/profile_page.dart';
+import 'package:gamerverse/widgets/report_user.dart';
 import 'package:gamerverse/widgets/specific_game/like_dislike_button.dart';
 import 'package:gamerverse/widgets/report.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -12,16 +13,16 @@ class SingleReview extends StatelessWidget {
   final int likes;
   final int dislikes;
 
-  const SingleReview({
-    super.key,
-    required this.username,
-    required this.rating,
-    required this.comment,
-    required this.avatarUrl,
-    required this.likes,
-    required this.dislikes
-  });
+  const SingleReview(
+      {super.key,
+      required this.username,
+      required this.rating,
+      required this.comment,
+      required this.avatarUrl,
+      required this.likes,
+      required this.dislikes});
 
+  //function to show bottom pop up for report review
   void _showReport(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -34,11 +35,24 @@ class SingleReview extends StatelessWidget {
     );
   }
 
+  //function to show bottom pop up for report user
+  void _showReportUser(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return const ReportUserWidget();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+      margin: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 15),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(12),
@@ -98,17 +112,19 @@ class SingleReview extends StatelessWidget {
               // Toggle menu
               PopupMenuButton<String>(
                 onSelected: (value) {
-                  if (value == 'Report') {
+                  if (value == 'Report_Review') {
                     _showReport(context);
+                  } else if (value == 'Report_User') {
+                    _showReportUser(context);
                   }
                 },
                 itemBuilder: (context) => [
                   const PopupMenuItem(
-                    value: 'Report',
+                    value: 'Report_Review',
                     child: Text('Report Review'),
                   ),
                   const PopupMenuItem(
-                    value: 'Report',
+                    value: 'Report_User',
                     child: Text('Report User'),
                   ),
                 ],

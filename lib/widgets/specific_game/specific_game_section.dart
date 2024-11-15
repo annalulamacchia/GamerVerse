@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/views/specific_game/series_games.dart';
-import 'package:gamerverse/views/specific_game/specific_game.dart';
 
 class SpecificGameSectionWidget extends StatefulWidget {
   final String title; // Titolo dinamico
@@ -56,8 +55,8 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
             margin: const EdgeInsets.symmetric(horizontal: 5),
             padding: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.grey[200],
-              border: Border.all(color: Colors.grey),
+              color: const Color(0xff3e6259),
+              border: Border.all(color: Colors.black12),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -65,11 +64,11 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
               children: [
                 Text(
                   widget.title,
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16, color: Colors.white),
                 ),
-                Icon(
+                const Icon(
                   Icons.keyboard_arrow_right_outlined,
-                  color: Colors.grey[600],
+                  color: Colors.white,
                 ),
               ],
             ),

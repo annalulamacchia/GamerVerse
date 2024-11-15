@@ -26,7 +26,7 @@ class SpecificUserGame extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                  const SpecificGame(), // La pagina delle impostazioni
+                      const SpecificGame(), // La pagina delle impostazioni
                 ),
               );
             },
@@ -53,7 +53,12 @@ class SpecificUserGame extends StatelessWidget {
             Container(
               height: 200,
               color: Colors.grey[300],
-              child: const Center(child: Text('Game Image Placeholder')),
+              child: Image.network(
+                'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(height: 8),
 
@@ -63,8 +68,7 @@ class SpecificUserGame extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const SpecificGame(),
+                    builder: (context) => const SpecificGame(),
                   ),
                 );
               },
@@ -77,7 +81,8 @@ class SpecificUserGame extends StatelessWidget {
                       'More Details on the Game',
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
-                    Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 25),
+                    Icon(Icons.keyboard_arrow_right,
+                        color: Colors.white, size: 25),
                   ],
                 ),
               ),
@@ -88,9 +93,12 @@ class SpecificUserGame extends StatelessWidget {
             ...List.generate(5, (index) {
               return const UserPost(
                 username: 'Username',
-                commentText: 'Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo',
+                commentText:
+                    'Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo',
                 likeCount: 11,
                 commentCount: 12,
+                avatarUrl:
+                    'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',
               );
             }),
           ],

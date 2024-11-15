@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/views/common_sections/comment_page.dart';
+import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
 import 'package:gamerverse/widgets/report.dart';
+import 'package:gamerverse/widgets/report_user.dart';
 
 class UserPost extends StatefulWidget {
   final String username;
   final String commentText;
   final int likeCount;
   final int commentCount;
+  final String avatarUrl;
 
   const UserPost({
     super.key,
@@ -14,6 +17,7 @@ class UserPost extends StatefulWidget {
     required this.commentText,
     required this.likeCount,
     required this.commentCount,
+    required this.avatarUrl,
   });
 
   @override
@@ -42,7 +46,7 @@ class UserPostState extends State<UserPost> {
     });
   }
 
-  //function to show bottom pop up for report
+  //function to show bottom pop up for report post
   void _showReport(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -51,6 +55,19 @@ class UserPostState extends State<UserPost> {
       ),
       builder: (BuildContext context) {
         return const ReportWidget();
+      },
+    );
+  }
+
+  //function to show bottom pop up for report user
+  void _showReportUser(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return const ReportUserWidget();
       },
     );
   }
@@ -84,9 +101,8 @@ class UserPostState extends State<UserPost> {
                   children: [
                     // Avatar
                     CircleAvatar(
+                      backgroundImage: NetworkImage(widget.avatarUrl),
                       radius: 20,
-                      backgroundColor: Colors.grey[300],
-                      child: const Icon(Icons.person, color: Colors.white),
                     ),
                     const SizedBox(width: 8),
 
@@ -95,11 +111,23 @@ class UserPostState extends State<UserPost> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.username,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                          GestureDetector(
+                            onTap: () {
+                              // Navigate to a new page when the text is tapped
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const UserProfilePage(), // Replace with your target page
+                                ),
+                              );
+                            },
+                            child: Text(
+                              widget.username,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -117,17 +145,19 @@ class UserPostState extends State<UserPost> {
                     // Toggle for report
                     PopupMenuButton<String>(
                       onSelected: (value) {
-                        if (value == 'Report') {
+                        if (value == 'Report_Post') {
                           _showReport(context);
+                        } else if (value == 'Report_User') {
+                          _showReportUser(context);
                         }
                       },
                       itemBuilder: (context) => [
                         const PopupMenuItem(
-                          value: 'Report',
+                          value: 'Report_Post',
                           child: Text('Report Post'),
                         ),
                         const PopupMenuItem(
-                          value: 'Report',
+                          value: 'Report_User',
                           child: Text('Report User'),
                         ),
                       ],

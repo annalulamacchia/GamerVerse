@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/bottom_navbar.dart';
+import 'package:gamerverse/widgets/card_game.dart';
 import 'package:gamerverse/widgets/specific_game/game_time.dart';
 import 'package:gamerverse/widgets/specific_game/play_completed_buttons.dart';
 import 'package:gamerverse/widgets/specific_game/specific_game_list.dart';
@@ -20,6 +21,12 @@ class SpecificGame extends StatelessWidget {
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
         backgroundColor: const Color(0xff163832),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text('Game Name', style: TextStyle(color: Colors.white)),
         actions: const [
           FavoriteButton(),
@@ -30,11 +37,11 @@ class SpecificGame extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Container(
-                color: Colors.grey[300],
-                height: 200.0,
+              child: Image.network(
+                'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',
+                height: 200,
                 width: double.infinity,
-                child: const Icon(Icons.image, size: 100),
+                fit: BoxFit.cover,
               ),
             ),
 
@@ -204,19 +211,21 @@ class SpecificGame extends StatelessWidget {
 
             //Last Review
             const SingleReview(
-              username: "Giocatore1",
-              rating: 4.5,
-              comment: "Questo gioco è fantastico, mi piace molto!",
-              avatarUrl: "https://www.example.com/avatar1.jpg",
-              likes: 11,
-              dislikes: 11
-            ),
+                username: "Giocatore1",
+                rating: 4.5,
+                comment: "Questo gioco è fantastico, mi piace molto!",
+                avatarUrl: "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+                likes: 11,
+                dislikes: 11),
             const SizedBox(height: 2),
 
             //All Reviews
             Container(
               alignment: Alignment.center,
               child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff3e6259),
+                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -225,7 +234,8 @@ class SpecificGame extends StatelessWidget {
                       ),
                     );
                   },
-                  child: const Text('All Reviews')),
+                  child: const Text('All Reviews',
+                      style: TextStyle(color: Colors.white))),
             ),
             const SizedBox(height: 20),
 
@@ -266,31 +276,12 @@ class SpecificGame extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: List.generate(10, (index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SpecificGame(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        width: 150,
-                        height: 200,
-                        margin: const EdgeInsets.symmetric(horizontal: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Item ${index + 1}',
-                            style: const TextStyle(
-                                color: Colors.black, fontSize: 16),
-                          ),
-                        ),
-                      ),
+                    return Container(
+                      width: 180,
+                      margin: const EdgeInsets.symmetric(horizontal: 1),
+                      child: const ImageCardWidget(
+                          imageUrl:
+                              'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg'), // Usa ImageCardWidget
                     );
                   }),
                 ),

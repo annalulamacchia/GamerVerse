@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/views/specific_game/add_review.dart';
 import 'package:gamerverse/widgets/specific_game/single_review.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:gamerverse/widgets/bottom_navbar.dart';
 
 class ReviewPage extends StatelessWidget {
   const ReviewPage({super.key});
@@ -36,6 +37,12 @@ class ReviewPage extends StatelessWidget {
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
         backgroundColor: const Color(0xff163832),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text('Game Name', style: TextStyle(color: Colors.white)),
       ),
       body: SingleChildScrollView(
@@ -43,13 +50,13 @@ class ReviewPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //Game Image
-            Container(
-              color: Colors.grey[300],
-              height: 200.0,
+            Image.network(
+              'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',
+              height: 200,
               width: double.infinity,
-              child: const Icon(Icons.image, size: 100),
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: 10.0),
 
             //Game Image and Users Rating
             const Padding(
@@ -58,12 +65,23 @@ class ReviewPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   //Game Name
-                  Text(
-                    'Name',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.white, size: 20.0),
+                          SizedBox(width: 5),
+                          Text(
+                            '4.5',
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        'Critics Review',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ],
                   ),
 
                   //Users Rating
@@ -92,7 +110,7 @@ class ReviewPage extends StatelessWidget {
                 ],
               ),
             ),
-            const Divider(),
+            const Divider(height: 25),
 
             //All Reviews List
             ListView.builder(
@@ -101,33 +119,20 @@ class ReviewPage extends StatelessWidget {
               itemCount: 5,
               itemBuilder: (context, index) {
                 return const SingleReview(
-                  username: "Giocatore1",
-                  rating: 4.5,
-                  comment: "Questo gioco è fantastico, mi piace molto!",
-                  avatarUrl: "https://www.example.com/avatar1.jpg",
-                  likes: 11,
-                  dislikes: 11
-                );
+                    username: "Giocatore1",
+                    rating: 4.5,
+                    comment: "Questo gioco è fantastico, mi piace molto!",
+                    avatarUrl: "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+                    likes: 11,
+                    dislikes: 11);
               },
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Community',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+      bottomNavigationBar: const CustomBottomNavBar(
+        currentIndex: 1,
+        isLoggedIn: false,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddReviewForm(context),

@@ -5,9 +5,9 @@ class ImageCardWidget extends StatelessWidget {
   final String imageUrl;
 
   const ImageCardWidget({
-    Key? key,
+    super.key,
     required this.imageUrl,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

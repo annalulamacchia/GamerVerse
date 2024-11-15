@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/specific_game/specific_game.dart';
-import 'package:gamerverse/views/general_games_page.dart'; // Import GeneralGamesPage for navigation
 import '../widgets/card_game.dart'; // Import the ImageCardWidget
 
 class CategorySection extends StatelessWidget {
@@ -8,10 +6,10 @@ class CategorySection extends StatelessWidget {
   final VoidCallback? onArrowTap; // Add onArrowTap callback for arrow icon
 
   const CategorySection({
-    Key? key,
+    super.key,
     required this.title,
     this.onArrowTap, // Accept an optional onArrowTap callback
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +23,13 @@ class CategorySection extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_forward),
-                onPressed: onArrowTap ?? () {}, // Trigger onArrowTap if provided
+                onPressed:
+                    onArrowTap ?? () {}, // Trigger onArrowTap if provided
               ),
             ],
           ),
@@ -41,14 +41,16 @@ class CategorySection extends StatelessWidget {
             itemCount: 4, // Numero degli elementi da visualizzare
             itemBuilder: (context, index) {
               // Usa URL di esempio o sostituisci con quelli effettivi
-              String imageUrl = 'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg'; // Placeholder immagine
+              String imageUrl =
+                  'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg'; // Placeholder immagine
 
-              return InkWell(
-                child: Container(
-                  width: 180, // Aumentato per rendere le card più grandi
-                  margin: const EdgeInsets.symmetric(horizontal: 1), // Ridotto il padding tra le card
-                  child: ImageCardWidget(imageUrl: imageUrl), // Usa ImageCardWidget
-                ),
+              return Container(
+                width: 180,
+                // Aumentato per rendere le card più grandi
+                margin: const EdgeInsets.symmetric(horizontal: 1),
+                // Ridotto il padding tra le card
+                child:
+                    ImageCardWidget(imageUrl: imageUrl), // Usa ImageCardWidget
               );
             },
           ),
