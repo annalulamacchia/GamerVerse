@@ -57,7 +57,7 @@ class _AddReviewState extends State<AddReview> {
           Theme(
             data: Theme.of(context).copyWith(
               textSelectionTheme: const TextSelectionThemeData(
-                selectionHandleColor: Colors.teal,
+                selectionHandleColor: Color(0xff3e6259),
               ),
             ),
             child: TextField(
@@ -70,7 +70,7 @@ class _AddReviewState extends State<AddReview> {
                   borderSide: BorderSide(color: Colors.white70),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.teal),
+                  borderSide: BorderSide(color: Color(0xff3e6259)),
                 ),
               ),
               maxLines: 4,
@@ -88,7 +88,7 @@ class _AddReviewState extends State<AddReview> {
                 _reviewController.clear();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
+                backgroundColor: const Color(0xff3e6259),
               ),
               child: const Text(
                 'Post',

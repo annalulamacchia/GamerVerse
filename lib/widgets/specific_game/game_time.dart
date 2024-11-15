@@ -50,22 +50,14 @@ class GameTimeWidget extends StatelessWidget {
           Column(
             children: [
               ElevatedButton(
-                onPressed: () {
-                  _showAddTimeModal(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  shape: const CircleBorder(),
-                ),
-                child: const Text(
-                  '+',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                  onPressed: () {
+                    _showAddTimeModal(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff3e6259),
+                    shape: const CircleBorder(),
                   ),
-                ),
-              ),
+                  child: const Icon(Icons.add, color: Colors.white, size: 25)),
               const SizedBox(height: 2),
               const Text(
                 'Add your time',
@@ -128,7 +120,7 @@ class GameTimeWidget extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
+                  backgroundColor: const Color(0xff3e6259),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

@@ -209,7 +209,7 @@ class SpecificGame extends StatelessWidget {
               comment: "Questo gioco è fantastico, mi piace molto!",
               avatarUrl: "https://www.example.com/avatar1.jpg",
               likes: 11,
-              dislikes: 11,
+              dislikes: 11
             ),
             const SizedBox(height: 2),
 

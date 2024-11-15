@@ -30,7 +30,7 @@ class UserPostState extends State<UserPost> {
     currentLikeCount = widget.likeCount;
   }
 
-  //function to like and unlike a post
+  //function to handle liked and not liked
   void _toggleLike() {
     setState(() {
       if (isLiked) {
@@ -42,6 +42,7 @@ class UserPostState extends State<UserPost> {
     });
   }
 
+  //function to show bottom pop up for report
   void _showReport(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -56,124 +57,143 @@ class UserPostState extends State<UserPost> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Card(
-        color: const Color(0xfff0f9f1),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        elevation: 3,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              //Avatar, username and toggle report
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: [
-
-                        //Avatar
-                        CircleAvatar(
-                          radius: 22.5,
-                          backgroundColor: Colors.grey[300],
-                          child: const Icon(Icons.person, color: Colors.white),
-                        ),
-                        const SizedBox(width: 8),
-
-                        //Username
-                        Text(
-                          widget.username,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-
-                  //Toggle report
-                  PopupMenuButton<String>(
-                    onSelected: (value) {
-                      if (value == 'Report') {
-                        _showReport(context);
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 'Report',
-                        child: Text('Report Post'),
-                      ),
-                      const PopupMenuItem(
-                        value: 'Report',
-                        child: Text('Report User'),
-                      ),
-                    ],
-                    icon: const Icon(Icons.more_vert, color: Colors.grey),
-                  ),
-                ],
-              ),
-
-              //Post
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                child: Text(
-                  widget.commentText,
-                  style: const TextStyle(color: Colors.black87),
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              //Likes and comment
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      //Likes
-                      IconButton(
-                        icon: Icon(
-                          isLiked
-                              ? Icons.thumb_up
-                              : Icons.thumb_up_alt_outlined,
-                          color: isLiked ? Colors.black : Colors.black54,
-                        ),
-                        onPressed: _toggleLike,
-                      ),
-                      Text(currentLikeCount.toString()),
-                      const SizedBox(width: 16),
-
-                      //Comments
-                      IconButton(
-                        icon: const Icon(Icons.comment_outlined),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CommentsPage(),
-                            ),
-                          );
-                        },
-                      ),
-                      Text(widget.commentCount.toString()),
-                    ],
-                  ),
-                ),
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: const Color(0xfff0f9f1),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Avatar, username, and timestamp
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Avatar
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.grey[300],
+                      child: const Icon(Icons.person, color: Colors.white),
+                    ),
+                    const SizedBox(width: 8),
+
+                    // Username and timestamp
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.username,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            '2 hours ago',
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Toggle for report
+                    PopupMenuButton<String>(
+                      onSelected: (value) {
+                        if (value == 'Report') {
+                          _showReport(context);
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'Report',
+                          child: Text('Report Post'),
+                        ),
+                        const PopupMenuItem(
+                          value: 'Report',
+                          child: Text('Report User'),
+                        ),
+                      ],
+                      icon: const Icon(Icons.more_vert, color: Colors.black54),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+                // Post content (text)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Text(
+                    widget.commentText,
+                    style: const TextStyle(color: Colors.black87),
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Likes and Comments
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    // Comments
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CommentsPage(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.comment_outlined,
+                        size: 18,
+                        color: Colors.black54,
+                      ),
+                      label: Text(
+                        widget.commentCount.toString(),
+                        style: const TextStyle(color: Colors.black54),
+                      ),
+                    ),
+
+                    // Likes
+                    TextButton.icon(
+                      onPressed: _toggleLike,
+                      icon: Icon(
+                        isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+                        size: 18,
+                        color: isLiked ? Colors.black : Colors.black54,
+                      ),
+                      label: Text(
+                        currentLikeCount.toString(),
+                        style: TextStyle(
+                          color: isLiked ? Colors.black : Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

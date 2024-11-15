@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class LikeDislikeWidget extends StatefulWidget {
-  const LikeDislikeWidget({super.key});
+  final String timestamp;
+
+  const LikeDislikeWidget({super.key, required this.timestamp});
 
   @override
   LikeDislikeWidgetState createState() => LikeDislikeWidgetState();
@@ -50,34 +52,37 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        //Like Button
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-                color: isLiked ? Colors.black : Colors.black54,
-              ),
-              onPressed: _toggleLike,
-            ),
-            Text(likes.toString()),
-          ],
+        //Timestamp
+        Text(
+          '${widget.timestamp} hours ago', // Display timestamp
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+          ),
         ),
+        const Spacer(),
+
+        //Like Button
+        const SizedBox(height: 10),
+        IconButton(
+          icon: Icon(
+            isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+            color: isLiked ? Colors.black : Colors.black54,
+          ),
+          onPressed: _toggleLike,
+        ),
+        Text(likes.toString()),
         const SizedBox(width: 10),
 
         //Dislike Button
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                isDisliked ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
-                color: isDisliked ? Colors.black : Colors.black54,
-              ),
-              onPressed: _toggleDislike,
-            ),
-            Text(dislikes.toString()),
-          ],
+        IconButton(
+          icon: Icon(
+            isDisliked ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
+            color: isDisliked ? Colors.black : Colors.black54,
+          ),
+          onPressed: _toggleDislike,
         ),
+        Text(dislikes.toString()),
       ],
     );
   }

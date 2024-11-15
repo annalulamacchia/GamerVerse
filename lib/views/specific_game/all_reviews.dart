@@ -106,7 +106,7 @@ class ReviewPage extends StatelessWidget {
                   comment: "Questo gioco è fantastico, mi piace molto!",
                   avatarUrl: "https://www.example.com/avatar1.jpg",
                   likes: 11,
-                  dislikes: 11,
+                  dislikes: 11
                 );
               },
             ),
@@ -131,7 +131,7 @@ class ReviewPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddReviewForm(context),
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: const Color(0xff3e6259),
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );

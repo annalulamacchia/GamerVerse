@@ -19,7 +19,7 @@ class SingleReview extends StatelessWidget {
     required this.comment,
     required this.avatarUrl,
     required this.likes,
-    required this.dislikes,
+    required this.dislikes
   });
 
   void _showReport(BuildContext context) {
@@ -46,17 +46,17 @@ class SingleReview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //Avatar, username, rating and toggle
+          // Avatar, username, rating, and toggle
           Row(
             children: [
-              //Avatar
+              // Avatar
               CircleAvatar(
                 backgroundImage: NetworkImage(avatarUrl),
                 radius: 20,
               ),
               const SizedBox(width: 15),
 
-              //Username
+              // Username
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -76,7 +76,7 @@ class SingleReview extends StatelessWidget {
                     ),
                   ),
 
-                  //Rating
+                  // Rating
                   Row(
                     children: [
                       const HugeIcon(
@@ -95,7 +95,7 @@ class SingleReview extends StatelessWidget {
               ),
               const Spacer(),
 
-              //Toggle menu
+              // Toggle menu
               PopupMenuButton<String>(
                 onSelected: (value) {
                   if (value == 'Report') {
@@ -118,14 +118,14 @@ class SingleReview extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          //Review
+          // Review
           Text(
             comment,
             style: const TextStyle(fontSize: 14, color: Colors.black87),
           ),
 
-          //Like and Dislike buttons
-          const LikeDislikeWidget(),
+          // Like and Dislike buttons
+          const LikeDislikeWidget(timestamp: '10'),
         ],
       ),
     );
