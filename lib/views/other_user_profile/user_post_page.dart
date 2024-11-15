@@ -36,7 +36,7 @@ class UserPostPage extends StatelessWidget {
           const UserInfoCard(), // Scheda informazioni utente
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: TabBarSection(mode:1), // Sezione Tab
+            child: TabBarSection(mode:1,selected:2), // Sezione Tab
           ),
           Expanded(
             child: ListView.builder(

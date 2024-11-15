@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/user_info_card.dart';
 import '../../widgets/profile_tab_bar.dart';
 import '../../widgets/wishing_favorite_completed.dart';
-
+import '../../widgets/bottom_navbar.dart';
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
 
@@ -34,9 +34,14 @@ class UserProfilePage extends StatelessWidget {
         children: [
           UserInfoCard(), // Scheda informazioni utente
           SizedBox(height: 20),
-          TabBarSection(mode:1), // Tab Bar (Games, Reviews, Post)
+          TabBarSection(mode:1,selected:0), // Tab Bar (Games, Reviews, Post)
           Expanded(child: GameListSection()), // Sezione Lista Giochi
         ],
+
+      ),
+      bottomNavigationBar: const CustomBottomNavBar(
+        currentIndex: 1, // Seleziona 'Home' per questa pagina
+        isLoggedIn: true, // Sostituisci con lo stato di accesso effettivo
       ),
     );
   }

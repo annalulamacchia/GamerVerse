@@ -7,15 +7,24 @@ import '../../widgets/newpostbottomsheet.dart'; // Importa il nuovo widget NewPo
 import '../common_sections/comment_page.dart';
 import '../profile/profile_settings_page.dart';
 
-class ProfilePostPage extends StatelessWidget {
+class ProfilePostPage extends StatefulWidget {
   const ProfilePostPage({super.key});
+
+  @override
+  _ProfilePostPageState createState() => _ProfilePostPageState();
+}
+
+class _ProfilePostPageState extends State<ProfilePostPage> {
+  // Puoi aggiungere variabili di stato qui
+  int _likeCount = 11;
+  int _commentCount = 5;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xff051f20), // Sfondo scuro della pagina
       appBar: AppBar(
-        title: const Text('Username',style:TextStyle(color:Colors.white)), // Sostituisci con il nome utente dinamico, se necessario
+        title: const Text('Username', style: TextStyle(color: Colors.white)), // Sostituisci con il nome utente dinamico, se necessario
         backgroundColor: const Color(0xff163832), // Verde scuro per l'app bar
         actions: [
           IconButton(
@@ -34,10 +43,11 @@ class ProfilePostPage extends StatelessWidget {
       body: Column(
         children: [
           const ProfileInfoCard(), // Scheda informazioni utente
-          const Padding(
+           Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: TabBarSection(mode:0), // Sezione Tab
+            // Sezione Tab
           ),
+          TabBarSection(mode: 0,selected:2),
           Expanded(
             child: ListView.builder(
               itemCount: 3, // Ora ci sono 3 card di post
@@ -62,12 +72,12 @@ class ProfilePostPage extends StatelessWidget {
                               children: [
                                 // Immagine del gioco a sinistra
                                 Image.network(
-                                  'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.wired.it%2Fgallery%2Fnascondere-scritte-foto-immagini-ai%2F&psig=AOvVaw0KX_7VzYQmZ874L2OfbOwB&ust=1731514505952000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCPjD-M-m14kDFQAAAAAdAAAAABAI', // Placeholder per l'immagine
+                                  'https://via.placeholder.com/90', // URL immagine valido
                                   width: 90,
                                   height: 90,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
-                                    return Icon(Icons.broken_image, color: Colors.grey[400],size:90);
+                                    return Icon(Icons.broken_image, color: Colors.grey[400], size: 90);
                                   },
                                 ),
                                 const SizedBox(width: 10),
@@ -83,14 +93,10 @@ class ProfilePostPage extends StatelessWidget {
                                           color: Colors.black87,
                                         ),
                                       ),
-                                      const SizedBox(height: 0),
+                                      const SizedBox(height: 5),
                                       Text(
-                                        'Game description goes here..asdsadasdsadasdsad'
-                                            'asdsadsadasd'
-                                            'asdsadadd'
-                                            'asdsadsadad'
-                                            'asdsadasd.',
-                                        maxLines: 10,
+                                        'Game description goes here...',
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(color: Colors.grey[700], fontSize: 15),
                                       ),
@@ -106,22 +112,28 @@ class ProfilePostPage extends StatelessWidget {
                                 IconButton(
                                   icon: Icon(Icons.thumb_up, color: Colors.grey[700]),
                                   onPressed: () {
-                                    // Logica per il like
+                                    setState(() {
+                                      _likeCount++; // Aumenta il conteggio dei like
+                                    });
                                   },
                                 ),
-                                const Text("11", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                                Text("$_likeCount",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold, color: Colors.black87)),
                                 const SizedBox(width: 20),
                                 IconButton(
                                   icon: Icon(Icons.comment, color: Colors.grey[700]),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => CommentsPage()),
+                                      MaterialPageRoute(
+                                          builder: (context) => CommentsPage()),
                                     );
                                   },
-
                                 ),
-                                const Text("5", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                                Text("$_commentCount",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold, color: Colors.black87)),
                               ],
                             ),
                           ],
@@ -134,7 +146,9 @@ class ProfilePostPage extends StatelessWidget {
                       child: IconButton(
                         icon: const Icon(Icons.close, color: Colors.red, size: 35),
                         onPressed: () {
-                          // Logica per eliminare il post
+                          setState(() {
+                            // Logica per eliminare il post
+                          });
                         },
                       ),
                     ),
@@ -154,7 +168,7 @@ class ProfilePostPage extends StatelessWidget {
           _showNewPostBottomSheet(context); // Mostra il bottom sheet per il nuovo post
         },
         backgroundColor: const Color(0xff3e6259),
-        child: const Icon(Icons.add,color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -169,7 +183,7 @@ class ProfilePostPage extends StatelessWidget {
       ),
       backgroundColor: const Color(0xff051f20),
       builder: (BuildContext context) {
-        return NewPostBottomSheet(); // Usa il nuovo widget NewPostBottomSheet
+        return  NewPostBottomSheet(); // Usa il nuovo widget NewPostBottomSheet
       },
     );
   }
