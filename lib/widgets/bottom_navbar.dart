@@ -5,6 +5,7 @@ import '../views/home_page.dart';
 //import '../views/community_page.dart';
 import '../views/profile/profile_page.dart';
 import '../views/login_page.dart';
+import '../views/community/community_page.dart';
 
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -27,10 +28,10 @@ class CustomBottomNavBar extends StatelessWidget {
     } else if (index == 0) {
       if (isLoggedIn) {
         // Navigate to Community page if logged in
-        //Navigator.pushReplacement(
-          //context,
-          //MaterialPageRoute(builder: (context) => CommunityPage()),
-        //);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CommunityPage()),
+        );
       } else {
         // Redirect to SignUp page if not logged in
         Navigator.pushReplacement(

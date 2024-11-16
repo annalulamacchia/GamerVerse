@@ -44,7 +44,7 @@ class GameListSection extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 135,
+          height: 150,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: imageUrls.length,
@@ -69,12 +69,12 @@ class GameListSection extends StatelessWidget {
 
   Widget buildGameCard(String imageUrl) {
       return Card(
-        margin: const EdgeInsets.only(left: 20.0),
+        margin: const EdgeInsets.only(left: 15.0,right:5,bottom:20),
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: SizedBox(
           width: 110,
-          height: 135,
+          height: 150,
           child: Image.network(
             imageUrl,
             fit: BoxFit.cover,

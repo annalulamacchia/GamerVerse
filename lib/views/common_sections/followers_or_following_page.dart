@@ -1,5 +1,8 @@
+// followers_page.dart
+
 import 'package:flutter/material.dart';
-import '../other_user_profile/user_profile_page.dart';
+import '../other_user_profile/user_profile_page.dart'; // Importazione della pagina del profilo
+import '../../widgets/user_follower_card.dart'; // Importa il widget UserCard
 
 class FollowersPage extends StatelessWidget {
   const FollowersPage({super.key});
@@ -15,52 +18,20 @@ class FollowersPage extends StatelessWidget {
       body: ListView.builder(
         itemCount: 10,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
-            child: Card(
-              color: const Color(0xff000000), // Sfondo scuro della card
-              elevation: 4, // Leggera ombra per il sollevamento
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0), // Angoli arrotondati
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  // Navigazione alla pagina del profilo utente
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const UserProfilePage(),
-                    ),
-                  );
-                },
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Padding interno per ridurre altezza
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.person, color: Colors.white),
-                  ),
-                  title: Text(
-                    'User $index',
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                  trailing: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF14A129),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
-                    onPressed: () {
-                      // Azione per il bottone Follow
-                    },
-                    child: const Text('Follow', style: TextStyle(color: Colors.white)),
-                  ),
+          return UserCard(
+            index: index,
+            onTap: () {
+              // Navigazione alla pagina del profilo utente
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const UserProfilePage(),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
     );
   }
 }
-
