@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/profile/profile_page.dart';
+import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
 import 'package:gamerverse/widgets/report_user.dart';
 import 'package:gamerverse/widgets/specific_game/like_dislike_button.dart';
 import 'package:gamerverse/widgets/report.dart';
@@ -54,7 +54,7 @@ class SingleReview extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 15),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: const Color(0xfff0f9f1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -79,7 +79,7 @@ class SingleReview extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ProfilePage(),
+                          builder: (context) => const UserProfilePage(),
                         ),
                       );
                     },
@@ -112,7 +112,7 @@ class SingleReview extends StatelessWidget {
                 'Playing', // Display timestamp
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey,
+                  color: Colors.black54,
                 ),
               ),
 

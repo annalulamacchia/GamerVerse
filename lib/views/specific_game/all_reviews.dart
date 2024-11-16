@@ -122,7 +122,8 @@ class ReviewPage extends StatelessWidget {
                     username: "Giocatore1",
                     rating: 4.5,
                     comment: "Questo gioco è fantastico, mi piace molto!",
-                    avatarUrl: "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+                    avatarUrl:
+                        "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
                     likes: 11,
                     dislikes: 11);
               },

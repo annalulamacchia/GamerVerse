@@ -57,7 +57,7 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
           '${widget.timestamp} hours ago', // Display timestamp
           style: const TextStyle(
             fontSize: 12,
-            color: Colors.grey,
+            color: Colors.black54,
           ),
         ),
         const Spacer(),

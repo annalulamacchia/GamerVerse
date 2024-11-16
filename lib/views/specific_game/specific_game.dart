@@ -67,7 +67,8 @@ class SpecificGame extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ReviewPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const ReviewPage()),
                       );
                     },
                     child: const Column(
@@ -139,7 +140,8 @@ class SpecificGame extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const LikedList()),
+                      MaterialPageRoute(
+                          builder: (context) => const LikedList()),
                     );
                   },
                   child: const Column(

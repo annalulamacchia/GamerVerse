@@ -1,12 +1,9 @@
-// lib/widgets/custom_bottom_nav_bar.dart
-
 import 'package:flutter/material.dart';
-import '../views/home_page.dart';
-//import '../views/community_page.dart';
-import '../views/profile/profile_page.dart';
-import '../views/login_page.dart';
-import '../views/community/community_page.dart';
-
+import 'package:gamerverse/views/admin_report_page.dart';
+import 'package:gamerverse/views/home_page.dart';
+import 'package:gamerverse/views/profile/profile_page.dart';
+import 'package:gamerverse/views/login_page.dart';
+import 'package:gamerverse/views/community/community_page.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -30,7 +27,7 @@ class CustomBottomNavBar extends StatelessWidget {
         // Navigate to Community page if logged in
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => CommunityPage()),
+          MaterialPageRoute(builder: (context) => const CommunityPage()),
         );
       } else {
         // Redirect to SignUp page if not logged in
@@ -53,6 +50,11 @@ class CustomBottomNavBar extends StatelessWidget {
           MaterialPageRoute(builder: (context) => const LoginPage()),
         );
       }
+    } else if (index == 3) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AdminReportPage()),
+      );
     }
   }
 
@@ -72,9 +74,14 @@ class CustomBottomNavBar extends StatelessWidget {
           icon: Icon(Icons.person),
           label: 'Profile',
         ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.report),
+          label: 'Reports',
+        ),
       ],
       currentIndex: currentIndex,
-      selectedItemColor: Colors.blue,
+      selectedItemColor: Colors.teal,
+      unselectedItemColor: Colors.black38,
       onTap: (index) => _onItemTapped(context, index),
     );
   }

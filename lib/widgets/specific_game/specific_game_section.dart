@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/views/specific_game/series_games.dart';
 
 class SpecificGameSectionWidget extends StatefulWidget {
-  final String title; // Titolo dinamico
+  final String title;
 
   const SpecificGameSectionWidget({super.key, required this.title});
 

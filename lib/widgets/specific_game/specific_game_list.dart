@@ -18,7 +18,8 @@ class SpecificGameList extends StatelessWidget {
           //Fixed Text
           TextSpan(
             text: '$title:  ',
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white38),
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.white38),
           ),
 
           // Dynamic Text
