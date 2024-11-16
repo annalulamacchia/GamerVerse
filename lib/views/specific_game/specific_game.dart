@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/views/specific_game/liked_list.dart';
+import 'package:gamerverse/views/specific_game/played_list.dart';
 import 'package:gamerverse/widgets/bottom_navbar.dart';
 import 'package:gamerverse/widgets/card_game.dart';
 import 'package:gamerverse/widgets/specific_game/game_time.dart';
@@ -46,13 +48,13 @@ class SpecificGame extends StatelessWidget {
             ),
 
             //Name game and users rating
-            const Padding(
-              padding: EdgeInsets.all(10.0),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   //Name Game
-                  Text(
+                  const Text(
                     'Name Game',
                     style: TextStyle(
                         fontSize: 24,
@@ -61,32 +63,40 @@ class SpecificGame extends StatelessWidget {
                   ),
 
                   //Users Rating
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          HugeIcon(
-                            icon: HugeIcons.strokeRoundedPacman02,
-                            color: Colors.white,
-                            size: 24.0,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            '4.5',
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Users Rating',
-                        style: TextStyle(fontSize: 14, color: Colors.white),
-                      ),
-                    ],
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ReviewPage()),
+                      );
+                    },
+                    child: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            HugeIcon(
+                              icon: HugeIcons.strokeRoundedPacman02,
+                              color: Colors.white,
+                              size: 24.0,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              '4.5',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Users Rating',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -99,11 +109,11 @@ class SpecificGame extends StatelessWidget {
             const SizedBox(height: 12),
 
             //Critics Rating, Liked and Played
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 //Critics Rating
-                Column(
+                const Column(
                   children: [
                     Row(
                       mainAxisSize: MainAxisSize.min,
@@ -122,51 +132,70 @@ class SpecificGame extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
 
                 //Liked
-                Column(
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.favorite, color: Colors.white, size: 20),
-                        SizedBox(width: 4),
-                        Text(
-                          '100',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      'Liked',
-                      style: TextStyle(fontSize: 14, color: Colors.white),
-                    ),
-                  ],
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LikedList()),
+                    );
+                  },
+                  child: const Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.favorite, color: Colors.white, size: 20),
+                          SizedBox(width: 4),
+                          Text(
+                            '100',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        'Liked',
+                        style: TextStyle(fontSize: 14, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
 
                 //Played
-                Column(
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        HugeIcon(
-                          icon: HugeIcons.strokeRoundedGameController03,
-                          color: Colors.white,
-                          size: 25.0,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          '100',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    Text('Played',
-                        style: TextStyle(fontSize: 14, color: Colors.white)),
-                  ],
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PlayedList()),
+                    );
+                  },
+                  child: const Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          HugeIcon(
+                            icon: HugeIcons.strokeRoundedGameController03,
+                            color: Colors.white,
+                            size: 25.0,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            '100',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        'Played',
+                        style: TextStyle(fontSize: 14, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -214,7 +243,8 @@ class SpecificGame extends StatelessWidget {
                 username: "Giocatore1",
                 rating: 4.5,
                 comment: "Questo gioco è fantastico, mi piace molto!",
-                avatarUrl: "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+                avatarUrl:
+                    "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
                 likes: 11,
                 dislikes: 11),
             const SizedBox(height: 2),
