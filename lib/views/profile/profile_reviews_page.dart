@@ -1,30 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/profile_info_card.dart';
-// Importa i widget personalizzati dalla cartella widgets
 import '../../widgets/bottom_navbar.dart';
+import '../../widgets/profile_info_card.dart';
 import '../../widgets/profile_tab_bar.dart';
-import '../../widgets/NewPostBottomSheet.dart'; // Importa il nuovo widget NewPostBottomSheet
-import '../common_sections/comment_page.dart';
-import '../profile/profile_settings_page.dart';
+import '../../widgets/game_review_card.dart'; // Import the GameReviewCard widget
+import 'profile_settings_page.dart';
 
 class ProfileReviewsPage extends StatelessWidget {
-  const ProfileReviewsPage({super.key});
+  const ProfileReviewsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Dummy data for reviews (replace with actual data)
+    final List<Map<String, dynamic>> reviews = [
+      {
+        "gameName": "Game 1",
+        "rating": 4.5,
+        "comment": "Amazing game with stunning graphics and engaging gameplay!",
+        "gameUrl":"https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+        "likes": 15,
+        "dislikes": 2,
+      },
+      {
+        "gameName": "Game 2",
+        "rating": 2.5,
+        "comment": "Amazing game with stunning graphics and engaging gameplay!",
+        "gameUrl":"",
+        "likes": 15,
+        "dislikes": 2,
+      },
+      {
+        "gameName": "Game 3",
+        "rating": 1.5,
+        "comment": "Amazing game with stunning graphics and engaging gameplay!",
+        "gameUrl":"",
+        "likes": 15,
+        "dislikes": 2,
+      },
+      {
+        "gameName": "Game 4",
+        "rating": 4.5,
+        "comment": "Amazing game with stunning graphics and engaging gameplay!",
+        "gameUrl":"",
+        "likes": 15,
+        "dislikes": 2,
+      },
+    ];
+
     return Scaffold(
-      backgroundColor: const Color(0xff051f20), // Sfondo scuro della pagina
+      backgroundColor: const Color(0xff051f20), // Dark background for the page
       appBar: AppBar(
-        title: const Text('Username', style: TextStyle(color: Colors.white)), // Sostituisci con il nome utente dinamico, se necessario
-        backgroundColor: const Color(0xff163832), // Verde scuro per l'app bar
+        title: const Text(
+          'Username', // Replace with dynamic username if needed
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xff163832), // Dark green for the app bar
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings), // Icona a forma di ingranaggio
+            icon: const Icon(Icons.settings), // Settings icon
             onPressed: () {
+              // Navigate to settings page
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const AccountSettingsPage(), // La pagina delle impostazioni
+                  builder: (context) => const AccountSettingsPage(), // Replace with your settings page
                 ),
               );
             },
@@ -33,21 +71,34 @@ class ProfileReviewsPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const ProfileInfoCard(), // Scheda informazioni utente
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            // Sezione Tab
+          const ProfileInfoCard(), // User profile information card
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            child: TabBarSection(mode: 0, selected: 1), // Profile tab bar
           ),
-          const TabBarSection(mode: 0, selected: 1), // Usa TabBarSection con modalità 0 e selezione 2
+          // Reviews Section
+          Expanded(
+            child: ListView.builder(
+              itemCount: reviews.length,
+              itemBuilder: (context, index) {
+                final review = reviews[index];
+                return GameReviewCard(
+                  gameName: review["gameName"],
+                  rating: review["rating"],
+                  comment: review["comment"],
+                  gameUrl: review["gameUrl"],
+                  likes: review["likes"],
+                  dislikes: review["dislikes"],
+                );
+              },
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1, // Seleziona 'Home' per questa pagina
-        isLoggedIn: true, // Sostituisci con lo stato di accesso effettivo
+        currentIndex: 1, // Set the current tab index for navigation
+        isLoggedIn: true, // Replace with the actual login status
       ),
     );
   }
-
-  // Funzione per mostrare il Modal Bottom Sheet per creare un nuovo post
-
 }
