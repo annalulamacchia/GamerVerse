@@ -108,6 +108,13 @@ class SingleReview extends StatelessWidget {
                 ],
               ),
               const Spacer(),
+              const Text(
+                'Playing', // Display timestamp
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
 
               // Toggle menu
               PopupMenuButton<String>(
