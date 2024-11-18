@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Import the CustomBottomNavBar widget
 // Import ImageCardWidget
-import 'package:gamerverse/widgets/profile_or_users/videogame_results.dart';
-import 'package:gamerverse/widgets/profile_or_users/user_results.dart';
+import 'package:gamerverse/widgets/home/videogame_results.dart';
+import 'package:gamerverse/widgets/home/user_results.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/category_section.dart';
+import 'package:gamerverse/widgets/home/category_section.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 
 class HomePage extends StatelessWidget {
