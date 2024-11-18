@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/admin_report_page.dart';
-import 'package:gamerverse/views/home_page.dart';
-import 'package:gamerverse/views/profile/profile_page.dart';
-import 'package:gamerverse/views/login_page.dart';
-import 'package:gamerverse/views/community/community_page.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final bool isLoggedIn;
+
   //final String username;
 
   const CustomBottomNavBar({
@@ -19,43 +15,25 @@ class CustomBottomNavBar extends StatelessWidget {
   void _onItemTapped(BuildContext context, int index) {
     if (index == 1) {
       // Navigate to Home page
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+      Navigator.pushReplacementNamed(context, '/home');
     } else if (index == 0) {
       if (isLoggedIn) {
         // Navigate to Community page if logged in
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const CommunityPage()),
-        );
+        Navigator.pushReplacementNamed(context, '/community');
       } else {
         // Redirect to SignUp page if not logged in
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
+        Navigator.pushReplacementNamed(context, '/login');
       }
     } else if (index == 2) {
       if (isLoggedIn) {
         // Navigate to Profile page if logged in
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfilePage()),
-        );
+        Navigator.pushReplacementNamed(context, '/profile');
       } else {
         // Redirect to Login page if not logged in
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
+        Navigator.pushReplacementNamed(context, '/login');
       }
     } else if (index == 3) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const AdminReportPage()),
-      );
+      Navigator.pushReplacementNamed(context, '/admin');
     }
   }
 

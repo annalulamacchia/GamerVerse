@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottom_navbar.dart';  // Import the CustomBottomNavBar widget
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Import the CustomBottomNavBar widget
 // Import ImageCardWidget
-import '../widgets/videogame_results.dart';
-import '../widgets/user_results.dart';
+import 'package:gamerverse/widgets/profile_or_users/videogame_results.dart';
+import 'package:gamerverse/widgets/profile_or_users/user_results.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -44,7 +44,8 @@ class _SearchPageState extends State<SearchPage> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isVideoGameSearch ? Colors.green : Colors.grey,
+                  backgroundColor:
+                      isVideoGameSearch ? Colors.green : Colors.grey,
                 ),
                 child: const Text('Search Video Games'),
               ),
@@ -56,20 +57,24 @@ class _SearchPageState extends State<SearchPage> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isVideoGameSearch ? Colors.grey : Colors.green,
+                  backgroundColor:
+                      isVideoGameSearch ? Colors.grey : Colors.green,
                 ),
                 child: const Text('Search Users'),
               ),
             ],
           ),
           Expanded(
-            child: isVideoGameSearch ? const VideoGameResults() : const UserResults(),
+            child: isVideoGameSearch
+                ? const VideoGameResults()
+                : const UserResults(),
           ),
         ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1,        // Set the index based on its position (e.g., 'Home' might be 1)
-        isLoggedIn: false,        // Replace with actual login status (true/false)
+        currentIndex: 1,
+        // Set the index based on its position (e.g., 'Home' might be 1)
+        isLoggedIn: false, // Replace with actual login status (true/false)
       ),
     );
   }

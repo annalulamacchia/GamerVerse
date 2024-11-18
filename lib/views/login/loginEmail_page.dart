@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'signup_page.dart';
-import '../widgets/bottom_navbar.dart';
-import '../utils/colors.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/utils/colors.dart';
 
 class LoginEmailPage extends StatefulWidget {
   const LoginEmailPage({super.key});
@@ -91,10 +90,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                 const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SignupPage()),
-                    );
+                    Navigator.pushNamed(context, '/signup');
                   },
                   child: const Text(
                     "Not subscribed? Sign-up",

@@ -1,14 +1,13 @@
-// widgets/report_bottom_sheet_widget.dart
 import 'package:flutter/material.dart';
 
-class ReportUserWidget extends StatefulWidget {
-  const ReportUserWidget({super.key});
+class ReportWidget extends StatefulWidget {
+  const ReportWidget({super.key});
 
   @override
-  ReportUserWidgetState createState() => ReportUserWidgetState();
+  ReportWidgetState createState() => ReportWidgetState();
 }
 
-class ReportUserWidgetState extends State<ReportUserWidget> {
+class ReportWidgetState extends State<ReportWidget> {
   String? _selectedOption;
 
   @override
@@ -30,8 +29,8 @@ class ReportUserWidgetState extends State<ReportUserWidget> {
 
           //RadioList
           RadioListTile<String>(
-            title: const Text('Offensive Content'),
-            value: 'offensive',
+            title: const Text('Spoiler'),
+            value: 'spoiler',
             groupValue: _selectedOption,
             onChanged: (value) {
               setState(() {

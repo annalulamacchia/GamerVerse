@@ -1,11 +1,10 @@
-// new_post_bottom_sheet.dart
-
 import 'package:flutter/material.dart';
 
 class NewPostBottomSheet extends StatelessWidget {
   final List<String> gameOptions = ['Game 1', 'Game 2', 'Game 3'];
 
-  NewPostBottomSheet({super.key}); // Opzioni del menu a discesa per il campo "Game"
+  NewPostBottomSheet(
+      {super.key}); // Opzioni del menu a discesa per il campo "Game"
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,8 @@ class NewPostBottomSheet extends StatelessWidget {
         children: [
           const Text(
             'New Post',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 10),
 
@@ -81,7 +81,8 @@ class NewPostBottomSheet extends StatelessWidget {
               // Logica per salvare il post
               Navigator.of(context).pop(); // Chiude il bottom sheet
             },
-            child: const Text('Post', style: TextStyle(color: Colors.white,fontSize: 18)),
+            child: const Text('Post',
+                style: TextStyle(color: Colors.white, fontSize: 18)),
           ),
         ],
       ),

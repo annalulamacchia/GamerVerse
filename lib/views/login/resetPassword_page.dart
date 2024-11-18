@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import '../utils/colors.dart';
-import './newPassword_page.dart';
-import './login_page.dart';
-import '../widgets/bottom_navbar.dart'; // Import your custom Bottom NavBar
+import 'package:gamerverse/utils/colors.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Import your custom Bottom NavBar
 
 class ResetPasswordPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -35,11 +33,15 @@ class ResetPasswordPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.videogame_asset, size: 60, color: AppColors.lightestGreen),
+            const Icon(Icons.videogame_asset,
+                size: 60, color: AppColors.lightestGreen),
             const SizedBox(height: 20),
             const Text(
               'Reset Password',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.lightestGreen),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.lightestGreen),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -49,7 +51,9 @@ class ResetPasswordPage extends StatelessWidget {
                 labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none),
               ),
               style: const TextStyle(color: AppColors.lightestGreen),
             ),
@@ -59,7 +63,8 @@ class ResetPasswordPage extends StatelessWidget {
               items: securityQuestions.map((String question) {
                 return DropdownMenuItem<String>(
                   value: question,
-                  child: Text(question, style: const TextStyle(color: AppColors.lightestGreen)),
+                  child: Text(question,
+                      style: const TextStyle(color: AppColors.lightestGreen)),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -70,7 +75,9 @@ class ResetPasswordPage extends StatelessWidget {
                 labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none),
               ),
               dropdownColor: AppColors.veryDarkGreen,
             ),
@@ -82,33 +89,32 @@ class ResetPasswordPage extends StatelessWidget {
                 labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none),
               ),
               style: const TextStyle(color: AppColors.lightestGreen),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewPasswordPage()),
-                );
+                Navigator.pushNamed(context, '/newPassword');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.mediumGreen,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               ),
-              child: const Text('Reset', style: TextStyle(color: AppColors.lightestGreen)),
+              child: const Text('Reset',
+                  style: TextStyle(color: AppColors.lightestGreen)),
             ),
             const SizedBox(height: 10),
             TextButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
+                Navigator.pushReplacementNamed(context, '/login');
               },
-              child: const Text('Remembered Password? Login', style: TextStyle(color: AppColors.lightGreen)),
+              child: const Text('Remembered Password? Login',
+                  style: TextStyle(color: AppColors.lightGreen)),
             ),
           ],
         ),

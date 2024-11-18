@@ -1,8 +1,5 @@
-// followers_page.dart
-
 import 'package:flutter/material.dart';
-import '../other_user_profile/user_profile_page.dart'; // Importazione della pagina del profilo
-import '../../widgets/user_follower_card.dart'; // Importa il widget UserCard
+import 'package:gamerverse/widgets/profile_or_users/user_follower_card.dart'; // Importa il widget UserCard
 
 class FollowersPage extends StatelessWidget {
   const FollowersPage({super.key});
@@ -22,12 +19,7 @@ class FollowersPage extends StatelessWidget {
             index: index,
             onTap: () {
               // Navigazione alla pagina del profilo utente
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const UserProfilePage(),
-                ),
-              );
+              Navigator.pushNamed(context, '/userProfile');
             },
           );
         },

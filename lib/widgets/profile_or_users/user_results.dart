@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
 
 class UserResults extends StatelessWidget {
   const UserResults({super.key});
@@ -17,12 +16,7 @@ class UserResults extends StatelessWidget {
           title: GestureDetector(
             onTap: () {
               // Navigate to the profile page directly
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const UserProfilePage(),
-                ),
-              );
+              Navigator.pushNamed(context, '/userProfile');
             },
             child: Text(
               'Username ${index + 1}',

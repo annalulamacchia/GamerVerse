@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/card_game.dart';
+import 'package:gamerverse/widgets/common_sections/card_game.dart';
 
 class SeriesGame extends StatelessWidget {
   const SeriesGame({super.key});

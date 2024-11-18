@@ -1,5 +1,3 @@
-// user_follower_card.dart
-
 import 'package:flutter/material.dart';
 
 class UserCard extends StatelessWidget {
@@ -21,7 +19,8 @@ class UserCard extends StatelessWidget {
         child: GestureDetector(
           onTap: onTap, // Funzione che viene chiamata quando si tocca la card
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             leading: const CircleAvatar(
               child: Icon(Icons.person, color: Colors.white),
             ),
@@ -39,7 +38,8 @@ class UserCard extends StatelessWidget {
               onPressed: () {
                 // Aggiungi azione per il bottone Follow, se necessario
               },
-              child: const Text('Follow', style: TextStyle(color: Colors.white)),
+              child:
+                  const Text('Follow', style: TextStyle(color: Colors.white)),
             ),
           ),
         ),

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
-import 'package:gamerverse/widgets/report_user.dart';
+import 'package:gamerverse/widgets/common_sections/report_user.dart';
 import 'package:gamerverse/widgets/specific_game/like_dislike_button.dart';
-import 'package:gamerverse/widgets/report.dart';
+import 'package:gamerverse/widgets/common_sections/report.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class SingleReview extends StatelessWidget {
@@ -76,12 +75,7 @@ class SingleReview extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const UserProfilePage(),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/userProfile');
                     },
                     child: Text(
                       username,

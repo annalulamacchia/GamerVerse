@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/specific_game/specific_game.dart';
-import 'package:gamerverse/widgets/post_user_game.dart';
-import 'package:gamerverse/widgets/bottom_navbar.dart';
+import 'package:gamerverse/widgets/profile_or_users/post_user_game.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 
 class SpecificUserGame extends StatelessWidget {
   const SpecificUserGame({super.key});
@@ -22,13 +21,7 @@ class SpecificUserGame extends StatelessWidget {
         actions: [
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      const SpecificGame(), // La pagina delle impostazioni
-                ),
-              );
+              Navigator.pushNamed(context, '/game');
             },
             child: const Padding(
               padding: EdgeInsets.all(8.0),
@@ -65,12 +58,7 @@ class SpecificUserGame extends StatelessWidget {
             //More Details
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SpecificGame(),
-                  ),
-                );
+                Navigator.pushNamed(context, '/game');
               },
               child: const Padding(
                 padding: EdgeInsets.all(10.0),

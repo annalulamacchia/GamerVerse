@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/RouteGenerator.dart';
 import 'views/home_page.dart';
 
 void main() {
@@ -15,7 +16,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const HomePage(), // Now using HomeView from home_view.dart
+      home: const HomePage(),
+      onGenerateRoute: RouteGenerator.generateRoute,// Now using HomeView from home_view.dart
     );
   }
 }

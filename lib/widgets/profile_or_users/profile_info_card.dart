@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../views/common_sections/followers_or_following_page.dart';
+import 'package:gamerverse/views/common_sections/followers_or_following_page.dart';
 
-
-class UserInfoCard extends StatelessWidget {
-  const UserInfoCard({super.key});
+class ProfileInfoCard extends StatelessWidget {
+  const ProfileInfoCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +28,13 @@ class UserInfoCard extends StatelessWidget {
               children: [
                 _buildAvatar(),
                 _buildStatColumn('10', 'Games'),
-                _buildClickableStatColumn(context, '10', 'Followed', const FollowersPage()),
-                _buildClickableStatColumn(context, '10', 'Followers', const FollowersPage()),
+                _buildClickableStatColumn(
+                    context, '10', 'Followed', const FollowersPage()),
+                _buildClickableStatColumn(
+                    context, '10', 'Followers', const FollowersPage()),
               ],
             ),
-            _buildNameAndFollowButton(),
+            _buildName()
           ],
         ),
       ),
@@ -42,7 +43,7 @@ class UserInfoCard extends StatelessWidget {
 
   Widget _buildAvatar() {
     return Container(
-      margin: const EdgeInsets.only(top: 5.0, bottom: 0.0),
+      margin: const EdgeInsets.only(top: 0.0, bottom: 0.0),
       width: 80,
       height: 80,
       decoration: BoxDecoration(
@@ -56,14 +57,16 @@ class UserInfoCard extends StatelessWidget {
   Widget _buildStatColumn(String count, String label) {
     return Column(
       children: [
-        Text(count, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        Text(count,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
         Text(label, style: const TextStyle(fontSize: 14)),
       ],
     );
   }
 
-  Widget _buildClickableStatColumn(BuildContext context, String count, String label, Widget page) {
+  Widget _buildClickableStatColumn(
+      BuildContext context, String count, String label, Widget page) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => page));
@@ -72,20 +75,14 @@ class UserInfoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildNameAndFollowButton() {
+  Widget _buildName() {
     return Container(
-      margin: const EdgeInsets.only(left: 20.0, right: 8),
-      child: Row(
+      margin: const EdgeInsets.only(top: 10, left: 25.0, right: 8),
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Jack Bab', style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold)),
-          ElevatedButton(
-            onPressed: () {
-              // Azione per il bottone Follow
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF14A129)),
-            child: const Text('Follow', style: TextStyle(color: Colors.white)),
-          ),
+          Text('Jack Bab',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
         ],
       ),
     );

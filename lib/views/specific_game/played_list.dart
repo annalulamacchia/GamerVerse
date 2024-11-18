@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/specific_game/single_review.dart';
-import 'package:gamerverse/widgets/bottom_navbar.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 
 class PlayedList extends StatelessWidget {
   const PlayedList({super.key});

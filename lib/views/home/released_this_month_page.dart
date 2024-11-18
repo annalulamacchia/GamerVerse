@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../widgets/card_game.dart'; // Import the updated ImageCardWidget
-import '../widgets/bottom_navbar.dart'; // Your custom bottom navbar
+import 'package:gamerverse/widgets/common_sections/card_game.dart'; // Import the updated ImageCardWidget
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Your custom bottom navbar
 
-class UpcomingGamesPage extends StatefulWidget {
-  const UpcomingGamesPage({super.key});
+class ReleasedThisMonthPage extends StatefulWidget {
+  const ReleasedThisMonthPage({super.key});
 
   @override
-  _UpcomingGamesPage createState() => _UpcomingGamesPage();
+  _ReleasedThisMonthPage createState() => _ReleasedThisMonthPage();
 }
 
-class _UpcomingGamesPage extends State<UpcomingGamesPage> {
+class _ReleasedThisMonthPage extends State<ReleasedThisMonthPage> {
   // Example list of game image URLs (replace with actual game URLs)
   final List<String> gameImages = [
     'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',
@@ -100,7 +100,8 @@ class _UpcomingGamesPage extends State<UpcomingGamesPage> {
                   ),
                   const SizedBox(height: 10),
                   // Platform Filters
-                  const Text('Platform:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text('Platform:',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   Wrap(
                     spacing: 10,
                     children: [
@@ -126,7 +127,8 @@ class _UpcomingGamesPage extends State<UpcomingGamesPage> {
                   ),
                   const SizedBox(height: 10),
                   // Genre Filters
-                  const Text('Genres:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text('Genres:',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   Wrap(
                     spacing: 10,
                     children: [
@@ -163,7 +165,8 @@ class _UpcomingGamesPage extends State<UpcomingGamesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Upcoming Games', style: TextStyle(color: Colors.black)),
+        title: const Text('Released this Month',
+            style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.grey[200],
         elevation: 0,
         actions: [
@@ -185,7 +188,8 @@ class _UpcomingGamesPage extends State<UpcomingGamesPage> {
                 crossAxisSpacing: 10,
                 childAspectRatio: 0.8,
               ),
-              itemCount: gameImages.length, // Use the length of the gameImages list
+              itemCount: gameImages.length,
+              // Use the length of the gameImages list
               itemBuilder: (context, index) {
                 // Passing each game's image URL to ImageCardWidget
                 return ImageCardWidget(
@@ -196,7 +200,8 @@ class _UpcomingGamesPage extends State<UpcomingGamesPage> {
           ),
         ],
       ),
-      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 1), // Adjust index for your app structure
+      bottomNavigationBar: const CustomBottomNavBar(
+          currentIndex: 1), // Adjust index for your app structure
     );
   }
 }

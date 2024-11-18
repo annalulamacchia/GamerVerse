@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
-import 'package:gamerverse/views/specific_game/specific_game.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class ReviewInfoReport extends StatelessWidget {
@@ -39,11 +37,7 @@ class ReviewInfoReport extends StatelessWidget {
               //Game Image
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SpecificGame()),
-                  );
+                  Navigator.pushNamed(context, '/game');
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
@@ -63,12 +57,7 @@ class ReviewInfoReport extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const UserProfilePage(),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/userProfile');
                     },
                     child: Text(
                       username,

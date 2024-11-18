@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/card_game.dart'; // Import the ImageCardWidget
+import 'package:gamerverse/widgets/common_sections/card_game.dart'; // Import the ImageCardWidget
 
 class CategorySection extends StatelessWidget {
   final String title;

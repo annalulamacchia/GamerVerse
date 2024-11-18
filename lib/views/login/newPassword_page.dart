@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../utils/colors.dart';
-import '../widgets/bottom_navbar.dart'; // Import your custom Bottom NavBar
+import 'package:gamerverse/utils/colors.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Import your custom Bottom NavBar
 
 class NewPasswordPage extends StatelessWidget {
   final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController repeatPasswordController = TextEditingController();
+  final TextEditingController repeatPasswordController =
+      TextEditingController();
 
   NewPasswordPage({super.key});
 
@@ -25,11 +26,15 @@ class NewPasswordPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.videogame_asset, size: 60, color: AppColors.lightestGreen),
+            const Icon(Icons.videogame_asset,
+                size: 60, color: AppColors.lightestGreen),
             const SizedBox(height: 20),
             const Text(
               'Reset Password',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.lightestGreen),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.lightestGreen),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -39,7 +44,9 @@ class NewPasswordPage extends StatelessWidget {
                 labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none),
               ),
               obscureText: true,
               style: const TextStyle(color: AppColors.lightestGreen),
@@ -52,7 +59,9 @@ class NewPasswordPage extends StatelessWidget {
                 labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none),
               ),
               obscureText: true,
               style: const TextStyle(color: AppColors.lightestGreen),
@@ -60,19 +69,24 @@ class NewPasswordPage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                if (newPasswordController.text == repeatPasswordController.text) {
+                if (newPasswordController.text ==
+                    repeatPasswordController.text) {
                   Navigator.pushReplacementNamed(context, '/login');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Passwords do not match', style: TextStyle(color: AppColors.lightestGreen))),
+                    const SnackBar(
+                        content: Text('Passwords do not match',
+                            style: TextStyle(color: AppColors.lightestGreen))),
                   );
                 }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.mediumGreen,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               ),
-              child: const Text('Change Password', style: TextStyle(color: AppColors.lightestGreen)),
+              child: const Text('Change Password',
+                  style: TextStyle(color: AppColors.lightestGreen)),
             ),
           ],
         ),

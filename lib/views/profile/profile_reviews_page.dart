@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../widgets/bottom_navbar.dart';
-import '../../widgets/profile_info_card.dart';
-import '../../widgets/profile_tab_bar.dart';
-import '../../widgets/game_review_card.dart'; // Import the GameReviewCard widget
-import 'profile_settings_page.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/widgets/profile_or_users/profile_info_card.dart';
+import 'package:gamerverse/widgets/profile_or_users/profile_tab_bar.dart';
+import 'package:gamerverse/widgets/profile_or_users/game_review_card.dart'; // Import the GameReviewCard widget
 
 class ProfileReviewsPage extends StatelessWidget {
   const ProfileReviewsPage({super.key});
@@ -16,7 +15,8 @@ class ProfileReviewsPage extends StatelessWidget {
         "gameName": "Game 1",
         "rating": 4.5,
         "comment": "Amazing game with stunning graphics and engaging gameplay!",
-        "gameUrl":"https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+        "gameUrl":
+            "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
         "likes": 15,
         "dislikes": 2,
       },
@@ -24,7 +24,7 @@ class ProfileReviewsPage extends StatelessWidget {
         "gameName": "Game 2",
         "rating": 2.5,
         "comment": "Amazing game with stunning graphics and engaging gameplay!",
-        "gameUrl":"",
+        "gameUrl": "",
         "likes": 15,
         "dislikes": 2,
       },
@@ -32,7 +32,7 @@ class ProfileReviewsPage extends StatelessWidget {
         "gameName": "Game 3",
         "rating": 1.5,
         "comment": "Amazing game with stunning graphics and engaging gameplay!",
-        "gameUrl":"",
+        "gameUrl": "",
         "likes": 15,
         "dislikes": 2,
       },
@@ -40,7 +40,7 @@ class ProfileReviewsPage extends StatelessWidget {
         "gameName": "Game 4",
         "rating": 4.5,
         "comment": "Amazing game with stunning graphics and engaging gameplay!",
-        "gameUrl":"",
+        "gameUrl": "",
         "likes": 15,
         "dislikes": 2,
       },
@@ -59,12 +59,7 @@ class ProfileReviewsPage extends StatelessWidget {
             icon: const Icon(Icons.settings), // Settings icon
             onPressed: () {
               // Navigate to settings page
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AccountSettingsPage(), // Replace with your settings page
-                ),
-              );
+              Navigator.pushNamed(context, '/profileSettings');
             },
           ),
         ],

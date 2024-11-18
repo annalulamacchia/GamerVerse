@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/bottom_navbar.dart';
-import 'package:gamerverse/widgets/user_info_card.dart'; // Replace ProfileInfoCard with UserInfoCard
-import 'package:gamerverse/widgets/profile_tab_bar.dart';
-import 'package:gamerverse/widgets/game_review_card.dart'; // Import the GameReviewCard widget
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/widgets/profile_or_users/user_info_card.dart'; // Replace ProfileInfoCard with UserInfoCard
+import 'package:gamerverse/widgets/profile_or_users/profile_tab_bar.dart';
+import 'package:gamerverse/widgets/profile_or_users/game_review_card.dart'; // Import the GameReviewCard widget
 
 class UserReviewPage extends StatelessWidget {
   const UserReviewPage({Key? key}) : super(key: key);
@@ -15,7 +15,8 @@ class UserReviewPage extends StatelessWidget {
         "gameName": "Game 1",
         "rating": 4.5,
         "comment": "Amazing game with stunning graphics and engaging gameplay!",
-        "gameUrl": "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+        "gameUrl":
+            "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
         "likes": 15,
         "dislikes": 2,
       },
@@ -23,7 +24,8 @@ class UserReviewPage extends StatelessWidget {
         "gameName": "Game 2",
         "rating": 2.5,
         "comment": "Decent, but could use some improvements.",
-        "gameUrl": "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+        "gameUrl":
+            "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
         "likes": 10,
         "dislikes": 5,
       },
@@ -31,7 +33,8 @@ class UserReviewPage extends StatelessWidget {
         "gameName": "Game 3",
         "rating": 1.5,
         "comment": "Not up to expectations.",
-        "gameUrl": "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+        "gameUrl":
+            "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
         "likes": 5,
         "dislikes": 12,
       },
@@ -39,7 +42,8 @@ class UserReviewPage extends StatelessWidget {
         "gameName": "Game 4",
         "rating": 4.5,
         "comment": "One of the best games I've played this year!",
-        "gameUrl": "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+        "gameUrl":
+            "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
         "likes": 20,
         "dislikes": 1,
       },

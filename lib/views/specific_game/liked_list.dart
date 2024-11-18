@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
-import 'package:gamerverse/widgets/bottom_navbar.dart';
-import 'package:gamerverse/widgets/user_follower_card.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/widgets/profile_or_users/user_follower_card.dart';
 
 class LikedList extends StatelessWidget {
   const LikedList({super.key});
@@ -26,12 +25,7 @@ class LikedList extends StatelessWidget {
           return UserCard(
             index: index,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const UserProfilePage(),
-                ),
-              );
+              Navigator.pushNamed(context, '/userProfile');
             },
           );
         },

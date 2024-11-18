@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/community/advised_users_page.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:gamerverse/widgets/bottom_navbar.dart';
-import 'package:gamerverse/widgets/NewPostBottomSheet.dart'; // Importa il nuovo widget NewPostBottomSheet
-import 'package:gamerverse/views/common_sections/comment_page.dart';
-import 'package:gamerverse/widgets/report_user.dart';
-import 'package:gamerverse/widgets/report.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/widgets/profile_or_users/NewPostBottomSheet.dart'; // Importa il nuovo widget NewPostBottomSheet
+import 'package:gamerverse/widgets/common_sections/report_user.dart';
+import 'package:gamerverse/widgets/common_sections/report.dart';
 
 class CommunityPage extends StatelessWidget {
   const CommunityPage({super.key});
@@ -40,12 +38,7 @@ class CommunityPage extends StatelessWidget {
                   size: 40.0,
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AdvisedUsersPage(),
-                    ),
-                  );
+                  Navigator.pushNamed(context, '/suggestedUsers');
                 },
               ),
             ),
@@ -164,12 +157,8 @@ class CommunityPage extends StatelessWidget {
                                       icon: Icon(Icons.comment,
                                           color: Colors.grey[700]),
                                       onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CommentsPage()),
-                                        );
+                                        Navigator.pushNamed(
+                                            context, '/comments');
                                       },
                                     ),
                                     Text("$commentCount",

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/admin/category_reports.dart';
-import 'package:gamerverse/widgets/bottom_navbar.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 
 class AdminReportPage extends StatefulWidget {
   const AdminReportPage({super.key});

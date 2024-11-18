@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/specific_game/series_games.dart';
 
 class SpecificGameSectionWidget extends StatefulWidget {
   final String title;
@@ -43,12 +42,7 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
             if (widget.title == 'Storyline') {
               showSpecificGamePopup(context);
             } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SeriesGame(),
-                ),
-              );
+              Navigator.pushNamed(context, '/series');
             }
           },
           child: Container(

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/specific_game/liked_list.dart';
-import 'package:gamerverse/views/specific_game/played_list.dart';
-import 'package:gamerverse/widgets/bottom_navbar.dart';
-import 'package:gamerverse/widgets/card_game.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/widgets/common_sections/card_game.dart';
 import 'package:gamerverse/widgets/specific_game/game_time.dart';
 import 'package:gamerverse/widgets/specific_game/play_completed_buttons.dart';
 import 'package:gamerverse/widgets/specific_game/specific_game_list.dart';
 import 'package:gamerverse/widgets/specific_game/specific_game_section.dart';
 import 'package:gamerverse/widgets/specific_game/single_review.dart';
-import 'package:gamerverse/views/specific_game/all_reviews.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:gamerverse/widgets/specific_game/favourite_button.dart';
 
@@ -65,11 +62,7 @@ class SpecificGame extends StatelessWidget {
                   //Users Rating
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ReviewPage()),
-                      );
+                      Navigator.pushNamed(context, '/allReviews');
                     },
                     child: const Column(
                       mainAxisSize: MainAxisSize.min,
@@ -138,11 +131,7 @@ class SpecificGame extends StatelessWidget {
                 //Liked
                 InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LikedList()),
-                    );
+                    Navigator.pushNamed(context, '/likedList');
                   },
                   child: const Column(
                     children: [
@@ -169,11 +158,7 @@ class SpecificGame extends StatelessWidget {
                 //Played
                 InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PlayedList()),
-                    );
+                    Navigator.pushNamed(context, '/playedList');
                   },
                   child: const Column(
                     children: [
@@ -259,12 +244,7 @@ class SpecificGame extends StatelessWidget {
                     backgroundColor: const Color(0xff3e6259),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ReviewPage(),
-                      ),
-                    );
+                    Navigator.pushNamed(context, '/allReviews');
                   },
                   child: const Text('All Reviews',
                       style: TextStyle(color: Colors.white))),

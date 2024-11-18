@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'loginEmail_page.dart';
-import '../widgets/bottom_navbar.dart';
-import '../utils/colors.dart';
-import 'resetPassword_page.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/utils/colors.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -47,10 +45,7 @@ class LoginPage extends StatelessWidget {
                 // Login with Email Button
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginEmailPage()),
-                    );
+                    Navigator.pushNamed(context, '/emailLogin');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.lightestGreen,
@@ -101,10 +96,7 @@ class LoginPage extends StatelessWidget {
                 // Forgot Password Link
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ResetPasswordPage()),
-                    );
+                    Navigator.pushNamed(context, '/resetPassword');
                   },
                   child: const Text(
                     "Forgot the password? Reset",

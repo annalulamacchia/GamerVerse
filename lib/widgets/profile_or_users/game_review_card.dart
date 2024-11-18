@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/profile/profile_page.dart';
-import 'package:gamerverse/widgets/report_user.dart';
+import 'package:gamerverse/widgets/common_sections/report_user.dart';
 import 'package:gamerverse/widgets/specific_game/like_dislike_button.dart';
-import 'package:gamerverse/widgets/report.dart';
+import 'package:gamerverse/widgets/common_sections/report.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class GameReviewCard extends StatelessWidget {
@@ -15,12 +14,12 @@ class GameReviewCard extends StatelessWidget {
 
   const GameReviewCard(
       {super.key,
-        required this.gameName,
-        required this.rating,
-        required this.comment,
-        required this.gameUrl,
-        required this.likes,
-        required this.dislikes});
+      required this.gameName,
+      required this.rating,
+      required this.comment,
+      required this.gameUrl,
+      required this.likes,
+      required this.dislikes});
 
   // Function to show bottom pop up for report review
   void _showReport(BuildContext context) {
@@ -83,12 +82,7 @@ class GameReviewCard extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProfilePage(),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/profile');
                     },
                     child: Text(
                       gameName,

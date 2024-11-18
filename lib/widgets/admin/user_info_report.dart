@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
 
 class UserInfo extends StatelessWidget {
   final String title;
@@ -35,11 +34,7 @@ class UserInfo extends StatelessWidget {
               if (title == 'Users' || title == 'Temporary Blocked Users')
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const UserProfilePage()),
-                    );
+                    Navigator.pushNamed(context, '/userProfile');
                   },
                   child: const Text(
                     'Name',

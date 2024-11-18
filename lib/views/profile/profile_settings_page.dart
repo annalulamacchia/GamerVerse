@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../widgets/bottom_navbar.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+
 class AccountSettingsPage extends StatelessWidget {
   const AccountSettingsPage({super.key});
 
@@ -8,7 +9,8 @@ class AccountSettingsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xff051f20), // Sfondo scuro
       appBar: AppBar(
-        title: const Text('Username', style: TextStyle(color: Colors.white)), // Placeholder per il nome utente
+        title: const Text('Username', style: TextStyle(color: Colors.white)),
+        // Placeholder per il nome utente
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -24,7 +26,8 @@ class AccountSettingsPage extends StatelessWidget {
             Row(
               children: [
                 Stack(
-                  alignment: Alignment.bottomRight, // Posiziona la matita nell'angolo in basso a destra
+                  alignment: Alignment.bottomRight,
+                  // Posiziona la matita nell'angolo in basso a destra
                   children: [
                     // CircleAvatar come bottone
                     GestureDetector(
@@ -34,7 +37,10 @@ class AccountSettingsPage extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 40,
                         backgroundColor: Colors.grey[800],
-                        child: const Icon(Icons.person, size: 40, color: Colors.white70), // Placeholder per l'immagine
+                        child: const Icon(Icons.person,
+                            size: 40,
+                            color:
+                                Colors.white70), // Placeholder per l'immagine
                       ),
                     ),
 
@@ -43,8 +49,10 @@ class AccountSettingsPage extends StatelessWidget {
                       bottom: 0,
                       right: 0,
                       child: CircleAvatar(
-                        radius: 12, // Piccolo cerchio per la matita
-                        backgroundColor: Colors.blue, // Colore di sfondo per il cerchio della matita
+                        radius: 12,
+                        // Piccolo cerchio per la matita
+                        backgroundColor: Colors.blue,
+                        // Colore di sfondo per il cerchio della matita
                         child: Icon(
                           Icons.edit,
                           size: 14,
@@ -54,8 +62,6 @@ class AccountSettingsPage extends StatelessWidget {
                     ),
                   ],
                 ),
-
-
                 const SizedBox(width: 16),
                 const Expanded(
                   child: Column(
@@ -84,7 +90,10 @@ class AccountSettingsPage extends StatelessWidget {
             // Titolo "Modify Account"
             const Text(
               'Modify Account',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
             const SizedBox(height: 10),
 
@@ -145,19 +154,23 @@ class AccountSettingsPage extends StatelessWidget {
 
             Center(
               child: Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 20.0), // Margine sopra e sotto il pulsante
+                padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
+                // Margine sopra e sotto il pulsante
                 child: ElevatedButton(
                   onPressed: () {
                     // Logica per il logout
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-                    backgroundColor: const Color(0xff3e6259), // Verde scuro per logout
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 80, vertical: 15),
+                    backgroundColor: const Color(0xff3e6259),
+                    // Verde scuro per logout
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text('Logout', style: TextStyle(color: Colors.white)),
+                  child: const Text('Logout',
+                      style: TextStyle(color: Colors.white)),
                 ),
               ),
             ),
@@ -169,29 +182,30 @@ class AccountSettingsPage extends StatelessWidget {
                   // Logica per eliminare l'account
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[700], // Rosso più intenso per delete
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  backgroundColor: Colors.red[700],
+                  // Rosso più intenso per delete
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 icon: const Icon(Icons.delete, color: Colors.white),
-                label: const Text('Delete Account', style: TextStyle(color: Colors.white)),
+                label: const Text('Delete Account',
+                    style: TextStyle(color: Colors.white)),
               ),
             ),
 
             const SizedBox(height: 10),
 
             // Pulsante Logout
-
           ],
         ),
       ),
-        bottomNavigationBar: const CustomBottomNavBar(
-          currentIndex: 2,
-          isLoggedIn: true,
-        ),
-
+      bottomNavigationBar: const CustomBottomNavBar(
+        currentIndex: 2,
+        isLoggedIn: true,
+      ),
     );
   }
 }

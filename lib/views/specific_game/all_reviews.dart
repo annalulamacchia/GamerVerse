@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/views/specific_game/add_review.dart';
 import 'package:gamerverse/widgets/specific_game/single_review.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:gamerverse/widgets/bottom_navbar.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 
 class ReviewPage extends StatelessWidget {
   const ReviewPage({super.key});

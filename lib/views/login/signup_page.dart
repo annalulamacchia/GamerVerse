@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../widgets/bottom_navbar.dart';
-import '../utils/colors.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'dart:io';
 
 class SignupPage extends StatefulWidget {
@@ -21,7 +21,8 @@ class _SignupPageState extends State<SignupPage> {
 
     if (pickedFile != null) {
       setState(() {
-        _selectedImage = File(pickedFile.path); // Update state with the selected image
+        _selectedImage =
+            File(pickedFile.path); // Update state with the selected image
       });
     }
   }
@@ -88,13 +89,15 @@ class _SignupPageState extends State<SignupPage> {
                 child: CircleAvatar(
                   radius: 40,
                   backgroundColor: AppColors.lightestGreen,
-                  backgroundImage: _selectedImage != null ? FileImage(_selectedImage!) : null,
+                  backgroundImage: _selectedImage != null
+                      ? FileImage(_selectedImage!)
+                      : null,
                   child: _selectedImage == null
                       ? const Icon(
-                    Icons.add,
-                    color: AppColors.darkGreen,
-                    size: 32,
-                  )
+                          Icons.add,
+                          color: AppColors.darkGreen,
+                          size: 32,
+                        )
                       : null,
                 ),
               ),
@@ -114,7 +117,8 @@ class _SignupPageState extends State<SignupPage> {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: AppColors.lightGreen,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                     borderSide: BorderSide.none,
@@ -168,14 +172,16 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   // Helper method to build consistent text fields
-  Widget _buildTextField(String hintText, bool obscureText, BuildContext context) {
+  Widget _buildTextField(
+      String hintText, bool obscureText, BuildContext context) {
     return TextField(
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
         fillColor: AppColors.lightGreen,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
           borderSide: BorderSide.none,

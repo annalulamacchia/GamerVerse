@@ -1,8 +1,5 @@
-// advised_users_page.dart
-
 import 'package:flutter/material.dart';
-import '../../widgets/user_follower_card.dart'; // Importa il widget UserCard
-import '../other_user_profile/user_profile_page.dart'; // Importa la pagina del profilo
+import 'package:gamerverse/widgets/profile_or_users/user_follower_card.dart'; // Importa il widget UserCard
 
 class AdvisedUsersPage extends StatefulWidget {
   const AdvisedUsersPage({super.key});
@@ -91,12 +88,7 @@ class _AdvisedUsersPageState extends State<AdvisedUsersPage> {
                   index: index,
                   onTap: () {
                     // Quando la card viene cliccata, naviga alla pagina del profilo utente
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const UserProfilePage(),
-                      ),
-                    );
+                    Navigator.pushNamed(context, '/userProfile');
                   },
                 ); // Passa la funzione onTap per ogni card
               },

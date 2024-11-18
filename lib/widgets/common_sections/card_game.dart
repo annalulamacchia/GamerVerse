@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../views/specific_game/specific_game.dart'; // Import SpecificGame page
 
 class ImageCardWidget extends StatelessWidget {
   final String imageUrl;
@@ -14,12 +13,7 @@ class ImageCardWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         // Navigate to SpecificGame page when the card is tapped
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const SpecificGame(),
-          ),
-        );
+        Navigator.pushNamed(context, '/game');
       },
       child: Card(
         shape: RoundedRectangleBorder(

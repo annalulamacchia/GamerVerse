@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/common_sections/comment_page.dart';
-import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
-import 'package:gamerverse/widgets/report.dart';
-import 'package:gamerverse/widgets/report_user.dart';
+import 'package:gamerverse/widgets/common_sections/report.dart';
+import 'package:gamerverse/widgets/common_sections/report_user.dart';
 
 class UserPost extends StatefulWidget {
   final String username;
@@ -114,13 +112,7 @@ class UserPostState extends State<UserPost> {
                           GestureDetector(
                             onTap: () {
                               // Navigate to a new page when the text is tapped
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const UserProfilePage(), // Replace with your target page
-                                ),
-                              );
+                              Navigator.pushNamed(context, '/userProfile');
                             },
                             child: Text(
                               widget.username,
@@ -184,12 +176,7 @@ class UserPostState extends State<UserPost> {
                     // Comments
                     TextButton.icon(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CommentsPage(),
-                          ),
-                        );
+                        Navigator.pushNamed(context, '/comments');
                       },
                       icon: const Icon(
                         Icons.comment_outlined,

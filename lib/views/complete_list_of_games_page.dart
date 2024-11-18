@@ -18,9 +18,9 @@ class AllgamesPage extends StatelessWidget {
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,  // Due colonne per la griglia
-          crossAxisSpacing: 3.0,  // Spazio tra le colonne
-          mainAxisSpacing: 5.0,   // Spazio tra le righe
+          crossAxisCount: 3, // Due colonne per la griglia
+          crossAxisSpacing: 3.0, // Spazio tra le colonne
+          mainAxisSpacing: 5.0, // Spazio tra le righe
         ),
         itemCount: imageUrls.length,
         itemBuilder: (context, index) {
@@ -28,7 +28,8 @@ class AllgamesPage extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Card(
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
@@ -42,14 +43,16 @@ class AllgamesPage extends StatelessWidget {
                         child: CircularProgressIndicator(
                           value: progress.expectedTotalBytes != null
                               ? progress.cumulativeBytesLoaded /
-                              (progress.expectedTotalBytes ?? 1)
+                                  (progress.expectedTotalBytes ?? 1)
                               : null,
                         ),
                       );
                     }
                   },
                   errorBuilder: (context, error, stackTrace) {
-                    return const Center(child: Icon(Icons.broken_image, size: 40, color: Colors.grey));
+                    return const Center(
+                        child: Icon(Icons.broken_image,
+                            size: 40, color: Colors.grey));
                   },
                 ),
               ),
