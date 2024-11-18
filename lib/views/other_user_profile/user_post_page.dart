@@ -62,7 +62,7 @@ class UserPostPage extends StatelessWidget {
                               children: [
                                 // Immagine del gioco a sinistra
                                 Image.network(
-                                  'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.wired.it%2Fgallery%2Fnascondere-scritte-foto-immagini-ai%2F&psig=AOvVaw0KX_7VzYQmZ874L2OfbOwB&ust=1731514505952000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCPjD-M-m14kDFQAAAAAdAAAAABAI', // Placeholder per l'immagine
+                                  'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg', // Placeholder per l'immagine
                                   width: 90,
                                   height: 90,
                                   fit: BoxFit.cover,

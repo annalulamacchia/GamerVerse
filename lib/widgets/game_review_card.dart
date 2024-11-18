@@ -22,7 +22,7 @@ class GameReviewCard extends StatelessWidget {
         required this.likes,
         required this.dislikes});
 
-  //function to show bottom pop up for report review
+  // Function to show bottom pop up for report review
   void _showReport(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -35,7 +35,7 @@ class GameReviewCard extends StatelessWidget {
     );
   }
 
-  //function to show bottom pop up for report user
+  // Function to show bottom pop up for report user
   void _showReportUser(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -63,10 +63,17 @@ class GameReviewCard extends StatelessWidget {
           // Avatar, username, rating, and toggle
           Row(
             children: [
-              // Avatar
-              CircleAvatar(
-                backgroundImage: NetworkImage(gameUrl),
-                radius: 20,
+              // Rectangle Avatar (Replacing CircleAvatar)
+              Container(
+                width: 40, // Width of the rectangle
+                height: 40, // Height of the rectangle
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(gameUrl),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                ),
               ),
               const SizedBox(width: 15),
 

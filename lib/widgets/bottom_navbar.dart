@@ -8,6 +8,7 @@ import 'package:gamerverse/views/community/community_page.dart';
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final bool isLoggedIn;
+  //final String username;
 
   const CustomBottomNavBar({
     super.key,
