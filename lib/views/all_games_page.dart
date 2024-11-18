@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import '../widgets/card_game.dart'; // Import the updated ImageCardWidget
 import '../widgets/bottom_navbar.dart'; // Your custom bottom navbar
 
-class GeneralGamesPage extends StatefulWidget {
-  const GeneralGamesPage({super.key});
+class AllGamesPage extends StatefulWidget {
+  const AllGamesPage({super.key});
 
   @override
-  _GeneralGamesPageState createState() => _GeneralGamesPageState();
+  _AllGamesPageState createState() => _AllGamesPageState();
 }
 
-class _GeneralGamesPageState extends State<GeneralGamesPage> {
+class _AllGamesPageState extends State<AllGamesPage> {
   // Example list of game image URLs (replace with actual game URLs)
   final List<String> gameImages = [
     'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',

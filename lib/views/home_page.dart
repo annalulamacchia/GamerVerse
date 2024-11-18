@@ -1,10 +1,11 @@
-// lib/pages/home_page.dart
-
 import 'package:flutter/material.dart';
 import '../widgets/category_section.dart';
 import '../widgets/bottom_navbar.dart';
-import 'general_games_page.dart'; // Import GeneralGamesPage
-import 'search_page.dart';
+import 'all_games_page.dart'; // Import AllGamesPage
+import 'search_page.dart'; // Import SearchPage
+import 'popular_games_page.dart'; // Import PopularGamesPage
+import 'released_this_month_page.dart'; // Import ReleasedThisMonthPage
+import 'upcoming_games_page.dart'; // Import UpcomingGamesPage
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -28,22 +29,54 @@ class HomePage extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          // "All Games" category with navigation to GeneralGamesPage on arrow tap
+          // "All Games" category with navigation to AllGamesPage on arrow tap
           CategorySection(
             title: 'All Games',
             onArrowTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const GeneralGamesPage(),
+                  builder: (context) => const AllGamesPage(),
                 ),
               );
             },
           ),
-          // Other categories without navigation on arrow tap
-          const CategorySection(title: 'Popular Games'),
-          const CategorySection(title: 'Released this Month'),
-          const CategorySection(title: 'Upcoming Games'),
+          // "Popular Games" category with navigation to PopularGamesPage on arrow tap
+          CategorySection(
+            title: 'Popular Games',
+            onArrowTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PopularGamesPage(),
+                ),
+              );
+            },
+          ),
+          // "Released This Month" category with navigation to ReleasedThisMonthPage on arrow tap
+          CategorySection(
+            title: 'Released this Month',
+            onArrowTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ReleasedThisMonthPage(),
+                ),
+              );
+            },
+          ),
+          // "Upcoming Games" category with navigation to UpcomingGamesPage on arrow tap
+          CategorySection(
+            title: 'Upcoming Games',
+            onArrowTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const UpcomingGamesPage(),
+                ),
+              );
+            },
+          ),
         ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(
