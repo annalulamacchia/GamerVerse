@@ -17,7 +17,7 @@ class ProfilePostPage extends StatefulWidget {
 class _ProfilePostPageState extends State<ProfilePostPage> {
   // Puoi aggiungere variabili di stato qui
   int _likeCount = 11;
-  int _commentCount = 5;
+  final int _commentCount = 5;
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +43,11 @@ class _ProfilePostPageState extends State<ProfilePostPage> {
       body: Column(
         children: [
           const ProfileInfoCard(), // Scheda informazioni utente
-           Padding(
+           const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
             // Sezione Tab
           ),
-          TabBarSection(mode: 0,selected:2),
+          const TabBarSection(mode: 0,selected:2),
           Expanded(
             child: ListView.builder(
               itemCount: 3, // Ora ci sono 3 card di post

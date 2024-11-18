@@ -48,6 +48,15 @@ class AdminReportPageState extends State<AdminReportPage> {
           ReportsCategory(title: 'Posts', selectedStatus: selectedStatus),
           const SizedBox(height: 10),
           ReportsCategory(title: 'Reviews', selectedStatus: selectedStatus),
+          const SizedBox(height: 10),
+          if (selectedStatus == 'Pending')
+            ReportsCategory(
+                title: 'Temporary Blocked Users',
+                selectedStatus: selectedStatus),
+          if (selectedStatus == 'Declined')
+            ReportsCategory(
+                title: 'Permanently Blocked Users',
+                selectedStatus: selectedStatus),
         ],
       )),
       bottomNavigationBar: const CustomBottomNavBar(

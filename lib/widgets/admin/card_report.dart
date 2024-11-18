@@ -28,13 +28,30 @@ class ReportCardWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Reported ${title.substring(0, title.length - 1)}',
-                style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
+              if (title == 'Temporary Blocked Users')
+                const Text(
+                  'Unblock the user?',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              if (title == 'Permanently Blocked Users')
+                Text(
+                  title.substring(0, title.length - 1),
+                  style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              if (title == 'Users' || title == 'Posts' || title == 'Reviews')
+                Text(
+                  'Reported ${title.substring(0, title.length - 1)}',
+                  style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
               const SizedBox(height: 16),
               const Align(
                 alignment: Alignment.topLeft,
@@ -44,7 +61,10 @@ class ReportCardWidget extends StatelessWidget {
               const SizedBox(height: 5),
 
               //Users
-              if (title == 'Users') const UserInfo(),
+              if (title == 'Users' ||
+                  title == 'Permanently Blocked Users' ||
+                  title == 'Temporary Blocked Users')
+                UserInfo(title: title),
 
               //Posts
               if (title == 'Posts')
@@ -74,20 +94,22 @@ class ReportCardWidget extends StatelessWidget {
               const SizedBox(height: 16),
 
               //Reason
-              Container(
-                padding: const EdgeInsets.all(12),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color(0xff1c463f),
-                  borderRadius: BorderRadius.circular(5),
+              if (title == 'Users' || title == 'Posts' || title == 'Reviews')
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: const Color(0xff1c463f),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: const Text(
+                    'Reason',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
                 ),
-                child: const Text(
-                  'Reason',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
-              const SizedBox(height: 16),
+              if (title == 'Users' || title == 'Posts' || title == 'Reviews')
+                const SizedBox(height: 16),
 
               //Buttons
               Row(
@@ -122,42 +144,6 @@ class ReportCardWidget extends StatelessWidget {
                               style: TextStyle(color: Colors.white)),
                         ),
                       ],
-                    ),
-
-                  //Declined Section
-                  if (selectedStatus == 'Declined')
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 24),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: const Text(
-                        'Declined',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-
-                  //Accepted Section
-                  if (selectedStatus == 'Accepted')
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 24),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: const Text(
-                        'Accepted',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
                     ),
                 ],
               ),
@@ -208,7 +194,9 @@ class ReportCardWidget extends StatelessWidget {
               const SizedBox(height: 10),
 
               //Username in Users section
-              if (title == 'Users')
+              if (title == 'Users' ||
+                  title == 'Permanently Blocked Users' ||
+                  title == 'Temporary Blocked Users')
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

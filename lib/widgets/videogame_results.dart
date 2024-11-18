@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/card_game.dart';  // Import the CardGame widget
 
 class VideoGameResults extends StatelessWidget {
-  const VideoGameResults({Key? key}) : super(key: key);
+  const VideoGameResults({super.key});
 
   @override
   Widget build(BuildContext context) {

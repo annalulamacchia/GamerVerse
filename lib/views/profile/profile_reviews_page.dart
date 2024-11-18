@@ -6,7 +6,7 @@ import '../../widgets/game_review_card.dart'; // Import the GameReviewCard widge
 import 'profile_settings_page.dart';
 
 class ProfileReviewsPage extends StatelessWidget {
-  const ProfileReviewsPage({Key? key}) : super(key: key);
+  const ProfileReviewsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

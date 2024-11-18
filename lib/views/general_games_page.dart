@@ -3,6 +3,8 @@ import '../widgets/card_game.dart'; // Import the updated ImageCardWidget
 import '../widgets/bottom_navbar.dart'; // Your custom bottom navbar
 
 class GeneralGamesPage extends StatefulWidget {
+  const GeneralGamesPage({super.key});
+
   @override
   _GeneralGamesPageState createState() => _GeneralGamesPageState();
 }

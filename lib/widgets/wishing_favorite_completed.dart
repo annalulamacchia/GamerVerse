@@ -54,7 +54,7 @@ class GameListSection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SpecificUserGame(),
+                      builder: (context) => const SpecificUserGame(),
                     ),
                   );
                 },

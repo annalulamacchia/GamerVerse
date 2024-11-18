@@ -50,6 +50,8 @@ class ReportsCategory extends StatelessWidget {
             },
           ),
         ),
+        if (selectedStatus == 'Pending' || selectedStatus == 'Declined')
+          const SizedBox(height: 10),
       ],
     );
   }

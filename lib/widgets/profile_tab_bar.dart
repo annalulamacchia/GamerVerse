@@ -84,17 +84,17 @@ class _TabBarSectionState extends State<TabBarSection> {
       if (index == 0) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProfilePage()), // Naviga alla pagina del profilo
+          MaterialPageRoute(builder: (context) => const ProfilePage()), // Naviga alla pagina del profilo
         );
       } else if (index == 1) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProfileReviewsPage()), // Naviga alla pagina dei post
+          MaterialPageRoute(builder: (context) => const ProfileReviewsPage()), // Naviga alla pagina dei post
         );
       } else if (index == 2) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProfilePostPage()), // Naviga alla pagina dei post
+          MaterialPageRoute(builder: (context) => const ProfilePostPage()), // Naviga alla pagina dei post
         );
       }
     } else if (widget.mode == 1) {
@@ -102,18 +102,18 @@ class _TabBarSectionState extends State<TabBarSection> {
       if (index == 0) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UserProfilePage()), // Naviga alla pagina profilo utente
+          MaterialPageRoute(builder: (context) => const UserProfilePage()), // Naviga alla pagina profilo utente
         );
       } else if (index == 1) {
         // Navigazione alla pagina dei commenti/recensioni
            Navigator.push(
            context,
-          MaterialPageRoute(builder: (context) => ProfileReviewsPage()), // Pagina delle recensioni
+          MaterialPageRoute(builder: (context) => const ProfileReviewsPage()), // Pagina delle recensioni
         );
       } else if (index == 2) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UserPostPage()), // Naviga alla pagina dei post utente
+          MaterialPageRoute(builder: (context) => const UserPostPage()), // Naviga alla pagina dei post utente
         );
       }
     }

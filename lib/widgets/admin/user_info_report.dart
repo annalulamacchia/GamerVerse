@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
 
 class UserInfo extends StatelessWidget {
-  const UserInfo({super.key});
+  final String title;
+
+  const UserInfo({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -30,22 +32,31 @@ class UserInfo extends StatelessWidget {
               const SizedBox(height: 8),
 
               //Name
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const UserProfilePage()),
-                  );
-                },
-                child: const Text(
+              if (title == 'Users' || title == 'Temporary Blocked Users')
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const UserProfilePage()),
+                    );
+                  },
+                  child: const Text(
+                    'Name',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                ),
+              if (title == 'Permanently Blocked Users')
+                const Text(
                   'Name',
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),
-              ),
 
               //Username
               const Text(
