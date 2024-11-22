@@ -40,7 +40,13 @@ class RouteGenerator {
       case '/profile':
         return MaterialPageRoute(builder: (context) => const ProfilePage());
       case '/game':
-        return MaterialPageRoute(builder: (context) => const SpecificGame());
+        if (args is int) {
+          return MaterialPageRoute(
+              builder: (context) => SpecificGame(
+                    gameId: args,
+                  ));
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case '/allGames':
         return MaterialPageRoute(builder: (context) => const AllGamesPage());
       case '/popularGames':

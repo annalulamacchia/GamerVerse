@@ -43,9 +43,9 @@ class VideoGameResults extends StatelessWidget {
             // Add navigation to specific game or other actions
           },
           child: ImageCardWidget(
-            imageUrl: videoGames[index]
-                ['imageUrl']!, // Pass the image URL or other dat
-          ),
+              imageUrl: videoGames[index]['imageUrl']!,
+              gameId: 279425 // Pass the image URL or other dat
+              ),
         );
       },
     );
