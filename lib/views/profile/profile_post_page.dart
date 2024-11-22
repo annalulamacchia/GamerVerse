@@ -5,6 +5,8 @@ import 'package:gamerverse/widgets/profile_or_users/profile_info_card.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/profile_tab_bar.dart';
 import 'package:gamerverse/widgets/profile_or_users/NewPostBottomSheet.dart'; // Importa il nuovo widget NewPostBottomSheet
+import 'package:gamerverse/widgets/profile_or_users/PostCardProfile.dart'; // Importa il nuovo widget NewPostBottomSheet
+
 
 class ProfilePostPage extends StatefulWidget {
   const ProfilePostPage({super.key});
@@ -47,145 +49,27 @@ class _ProfilePostPageState extends State<ProfilePostPage> {
           const TabBarSection(mode: 0, selected: 2),
           Expanded(
             child: ListView.builder(
-              itemCount: 3, // Ora ci sono 3 card di post
+              itemCount: 3, // Numero dei post
               itemBuilder: (context, index) {
-                return Stack(
-                  children: [
-                    Card(
-                      color: const Color(0xfff0f9f1),
-                      // Sfondo verdino chiaro per le card
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 8,
-                      // Maggiore elevazione per un'ombra più marcata
-                      shadowColor: Colors.black.withOpacity(0.5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Immagine del gioco a sinistra
-                                Image.network(
-                                  'https://via.placeholder.com/90',
-                                  // URL immagine valido
-                                  width: 90,
-                                  height: 90,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Icon(Icons.broken_image,
-                                        color: Colors.grey[400], size: 90);
-                                  },
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Game Name',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 25,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2'
-                                        'riga 1Riga 2',
-                                        maxLines: 6,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            color: Colors.grey[700],
-                                            fontSize: 15),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 15),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.thumb_up,
-                                      color: Colors.grey[700]),
-                                  onPressed: () {
-                                    setState(() {
-                                      _likeCount++; // Aumenta il conteggio dei like
-                                    });
-                                  },
-                                ),
-                                Text("$_likeCount",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87)),
-                                const SizedBox(width: 20),
-                                IconButton(
-                                  icon: Icon(Icons.comment,
-                                      color: Colors.grey[700]),
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/comments');
-                                  },
-                                ),
-                                Text("$_commentCount",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87)),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 20,
-                      right: 20,
-                      child: IconButton(
-                        icon: const Icon(Icons.close,
-                            color: Colors.red, size: 35),
-                        onPressed: () {
-                          setState(() {
-                            // Logica per eliminare il post
-                          });
-                        },
-                      ),
-                    ),
-                  ],
+                return PostCard(
+                  gameName: 'Game Name $index', // Nome dinamico del gioco
+                  gameImageUrl: 'https://via.placeholder.com/90', // URL immagine
+                  description: 'Descrizione dinamica del gioco $index...', // Descrizione dinamica
+                  likeCount: 11, // Like iniziali
+                  commentCount: 5, // Commenti iniziali
+                  onCommentPressed: () {
+                    Navigator.pushNamed(context, '/comments'); // Apri la pagina dei commenti
+                  },
+                  onDeletePressed: () {
+                    setState(() {
+                      // Logica per eliminare il post
+                    });
+                  },
                 );
               },
             ),
           ),
+
         ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(

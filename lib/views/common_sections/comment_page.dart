@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Importa il widget CustomBottomNavBar
 import 'package:gamerverse/widgets/common_sections/report.dart';
-
+import 'package:gamerverse/widgets/profile_or_users/comments.dart';
 class CommentsPage extends StatelessWidget {
   // Lista dei commenti per il debug
   final List<Map<String, String>> comments = [
@@ -44,19 +44,25 @@ class CommentsPage extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.only(
-                  left: 16.0, right: 16, top: 32, bottom: 0),
+              padding: const EdgeInsets.only(left: 16.0, right: 16, top: 32, bottom: 0),
               itemCount: comments.length,
               itemBuilder: (context, index) {
                 final comment = comments[index];
-                return _buildComment(
-                  context,
-                  comment['username']!,
-                  comment['comment']!,
+                return CommentCard(
+                  username: comment['username']!,
+                  comment: comment['comment']!,
+                  onReportPressed: () {
+                    // Logica per il report
+                    _showReport(context);
+                  },
+                  onDeletePressed: () {
+                    // Logica per eliminare il commento
+                  },
                 );
               },
             ),
           ),
+
           _buildCommentInputField(context),
         ],
       ),
@@ -69,93 +75,7 @@ class CommentsPage extends StatelessWidget {
   }
 
   // Funzione per costruire i singoli commenti con altezza minima e layout personalizzato
-  Widget _buildComment(BuildContext context, String username, String comment) {
-    return Card(
-      color: const Color(0xfff0f9f1),
-      // Sfondo verdino chiaro per la card
-      margin: const EdgeInsets.symmetric(vertical: 15.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      elevation: 4,
-      child: Container(
-        padding: const EdgeInsets.only(left: 10, bottom: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Riga con nome utente, avatar e tre puntini
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Avatar e nome utente
-                Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: const Color(0xff3e6259),
-                      // Colore verde per l'avatar
-                      child: Text(
-                        username[0],
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      username,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-                // Tre puntini in alto a destra
-                PopupMenuButton<String>(
-                  onSelected: (value) {
-                    if (value == 'Report') {
-                      // Mostra la bottom sheet per il report
-                      _showReport(context);
-                    } else if (value == 'Delete') {
-                      // Logica per Delete
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'Report',
-                      child: Text('Report Comment'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'Report',
-                      child: Text('Report User'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'Delete',
-                      child: Text('Delete Comment'),
-                    ),
-                  ],
-                  icon: const Icon(Icons.more_vert, color: Colors.grey),
-                ),
-              ],
-            ),
 
-            // Commento centrato con padding e font aumentato
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              // Aumentato il padding orizzontale
-              child: Text(
-                comment,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16, // Aumentato il font size
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   // Funzione per costruire il campo di input per i nuovi commenti
   Widget _buildCommentInputField(BuildContext context) {

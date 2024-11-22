@@ -4,6 +4,7 @@ import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/NewPostBottomSheet.dart'; // Importa il nuovo widget NewPostBottomSheet
 import 'package:gamerverse/widgets/common_sections/report_user.dart';
 import 'package:gamerverse/widgets/common_sections/report.dart';
+import 'package:gamerverse/widgets/community/PostCardCommunity.dart';
 
 class CommunityPage extends StatelessWidget {
   const CommunityPage({super.key});
@@ -49,164 +50,33 @@ class CommunityPage extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: 3, // Ora ci sono 3 card di post
+              itemCount: 3, // Ora ci sono 3 post simulati
               itemBuilder: (context, index) {
-                return Stack(
-                  children: [
-                    Card(
-                      color: const Color(0xfff0f9f1),
-                      // Sfondo verdino chiaro per le card
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 8,
-                      // Maggiore elevazione per un'ombra più marcata
-                      shadowColor: Colors.black.withOpacity(0.5),
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(right: 15, left: 15, top: 15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Immagine del gioco a sinistra
-                                Container(
-                                  width: 90,
-                                  height: 90,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    image: const DecorationImage(
-                                      image: NetworkImage(
-                                        'https://images.everyeye.it/img-cover/call-of-duty-black-ops-6-v9-49819-320x450.webp',
-                                      ),
-                                      fit: BoxFit
-                                          .fill, // Riempe il contenitore ma potrebbe deformarsi
-                                    ),
-                                  ),
-                                ),
-
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Game Name',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 25,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      const Text(
-                                        'Author: Username',
-                                        // Aggiunta la scritta per l'autore
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        'riga 1Riga 2' * 20, // Testo simulato
-                                        maxLines: 6,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            color: Colors.grey[700],
-                                            fontSize: 15),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 15),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // Timestamp in basso a sinistra
-                                const Text(
-                                  '5 hours ago',
-                                  // Aggiungi il timestamp dinamico
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.thumb_up,
-                                          color: Colors.grey[700]),
-                                      onPressed: () {
-                                        // Azione per aggiungere like
-                                      },
-                                    ),
-                                    Text("$likeCount",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black87)),
-                                    const SizedBox(width: 20),
-                                    IconButton(
-                                      icon: Icon(Icons.comment,
-                                          color: Colors.grey[700]),
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, '/comments');
-                                      },
-                                    ),
-                                    Text("$commentCount",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black87)),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 20,
-                      right: 20,
-                      child: PopupMenuButton<String>(
-                        icon: const Icon(Icons.more_vert,
-                            color: Colors.grey, size: 35),
-                        onSelected: (value) {
-                          if (value == 'reportUser') {
-                            _showReportUserDialog(
-                                context); // Mostra il dialog per reportare l'utente
-                          } else if (value == 'reportPost') {
-                            _showReportPostDialog(
-                                context); // Mostra il dialog per reportare il post
-                          }
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            const PopupMenuItem<String>(
-                              value: 'reportUser',
-                              child: Text("Report User"),
-                            ),
-                            const PopupMenuItem<String>(
-                              value: 'reportPost',
-                              child: Text("Report Post"),
-                            ),
-                          ];
-                        },
-                      ),
-                    ),
-                  ],
+                return PostCard(
+                  gameName: "Game Name",
+                  author: "Username",
+                  content: "Riga 1 Riga 2" * 20, // Testo simulato
+                  imageUrl: "https://images.everyeye.it/img-cover/call-of-duty-black-ops-6-v9-49819-320x450.webp",
+                  timestamp: "5 hours ago",
+                  likeCount: 11,
+                  commentCount: 5,
+                  onLikePressed: () {
+                    // Logica per aggiungere un like
+                  },
+                  onCommentPressed: () {
+                    Navigator.pushNamed(context, '/comments');
+                  },
+                  onReportUserPressed: () {
+                    _showReportUserDialog(context);
+                  },
+                  onReportPostPressed: () {
+                    _showReportPostDialog(context);
+                  },
                 );
               },
             ),
           ),
+
         ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(
