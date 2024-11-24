@@ -20,40 +20,75 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus();
+    _checkTokenValidity();
   }
 
-  Future<void> _checkLoginStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token'); // Get saved token
-    print("token");
-    print(token);
-    if (token != null && token.isNotEmpty) {
-      // Make the API call to validate the token
-      final response = await http.post(
-        Uri.parse('https://gamerversemobile.pythonanywhere.com/check_token'),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      );
+  //every time the bottom_navbar is initialized, the token is verified
+  // and if it correct and the expiration_time > current_time,
+  // the expiration time is reset to 1 hour.
+  //After 1 hour without initializing the bottom_navbar
+  // (so after 1 hour without clicking the bottom_navbar), the token
+  // will expired and isLogged set to False
 
-      //print("response");
-      //print(response.statusCode);
-      if (response.statusCode == 200) {
+
+  Future<void> _checkTokenValidity() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Retrieve the saved token and expiration time
+    final token = prefs.getString('auth_token');
+    final expirationTime = prefs.getInt('token_expiration_time');
+
+    //print("Token: $token");
+    print("Expiration Time: $expirationTime");
+
+    if (token != null && token.isNotEmpty && expirationTime != null) {
+      final currentTime = DateTime.now().millisecondsSinceEpoch;
+
+      // Check if the token has expired
+      if (currentTime > expirationTime) {
+        // Token has expired, remove it from SharedPreferences
+        await prefs.remove('auth_token');
+        await prefs.remove('token_expiration_time');
+
         setState(() {
-          isLoggedIn = true;
+          isLoggedIn = false; // Mark as not logged in if token has expired
         });
+
+        print('Token expired and removed.');
       } else {
-        setState(() {
-          isLoggedIn = false;
-        });
+        // Token is valid, proceed with the API call to verify it
+        final response = await http.post(
+          Uri.parse('https://gamerversemobile.pythonanywhere.com/check_token'),
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          // If the token is valid, reset the expiration time (e.g., 1 hour from now)
+          final newExpirationTime = DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch;
+
+          await prefs.setInt('token_expiration_time', newExpirationTime);  // Set new expiration time
+
+          setState(() {
+            isLoggedIn = true;
+          });
+          print("Token is valid. Expiration time reset.");
+        } else {
+          setState(() {
+            isLoggedIn = false;
+          });
+          print("Token is invalid.");
+        }
       }
     } else {
       setState(() {
         isLoggedIn = false;
       });
+      print("No token found or token is empty.");
     }
   }
+
 
   void _onItemTapped(BuildContext context, int index) {
     if (index == 1) {

@@ -76,7 +76,19 @@ class SignupService {
   // Save the ID token to SharedPreferences
   Future<void> _saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
+
+    // Get the current time in milliseconds
+    final currentTime = DateTime.now().millisecondsSinceEpoch;
+
+    // Set an expiration duration (e.g., 1 hour = 3600000 milliseconds)
+    final expirationDuration = Duration(hours: 1); // Change to your desired duration
+    final expirationTime = currentTime + expirationDuration.inMilliseconds;
+
+    // Save both the token and the expiration time
     await prefs.setString('auth_token', token);
-    //print('ID token saved locally.');
+    await prefs.setInt('token_expiration_time', expirationTime);
+
+    print('Auth token and expiration time saved locally.');
   }
+
 }
