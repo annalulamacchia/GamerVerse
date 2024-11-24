@@ -80,8 +80,7 @@ class CommunityPage extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1, // Seleziona 'Home' per questa pagina
-        isLoggedIn: true, // Sostituisci con lo stato di accesso effettivo
+        currentIndex: 0, // Seleziona 'Home' per questa pagina
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

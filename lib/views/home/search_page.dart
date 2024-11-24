@@ -73,8 +73,6 @@ class _SearchPageState extends State<SearchPage> {
       ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1,
-        // Set the index based on its position (e.g., 'Home' might be 1)
-        isLoggedIn: false, // Replace with actual login status (true/false)
       ),
     );
   }

@@ -32,7 +32,6 @@ class LikedList extends StatelessWidget {
       ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1,
-        isLoggedIn: false,
       ),
     );
   }

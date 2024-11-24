@@ -52,8 +52,7 @@ class HomePage extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1, // Highlight 'Home' by default
-        isLoggedIn: false, // Replace with actual login status
+        currentIndex: 1 // Highlight 'Home' by default
       ),
     );
   }

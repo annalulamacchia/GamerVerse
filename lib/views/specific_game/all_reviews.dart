@@ -133,7 +133,6 @@ class ReviewPage extends StatelessWidget {
       ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1,
-        isLoggedIn: false,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddReviewForm(context),

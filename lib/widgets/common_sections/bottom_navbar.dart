@@ -1,16 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart'; // to read token from local storage
 
-class CustomBottomNavBar extends StatelessWidget {
+class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
-  final bool isLoggedIn;
-
-  //final String username;
-
   const CustomBottomNavBar({
-    super.key,
+    Key? key,
     required this.currentIndex,
-    this.isLoggedIn = false,
-  });
+  }) : super(key: key);
+
+  @override
+  _CustomBottomNavBarState createState() => _CustomBottomNavBarState();
+}
+
+class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
+  bool isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token'); // Get saved token
+    print("token");
+    print(token);
+    if (token != null && token.isNotEmpty) {
+      // Make the API call to validate the token
+      final response = await http.post(
+        Uri.parse('https://gamerversemobile.pythonanywhere.com/check_token'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      //print("response");
+      //print(response.statusCode);
+      if (response.statusCode == 200) {
+        setState(() {
+          isLoggedIn = true;
+        });
+      } else {
+        setState(() {
+          isLoggedIn = false;
+        });
+      }
+    } else {
+      setState(() {
+        isLoggedIn = false;
+      });
+    }
+  }
 
   void _onItemTapped(BuildContext context, int index) {
     if (index == 1) {
@@ -58,7 +101,7 @@ class CustomBottomNavBar extends StatelessWidget {
           label: 'Reports',
         ),
       ],
-      currentIndex: currentIndex,
+      currentIndex: widget.currentIndex,
       selectedItemColor: Colors.teal,
       unselectedItemColor: Colors.black38,
       onTap: (index) => _onItemTapped(context, index),

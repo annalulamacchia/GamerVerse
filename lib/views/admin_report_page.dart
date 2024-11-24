@@ -61,7 +61,6 @@ class AdminReportPageState extends State<AdminReportPage> {
       )),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 3,
-        isLoggedIn: false,
       ),
     );
   }

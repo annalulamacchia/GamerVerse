@@ -1,30 +1,109 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
-import 'package:gamerverse/utils/colors.dart';
+import 'package:gamerverse/services/signup_service.dart';  // Import the new service for HTTP requests
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../../utils/colors.dart';
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+  const SignupPage({Key? key}) : super(key: key);
 
   @override
   _SignupPageState createState() => _SignupPageState();
 }
 
 class _SignupPageState extends State<SignupPage> {
-  File? _selectedImage; // To hold the selected image file
+  File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
+
+  // Controllers for form fields
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _repeatPasswordController = TextEditingController();
+  final TextEditingController _resetAnswerController = TextEditingController();
+
+  String? _selectedQuestion;
+
+  // Initialize the signup service (HTTP request to Flask API)
+  final SignupService _signupService = SignupService();
 
   // Method to handle image picking from the camera
   Future<void> _pickImageFromCamera() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-
     if (pickedFile != null) {
       setState(() {
-        _selectedImage =
-            File(pickedFile.path); // Update state with the selected image
+        _selectedImage = File(pickedFile.path);
       });
     }
+  }
+
+  // Method to handle signup
+  Future<void> _handleSignup() async {
+    final email = _emailController.text;
+    final username = _usernameController.text;
+    final name = _nameController.text;
+    final password = _passwordController.text;
+    final repeatPassword = _repeatPasswordController.text;
+    final resetAnswer = _resetAnswerController.text;
+
+    if (password != repeatPassword) {
+      _showError("Passwords do not match.");
+      return;
+    }
+
+    if (_selectedQuestion == null) {
+      _showError("Please select a reset password question.");
+      return;
+    }
+
+    String? profilePictureUrl = ""; // Default to empty if no image
+    if (_selectedImage != null) {
+      // Handle profile picture upload if necessary (to Firebase or other storage)
+      // You can upload the image to your server or cloud storage here.
+      profilePictureUrl = "your-storage-url-path";
+    }
+
+    // Call the SignupService to perform the signup by sending the HTTP request
+    final result = await _signupService.registerUser(
+      email: email,
+      username: username,
+      name: name,
+      password: password,
+      question: _selectedQuestion!,
+      answer: resetAnswer,
+      profilePictureUrl: profilePictureUrl,
+    );
+
+    if (result != null) {
+      _showError(result); // Show error if signup failed
+    } else {
+      // Navigate to login or home page on success
+      Navigator.pushNamed(context, '/home');
+    }
+  }
+
+  // Show error message
+  void _showError(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Error"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -60,8 +139,6 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Icon and "Signup" text in a row
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -94,38 +171,38 @@ class _SignupPageState extends State<SignupPage> {
                       : null,
                   child: _selectedImage == null
                       ? const Icon(
-                          Icons.add,
-                          color: AppColors.darkGreen,
-                          size: 32,
-                        )
+                    Icons.add,
+                    color: AppColors.darkGreen,
+                    size: 32,
+                  )
                       : null,
                 ),
               ),
 
               const SizedBox(height: 20),
-              _buildTextField('E-mail', false, context),
+              _buildTextField('E-mail', _emailController, false),
               const SizedBox(height: 10),
-              _buildTextField('Username', false, context),
+              _buildTextField('Username', _usernameController, false),
               const SizedBox(height: 10),
-              _buildTextField('Name', false, context),
+              _buildTextField('Name', _nameController, false),
               const SizedBox(height: 10),
-              _buildTextField('Password', true, context),
+              _buildTextField('Password', _passwordController, true),
               const SizedBox(height: 10),
-              _buildTextField('Repeat Password', true, context),
+              _buildTextField('Repeat Password', _repeatPasswordController, true),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: AppColors.lightGreen,
                   contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                     borderSide: BorderSide.none,
                   ),
                 ),
                 dropdownColor: AppColors.lightGreen,
-                items: <String>[
+                items: const [
                   'What is your pet’s name?',
                   'What is your favorite color?',
                   'Where were you born?'
@@ -136,7 +213,9 @@ class _SignupPageState extends State<SignupPage> {
                   );
                 }).toList(),
                 onChanged: (String? value) {
-                  // Handle selection
+                  setState(() {
+                    _selectedQuestion = value;
+                  });
                 },
                 hint: const Text(
                   'Reset Password Question',
@@ -144,12 +223,11 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              _buildTextField('Reset Password Answer', false, context),
+              _buildTextField(
+                  'Reset Password Answer', _resetAnswerController, false),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  // Handle signup action here
-                },
+                onPressed: _handleSignup,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.lightestGreen,
                   foregroundColor: AppColors.darkGreen,
@@ -164,24 +242,20 @@ class _SignupPageState extends State<SignupPage> {
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 2,
-        isLoggedIn: false,
-      ),
     );
   }
 
-  // Helper method to build consistent text fields
   Widget _buildTextField(
-      String hintText, bool obscureText, BuildContext context) {
+      String hintText, TextEditingController controller, bool obscureText) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
         fillColor: AppColors.lightGreen,
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
           borderSide: BorderSide.none,

@@ -68,8 +68,6 @@ class CommentsPage extends StatelessWidget {
       ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 2,
-        // Imposta l'indice corretto per evidenziare la sezione Commenti
-        isLoggedIn: true, // Sostituisci con il vero stato di login dell'utente
       ),
     );
   }

@@ -33,8 +33,7 @@ class ProfilePage extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1, // Seleziona 'Home' per questa pagina
-        isLoggedIn: true, // Sostituisci con lo stato di accesso effettivo
+        currentIndex: 2,
       ),
     );
   }

@@ -94,7 +94,6 @@ class SpecificUserGame extends StatelessWidget {
       ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 2,
-        isLoggedIn: false,
       ),
     );
   }

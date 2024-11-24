@@ -108,7 +108,6 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
       ),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 1,
-        isLoggedIn: _isLoggedIn, // Pass the login status to the bottom navbar
       ),
     );
   }
