@@ -50,7 +50,7 @@ class CategorySection extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 1),
                 // Ridotto il padding tra le card
                 child:
-                    ImageCardWidget(imageUrl: imageUrl), // Usa ImageCardWidget
+                    ImageCardWidget(imageUrl: imageUrl, gameId: 279425), // Usa ImageCardWidget
               );
             },
           ),

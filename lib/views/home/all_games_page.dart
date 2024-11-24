@@ -192,8 +192,9 @@ class _AllGamesPageState extends State<AllGamesPage> {
               itemBuilder: (context, index) {
                 // Passing each game's image URL to ImageCardWidget
                 return ImageCardWidget(
-                  imageUrl: gameImages[index], // Pass the URL here
-                );
+                    imageUrl: gameImages[index],
+                    gameId: 279425 // Pass the URL here
+                    );
               },
             ),
           ),

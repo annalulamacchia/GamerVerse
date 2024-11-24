@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/services/gameApiService.dart';
+import 'package:gamerverse/services/gameCoverApiService.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 import 'package:gamerverse/widgets/specific_game/game_time.dart';
@@ -9,12 +11,96 @@ import 'package:gamerverse/widgets/specific_game/single_review.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:gamerverse/widgets/specific_game/favourite_button.dart';
 
-class SpecificGame extends StatelessWidget {
-  const SpecificGame({super.key});
+class SpecificGame extends StatefulWidget {
+  final int gameId;
+
+  const SpecificGame({super.key, required this.gameId});
+
+  @override
+  _SpecificGameState createState() => _SpecificGameState();
+}
+
+class _SpecificGameState extends State<SpecificGame> {
+  Map<String, dynamic>? gameData;
+  Map<String, dynamic>? coverGame;
+  List<Map<String, dynamic>>? coverSimilarGames;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadGameData();
+  }
+
+  Future<void> _loadGameData() async {
+    final data = await GameApiService.fetchGameData(widget.gameId);
+    setState(() {
+      gameData = data;
+      isLoading = false;
+    });
+
+    if (gameData != null && gameData?['cover'] != null) {
+      _loadCoverGame(gameData?['cover']);
+    }
+    if (gameData != null && gameData?['similar_games'] != null) {
+      _loadCoverSimilarGames(gameData?['similar_games']);
+    }
+  }
+
+  Future<void> _loadCoverGame(int? coverId) async {
+    if (coverId == null) {
+      setState(() {
+        coverGame = null;
+        isLoading = false;
+      });
+      return;
+    }
+
+    final cover = await GameCoverApiService.fetchCoverGame(coverId);
+    setState(() {
+      coverGame = cover;
+      isLoading = false;
+    });
+  }
+
+  Future<void> _loadCoverSimilarGames(List<dynamic> gameIds) async {
+    if (gameIds.isEmpty) {
+      setState(() {
+        coverSimilarGames = null;
+        isLoading = false;
+      });
+      return;
+    }
+
+    final covers = await GameCoverApiService.fetchCoverSimilarGames(gameIds);
+    setState(() {
+      coverSimilarGames = covers;
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     List<String> developers = ['Red Team', 'Blue Team', 'Dev3'];
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: const Color(0xff051f20),
+        appBar: AppBar(
+          backgroundColor: const Color(0xff163832),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title:
+              const Text('Loading...', style: TextStyle(color: Colors.white)),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
@@ -26,7 +112,8 @@ class SpecificGame extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: const Text('Game Name', style: TextStyle(color: Colors.white)),
+        title: Text(gameData?['name'],
+            style: const TextStyle(color: Colors.white)),
         actions: const [
           FavoriteButton(),
         ],
@@ -37,7 +124,7 @@ class SpecificGame extends StatelessWidget {
           children: [
             Center(
               child: Image.network(
-                'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',
+                'https://images.igdb.com/igdb/image/upload/t_thumb/${coverGame?['image_id']}.jpg',
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -51,12 +138,18 @@ class SpecificGame extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   //Name Game
-                  const Text(
-                    'Name Game',
-                    style: TextStyle(
+                  Flexible(
+                    flex: 1,
+                    child: Text(
+                      gameData?['name'] ?? 'N/A',
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                        color: Colors.white,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
 
                   //Users Rating
@@ -287,13 +380,17 @@ class SpecificGame extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: List.generate(10, (index) {
+                  children: List.generate(
+                      gameData?['similar_games']?.length ?? 0, (index) {
+                    final similarGame = gameData?['similar_games'][index];
+                    final coverSimilar = coverSimilarGames?[index];
                     return Container(
                       width: 180,
                       margin: const EdgeInsets.symmetric(horizontal: 1),
-                      child: const ImageCardWidget(
+                      child: ImageCardWidget(
                           imageUrl:
-                              'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg'), // Usa ImageCardWidget
+                          'https://images.igdb.com/igdb/image/upload/t_thumb/${coverSimilar?['image_id']}.jpg',
+                          gameId: similarGame), // Usa ImageCardWidget
                     );
                   }),
                 ),

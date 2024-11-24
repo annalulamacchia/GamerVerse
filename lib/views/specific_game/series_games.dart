@@ -34,7 +34,8 @@ class SeriesGame extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 1),
               child: const ImageCardWidget(
                   imageUrl:
-                      'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg'), // Usa ImageCardWidget
+                      'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',
+                  gameId: 279425), // Usa ImageCardWidget
             );
           },
         ),

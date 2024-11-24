@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class ImageCardWidget extends StatelessWidget {
   final String imageUrl;
+  final int gameId;
 
   const ImageCardWidget({
     super.key,
     required this.imageUrl,
+    required this.gameId,
   });
 
   @override
@@ -13,7 +15,7 @@ class ImageCardWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         // Navigate to SpecificGame page when the card is tapped
-        Navigator.pushNamed(context, '/game');
+        Navigator.pushNamed(context, '/game', arguments: gameId);
       },
       child: Card(
         shape: RoundedRectangleBorder(
