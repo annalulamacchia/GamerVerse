@@ -69,7 +69,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           final newExpirationTime = DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch;
 
           await prefs.setInt('token_expiration_time', newExpirationTime);  // Set new expiration time
-
           setState(() {
             isLoggedIn = true;
           });
@@ -88,6 +87,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       print("No token found or token is empty.");
     }
   }
+
 
 
   void _onItemTapped(BuildContext context, int index) {

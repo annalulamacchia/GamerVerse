@@ -98,7 +98,6 @@ class UserReviewPage extends StatelessWidget {
       ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1, // Set the current tab index for navigation
-        isLoggedIn: true, // Replace with the actual login status
       ),
     );
   }

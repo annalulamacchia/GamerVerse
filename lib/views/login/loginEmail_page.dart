@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/utils/colors.dart';
+import 'package:gamerverse/services/loginWithEmail_service.dart';
 
 class LoginEmailPage extends StatefulWidget {
   const LoginEmailPage({super.key});
@@ -10,12 +11,44 @@ class LoginEmailPage extends StatefulWidget {
 }
 
 class _LoginEmailPageState extends State<LoginEmailPage> {
-  bool _isLoggedIn = false; // Track login status
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
-  void _handleLogin() {
+  void _handleLogin() async {
     setState(() {
-      _isLoggedIn = true; // Change login status when the button is pressed
+      _isLoading = true;
     });
+
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage('Email and password cannot be empty.');
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    final response = await LoginWithEmailService.loginWithEmail(email, password);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (response['success']) {
+      _showMessage('Login successful!');
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      _showMessage(response['message']);
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -51,6 +84,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                 ),
                 const SizedBox(height: 30),
                 TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     hintText: 'E-mail',
                     filled: true,
@@ -63,6 +97,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                 ),
                 const SizedBox(height: 15),
                 TextField(
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Password',
@@ -76,7 +111,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _handleLogin, // Handle the login action here
+                  onPressed: _isLoading ? null : _handleLogin,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.lightestGreen,
                     foregroundColor: AppColors.darkGreen,
@@ -85,7 +120,12 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: const Text('Log-in'),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.darkGreen),
+                  )
+                      : const Text('Log-in'),
                 ),
                 const SizedBox(height: 20),
                 GestureDetector(
@@ -106,7 +146,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1,
       ),
     );
