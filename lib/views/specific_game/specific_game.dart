@@ -208,7 +208,7 @@ class _SpecificGameState extends State<SpecificGame> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 //Critics Rating
-                const Column(
+                Column(
                   children: [
                     Row(
                       mainAxisSize: MainAxisSize.min,
@@ -216,7 +216,10 @@ class _SpecificGameState extends State<SpecificGame> {
                         Icon(Icons.star, color: Colors.white, size: 20),
                         SizedBox(width: 4),
                         Text(
-                          '5',
+                          gameData?['aggregated_rating'] != null
+                              ? ((gameData?['aggregated_rating'] * 5) / 100)
+                                  .toString()
+                              : 'n.d',
                           style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       ],

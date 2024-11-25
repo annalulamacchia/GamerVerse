@@ -134,7 +134,19 @@ class _MediaGameWidget extends State<MediaGameWidget> {
                 },
               );
             },
-            child: YoutubePlayerWidget(videoId: media['video_id']),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.network(
+                  'https://i.ytimg.com/vi/${media['video_id']}/hqdefault.jpg',
+                  width: 200,
+                  height: 125,
+                  fit: BoxFit.cover,
+                ),
+                const Icon(Icons.play_circle_fill,
+                    color: Colors.white, size: 50),
+              ],
+            ),
           ),
         ),
       );
