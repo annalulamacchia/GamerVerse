@@ -10,7 +10,7 @@ class PostCard extends StatefulWidget {
   final VoidCallback onDeletePressed;
 
   const PostCard({
-    Key? key,
+    super.key,
     required this.gameName,
     required this.gameImageUrl,
     required this.description,
@@ -18,7 +18,7 @@ class PostCard extends StatefulWidget {
     required this.commentCount,
     required this.onCommentPressed,
     required this.onDeletePressed,
-  }) : super(key: key);
+  });
 
   @override
   _PostCardState createState() => _PostCardState();

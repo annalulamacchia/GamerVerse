@@ -5,7 +5,7 @@ import 'package:gamerverse/widgets/profile_or_users/profile_tab_bar.dart';
 import 'package:gamerverse/widgets/profile_or_users/game_review_card.dart'; // Import the GameReviewCard widget
 
 class UserReviewPage extends StatelessWidget {
-  const UserReviewPage({Key? key}) : super(key: key);
+  const UserReviewPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +98,7 @@ class UserReviewPage extends StatelessWidget {
       ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 1, // Set the current tab index for navigation
+        //isLoggedIn: true, // Replace with the actual login status
       ),
     );
   }

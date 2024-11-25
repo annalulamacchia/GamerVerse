@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart'; // to read token from local storage
 
 class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
   const CustomBottomNavBar({
-    Key? key,
+    super.key,
     required this.currentIndex,
-  }) : super(key: key);
+  });
 
   @override
   _CustomBottomNavBarState createState() => _CustomBottomNavBarState();

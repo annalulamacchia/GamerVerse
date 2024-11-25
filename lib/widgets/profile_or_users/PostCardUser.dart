@@ -10,7 +10,7 @@ class UserPostCard extends StatelessWidget {
   final VoidCallback onCommentPressed;
 
   const UserPostCard({
-    Key? key,
+    super.key,
     required this.gameName,
     required this.gameImageUrl,
     required this.description,
@@ -18,7 +18,7 @@ class UserPostCard extends StatelessWidget {
     required this.commentCount,
     required this.onLikePressed,
     required this.onCommentPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

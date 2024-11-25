@@ -17,7 +17,7 @@ class ProfilePostPage extends StatefulWidget {
 
 class _ProfilePostPageState extends State<ProfilePostPage> {
   // Puoi aggiungere variabili di stato qui
-  int _likeCount = 11;
+  final int _likeCount = 11;
   final int _commentCount = 5;
 
   @override

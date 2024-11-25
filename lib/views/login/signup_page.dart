@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:gamerverse/services/signup_service.dart';  // Import the new service for HTTP requests
 import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../../utils/colors.dart';
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({Key? key}) : super(key: key);
+  const SignupPage({super.key});
 
   @override
   _SignupPageState createState() => _SignupPageState();

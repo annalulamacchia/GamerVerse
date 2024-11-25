@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/services/gameApiService.dart';
 
 class SpecificGameSectionWidget extends StatefulWidget {
   final String title;
+  final List<dynamic> collections;
+  final String storyline;
 
-  const SpecificGameSectionWidget({super.key, required this.title});
+  const SpecificGameSectionWidget({
+    super.key,
+    required this.title,
+    required this.collections,
+    required this.storyline,
+  });
 
   @override
   SpecificGameSectionWidgetState createState() =>
@@ -22,14 +30,37 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
               height: 250,
               width: double.infinity,
               padding: const EdgeInsets.all(12),
-              child: const Text(
-                'Questa è la storyline completa del gioco. '
-                'Può essere un testo di più righe che descrive la trama in dettaglio.',
-                style: TextStyle(fontSize: 14, color: Colors.black87),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Text(
+                  widget.storyline,
+                  style: TextStyle(fontSize: 14, color: Colors.black87),
+                ),
               )),
         );
       },
     );
+  }
+
+  bool isLoading = true;
+  List<Map<String, dynamic>>? collectionsGame;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.title == 'Series' && widget.collections.isNotEmpty) {
+      _loadCollections();
+    }
+    isLoading = false;
+  }
+
+  //load the collections of the game
+  Future<void> _loadCollections() async {
+    final coll = await GameApiService.fetchCollections(widget.collections);
+    setState(() {
+      collectionsGame = coll;
+      isLoading = false;
+    });
   }
 
   @override
@@ -42,7 +73,10 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
             if (widget.title == 'Storyline') {
               showSpecificGamePopup(context);
             } else {
-              Navigator.pushNamed(context, '/series');
+              isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Navigator.pushNamed(context, '/series',
+                      arguments: collectionsGame);
             }
           },
           child: Container(

@@ -7,12 +7,12 @@ class CommentCard extends StatelessWidget {
   final VoidCallback onDeletePressed;
 
   const CommentCard({
-    Key? key,
+    super.key,
     required this.username,
     required this.comment,
     required this.onReportPressed,
     required this.onDeletePressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

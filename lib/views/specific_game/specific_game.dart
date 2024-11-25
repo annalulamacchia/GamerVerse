@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/gameApiService.dart';
-import 'package:gamerverse/services/gameCoverApiService.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 import 'package:gamerverse/widgets/specific_game/game_time.dart';
+import 'package:gamerverse/widgets/specific_game/media_game.dart';
 import 'package:gamerverse/widgets/specific_game/play_completed_buttons.dart';
 import 'package:gamerverse/widgets/specific_game/specific_game_list.dart';
 import 'package:gamerverse/widgets/specific_game/specific_game_section.dart';
@@ -24,6 +24,9 @@ class _SpecificGameState extends State<SpecificGame> {
   Map<String, dynamic>? gameData;
   Map<String, dynamic>? coverGame;
   List<Map<String, dynamic>>? coverSimilarGames;
+  List<Map<String, dynamic>>? screenshotsGame;
+  List<Map<String, dynamic>>? videosGame;
+  List<Map<String, dynamic>>? artworksGame;
   bool isLoading = true;
 
   @override
@@ -32,37 +35,42 @@ class _SpecificGameState extends State<SpecificGame> {
     _loadGameData();
   }
 
+  //load all the info of the game
   Future<void> _loadGameData() async {
     final data = await GameApiService.fetchGameData(widget.gameId);
     setState(() {
       gameData = data;
-      isLoading = false;
     });
 
+    //load the cover of the game
     if (gameData != null && gameData?['cover'] != null) {
       _loadCoverGame(gameData?['cover']);
     }
-    if (gameData != null && gameData?['similar_games'] != null) {
+
+    //load the similar games
+    if (gameData != null &&
+        gameData?['similar_games'] != null &&
+        gameData?['similar_games'].length != 0) {
       _loadCoverSimilarGames(gameData?['similar_games']);
     }
   }
 
+  //load the cover of the game
   Future<void> _loadCoverGame(int? coverId) async {
     if (coverId == null) {
       setState(() {
         coverGame = null;
-        isLoading = false;
       });
       return;
     }
 
-    final cover = await GameCoverApiService.fetchCoverGame(coverId);
+    final cover = await GameApiService.fetchCoverGame(coverId);
     setState(() {
       coverGame = cover;
-      isLoading = false;
     });
   }
 
+  //load the cover of the similar games
   Future<void> _loadCoverSimilarGames(List<dynamic> gameIds) async {
     if (gameIds.isEmpty) {
       setState(() {
@@ -72,7 +80,7 @@ class _SpecificGameState extends State<SpecificGame> {
       return;
     }
 
-    final covers = await GameCoverApiService.fetchCoverSimilarGames(gameIds);
+    final covers = await GameApiService.fetchCoverByGames(gameIds);
     setState(() {
       coverSimilarGames = covers;
       isLoading = false;
@@ -124,7 +132,7 @@ class _SpecificGameState extends State<SpecificGame> {
           children: [
             Center(
               child: Image.network(
-                'https://images.igdb.com/igdb/image/upload/t_thumb/${coverGame?['image_id']}.jpg',
+                'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${coverGame?['image_id']}.jpg',
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -282,41 +290,36 @@ class _SpecificGameState extends State<SpecificGame> {
             const Divider(height: 30),
 
             //Series
-            const SpecificGameSectionWidget(title: 'Series'),
+            if (gameData != null &&
+                gameData?['collections'] != null &&
+                gameData?['collections'].length != 0)
+              SpecificGameSectionWidget(
+                title: 'Series',
+                collections: gameData?['collections'],
+                storyline: "",
+              ),
             const SizedBox(height: 10),
 
             //Storyline
-            const SpecificGameSectionWidget(title: 'Storyline'),
-            const SizedBox(height: 25),
+            if (gameData != null && gameData?['storyline'] != null)
+              SpecificGameSectionWidget(
+                  title: 'Storyline',
+                  collections: [],
+                  storyline: gameData?['storyline']),
+            if (gameData != null &&
+                gameData?['storyline'] == null &&
+                gameData?['summary'] != null)
+              SpecificGameSectionWidget(
+                  title: 'Storyline',
+                  collections: [],
+                  storyline: gameData?['summary']),
+            const SizedBox(height: 20),
 
             //Media
-            Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(10, (index) {
-                    return Container(
-                      width: 200,
-                      height: 100,
-                      margin: const EdgeInsets.symmetric(horizontal: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Item ${index + 1}',
-                          style: const TextStyle(
-                              color: Colors.black, fontSize: 16),
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              ),
+            MediaGameWidget(
+              gameData: gameData,
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 20),
 
             //Last Review
             const SingleReview(
@@ -380,18 +383,22 @@ class _SpecificGameState extends State<SpecificGame> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: List.generate(
-                      gameData?['similar_games']?.length ?? 0, (index) {
+                  children:
+                      List.generate(coverSimilarGames?.length ?? 0, (index) {
                     final similarGame = gameData?['similar_games'][index];
-                    final coverSimilar = coverSimilarGames?[index];
-                    return Container(
-                      width: 180,
-                      margin: const EdgeInsets.symmetric(horizontal: 1),
-                      child: ImageCardWidget(
-                          imageUrl:
-                          'https://images.igdb.com/igdb/image/upload/t_thumb/${coverSimilar?['image_id']}.jpg',
-                          gameId: similarGame), // Usa ImageCardWidget
-                    );
+                    if (similarGame == coverSimilarGames?[index]['game']) {
+                      final coverSimilar = coverSimilarGames?[index];
+                      return Container(
+                        width: 180,
+                        margin: const EdgeInsets.symmetric(horizontal: 1),
+                        child: ImageCardWidget(
+                            imageUrl:
+                                'https://images.igdb.com/igdb/image/upload/t_cover_big/${coverSimilar?['image_id']}.jpg',
+                            gameId: similarGame),
+                      );
+                    } else {
+                      return Container();
+                    }
                   }),
                 ),
               ),

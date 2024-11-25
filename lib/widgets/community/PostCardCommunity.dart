@@ -14,7 +14,7 @@ class PostCard extends StatelessWidget {
   final VoidCallback onReportPostPressed;
 
   const PostCard({
-    Key? key,
+    super.key,
     required this.gameName,
     required this.author,
     required this.content,
@@ -26,7 +26,7 @@ class PostCard extends StatelessWidget {
     required this.onCommentPressed,
     required this.onReportUserPressed,
     required this.onReportPostPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
