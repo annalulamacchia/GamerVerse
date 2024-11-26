@@ -1,35 +1,138 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/services/logout.dart'; // Servizio logout
+import 'package:gamerverse/services/Get_user_info.dart'; // Servizio per ottenere dati utente
+import 'package:gamerverse/services/update_user_service.dart'; // Servizio per aggiornare dati utente
 
-class AccountSettingsPage extends StatelessWidget {
+class AccountSettingsPage extends StatefulWidget {
   const AccountSettingsPage({super.key});
 
   @override
+  State<AccountSettingsPage> createState() => _AccountSettingsPageState();
+}
+
+class _AccountSettingsPageState extends State<AccountSettingsPage> {
+  Map<String, dynamic>? userData; // Contiene i dati utente
+  bool isLoading = true;
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController oldPasswordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController repeatPasswordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    final response = await UserProfileService.getUserByUid();
+
+    if (response['success']) {
+      setState(() {
+        userData = response['data'];
+        isLoading = false;
+
+        // Popola i controller con i dati dell'utente
+        nameController.text = userData?['name'] ?? '';
+        usernameController.text = userData?['username'] ?? '';
+        emailController.text = userData?['email'] ?? '';
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      // Gestisci errori
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['message'] ?? 'Error fetching data')),
+      );
+    }
+  }
+
+  Future<void> updateUserData() async {
+    // Verifica che i campi obbligatori siano compilati
+    if (nameController.text.isEmpty ||
+        usernameController.text.isEmpty ||
+        emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all required fields')),
+      );
+      return;
+    }
+
+    // Verifica che le password corrispondano
+    if (newPasswordController.text != repeatPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('New passwords do not match')),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true; // Mostra il caricamento
+    });
+
+    // Dati da inviare al backend
+    final dataToUpdate = {
+      'name': nameController.text,
+      'username': usernameController.text,
+      'email': emailController.text,
+      'old_password': oldPasswordController.text,
+      'new_password': newPasswordController.text,
+    };
+
+    final response = await UpdateUserService.updateUser(dataToUpdate);
+
+    setState(() {
+      isLoading = false; // Nasconde il caricamento
+    });
+
+    if (response['success']) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile updated successfully!')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['message'] ?? 'Failed to update profile')),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
-      backgroundColor: const Color(0xff051f20), // Sfondo scuro
+      backgroundColor: const Color(0xff051f20), // Colore di sfondo
       appBar: AppBar(
-        title: const Text('Username', style: TextStyle(color: Colors.white)),
-        // Placeholder per il nome utente
+        title: Text(
+          userData?['username'] ?? 'Account Settings',
+          style: const TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: const Color(0xff163832), // Colore per l'AppBar
+        backgroundColor: const Color(0xff163832),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Immagine profilo e campi Nome/Username
+            // Immagine del profilo
             Row(
               children: [
                 Stack(
                   alignment: Alignment.bottomRight,
-                  // Posiziona la matita nell'angolo in basso a destra
                   children: [
-                    // CircleAvatar come bottone
                     GestureDetector(
                       onTap: () {
                         // Logica per cambiare immagine profilo
@@ -37,48 +140,44 @@ class AccountSettingsPage extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 40,
                         backgroundColor: Colors.grey[800],
-                        child: const Icon(Icons.person,
-                            size: 40,
-                            color:
-                                Colors.white70), // Placeholder per l'immagine
+                        backgroundImage: userData?['profile_picture'] != null
+                            ? NetworkImage(userData!['profile_picture'])
+                            : null,
+                        child: userData?['profile_picture'] == null
+                            ? const Icon(Icons.person, size: 40, color: Colors.white70)
+                            : null,
                       ),
                     ),
-
-                    // Icona matita per modifica
                     const Positioned(
                       bottom: 0,
                       right: 0,
                       child: CircleAvatar(
                         radius: 12,
-                        // Piccolo cerchio per la matita
                         backgroundColor: Colors.blue,
-                        // Colore di sfondo per il cerchio della matita
-                        child: Icon(
-                          Icons.edit,
-                          size: 14,
-                          color: Colors.white, // Colore della matita
-                        ),
+                        child: Icon(Icons.edit, size: 14, color: Colors.white),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(width: 16),
-                const Expanded(
+                Expanded(
                   child: Column(
                     children: [
                       TextField(
-                        decoration: InputDecoration(
+                        controller: nameController,
+                        decoration: const InputDecoration(
                           labelText: 'Name',
                           labelStyle: TextStyle(color: Colors.white70),
                         ),
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                       TextField(
-                        decoration: InputDecoration(
+                        controller: usernameController,
+                        decoration: const InputDecoration(
                           labelText: 'Username',
                           labelStyle: TextStyle(color: Colors.white70),
                         ),
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ],
                   ),
@@ -87,51 +186,54 @@ class AccountSettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Titolo "Modify Account"
             const Text(
               'Modify Account',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             const SizedBox(height: 10),
 
-            // Campi Email e Password
-            const TextField(
-              decoration: InputDecoration(
+            // Email
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 labelStyle: TextStyle(color: Colors.white70),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            const TextField(
-              decoration: InputDecoration(
+            const SizedBox(height: 10),
+
+            // Password Fields
+            TextField(
+              controller: oldPasswordController,
+              decoration: const InputDecoration(
                 labelText: 'Old Password',
                 labelStyle: TextStyle(color: Colors.white70),
               ),
               obscureText: true,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: newPasswordController,
+              decoration: const InputDecoration(
                 labelText: 'New Password',
                 labelStyle: TextStyle(color: Colors.white70),
               ),
               obscureText: true,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: repeatPasswordController,
+              decoration: const InputDecoration(
                 labelText: 'Repeat Password',
                 labelStyle: TextStyle(color: Colors.white70),
               ),
               obscureText: true,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 20),
 
-            // Pulsanti di conferma e annullamento
+            // Pulsanti Conferma/Annulla
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -145,37 +247,29 @@ class AccountSettingsPage extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.check, size: 40, color: Colors.green),
                   onPressed: () {
-                    // Logica per salvare le modifiche
+                    updateUserData();
                   },
                 ),
               ],
             ),
             const Spacer(),
 
+            // Pulsante Logout
             Center(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
-                // Margine sopra e sotto il pulsante
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Logica per il logout
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 80, vertical: 15),
-                    backgroundColor: const Color(0xff3e6259),
-                    // Verde scuro per logout
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+              child: ElevatedButton(
+                onPressed: () => Logout.logout(context),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                  backgroundColor: const Color(0xff3e6259),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Text('Logout',
-                      style: TextStyle(color: Colors.white)),
                 ),
+                child: const Text('Logout', style: TextStyle(color: Colors.white)),
               ),
             ),
-
-            // Pulsante Delete Account
+            const SizedBox(height: 20),
+            // Pulsante Elimina Account
             Center(
               child: ElevatedButton.icon(
                 onPressed: () {
@@ -183,28 +277,20 @@ class AccountSettingsPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red[700],
-                  // Rosso più intenso per delete
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 icon: const Icon(Icons.delete, color: Colors.white),
-                label: const Text('Delete Account',
-                    style: TextStyle(color: Colors.white)),
+                label: const Text('Delete Account', style: TextStyle(color: Colors.white)),
               ),
             ),
-
             const SizedBox(height: 10),
-
-            // Pulsante Logout
           ],
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 2,
-      ),
+      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 2),
     );
   }
 }
