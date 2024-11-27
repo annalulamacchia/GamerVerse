@@ -3,13 +3,13 @@ import 'package:gamerverse/services/gameApiService.dart';
 
 class SpecificGameSectionWidget extends StatefulWidget {
   final String title;
-  final List<dynamic> collections;
+  final List<dynamic> games;
   final String storyline;
 
   const SpecificGameSectionWidget({
     super.key,
     required this.title,
-    required this.collections,
+    required this.games,
     required this.storyline,
   });
 
@@ -43,12 +43,12 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
   }
 
   bool isLoading = true;
-  List<Map<String, dynamic>>? collectionsGame;
+  List<dynamic>? gameIds;
 
   @override
   void initState() {
     super.initState();
-    if (widget.title == 'Series' && widget.collections.isNotEmpty) {
+    if (widget.title == 'Series' && widget.games.isNotEmpty) {
       _loadCollections();
     }
     isLoading = false;
@@ -56,9 +56,18 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
 
   //load the collections of the game
   Future<void> _loadCollections() async {
-    final coll = await GameApiService.fetchCollections(widget.collections);
+    final coll = await GameApiService.fetchCollections(widget.games);
+
+    final games = [];
+    for (var collection in coll!) {
+      List<dynamic> currentGameIds = List<dynamic>.from(collection['games']);
+      games.addAll(currentGameIds);
+    }
+
+    games.sort();
+
     setState(() {
-      collectionsGame = coll;
+      gameIds = games;
       isLoading = false;
     });
   }
@@ -76,7 +85,7 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
               isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : Navigator.pushNamed(context, '/series',
-                      arguments: collectionsGame);
+                      arguments: gameIds);
             }
           },
           child: Container(

@@ -16,7 +16,9 @@ class FollowersPage extends StatelessWidget {
         itemCount: 10,
         itemBuilder: (context, index) {
           return UserCard(
-            index: index,
+            username: '',
+            profilePicture: '',
+            index: index.toString(),
             onTap: () {
               // Navigazione alla pagina del profilo utente
               Navigator.pushNamed(context, '/userProfile');

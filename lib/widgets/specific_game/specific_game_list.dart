@@ -1,34 +1,265 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gamerverse/services/gameApiService.dart';
 
-class SpecificGameList extends StatelessWidget {
-  final List<String> list;
+class SpecificGameList extends StatefulWidget {
+  final List<dynamic> list;
   final String title;
+  final int timestamp;
 
-  const SpecificGameList({super.key, required this.title, required this.list});
+  const SpecificGameList({
+    super.key,
+    required this.title,
+    required this.list,
+    required this.timestamp,
+  });
+
+  @override
+  _SpecificGameList createState() => _SpecificGameList();
+}
+
+class _SpecificGameList extends State<SpecificGameList> {
+  List<Map<String, dynamic>>? details;
+  String? release_date;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadListData();
+  }
+
+  Future<void> _loadListData() async {
+    if (widget.title == 'Platforms') {
+      _loadPlatformsGame(widget.list);
+    }
+    if (widget.title == 'Developers' || widget.title == 'Publishers') {
+      _loadCompaniesGame(widget.list);
+    }
+    if (widget.title == 'Genres') {
+      _loadGenresGame(widget.list);
+    }
+    if (widget.title == 'First Release Date') {
+      _convertReleaseDate(widget.timestamp);
+    }
+  }
+
+  //load the platforms
+  Future<void> _loadPlatformsGame(List<dynamic> platformsIds) async {
+    if (platformsIds.isEmpty) {
+      setState(() {
+        details = null;
+        isLoading = false;
+      });
+      return;
+    }
+
+    final platforms = await GameApiService.fetchPlatforms(platformsIds);
+    setState(() {
+      details = platforms;
+      isLoading = false;
+    });
+  }
+
+  //load the companies of the game
+  Future<void> _loadCompaniesGame(List<dynamic> involvedCompaniesIds) async {
+    if (involvedCompaniesIds.isEmpty) {
+      setState(() {
+        details = null;
+        isLoading = false;
+      });
+      return;
+    }
+
+    final companies = await GameApiService.fetchCompanies(involvedCompaniesIds);
+
+    final List<dynamic> developersIds = [];
+    final List<dynamic> publishersIds = [];
+    for (var elem in companies!) {
+      if (elem['developer'] == true) {
+        developersIds.add(elem['company']);
+      }
+      if (elem['publisher'] == true) {
+        publishersIds.add(elem['company']);
+      }
+    }
+
+    //load developers of the game
+    if (widget.title == 'Developers') {
+      if (developersIds.isEmpty) {
+        setState(() {
+          details = null;
+          isLoading = false;
+        });
+        return;
+      }
+      final developers =
+          await GameApiService.fetchDevelopersOrPublishers(developersIds);
+      setState(() {
+        details = developers;
+        isLoading = false;
+      });
+    }
+
+    //load publishers of the game
+    if (widget.title == 'Publishers') {
+      if (publishersIds.isEmpty) {
+        setState(() {
+          details = null;
+          isLoading = false;
+        });
+        return;
+      }
+      final publishers =
+          await GameApiService.fetchDevelopersOrPublishers(publishersIds);
+      setState(() {
+        details = publishers;
+        isLoading = false;
+      });
+    }
+  }
+
+  //load genres of the game
+  Future<void> _loadGenresGame(List<dynamic> genresIds) async {
+    if (genresIds.isEmpty) {
+      setState(() {
+        details = null;
+        isLoading = false;
+      });
+      return;
+    }
+
+    final genres = await GameApiService.fetchGenres(genresIds);
+    setState(() {
+      details = genres;
+      isLoading = false;
+    });
+  }
+
+  //covert release date of the game
+  Future<void> _convertReleaseDate(int unixTimestamp) async {
+    var date =
+        DateTime.fromMillisecondsSinceEpoch(unixTimestamp * 1000, isUtc: true);
+
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+
+    String monthName = months[date.month - 1];
+    String formattedDate = "${date.day} $monthName ${date.year}";
+    if (unixTimestamp == 0) {
+      setState(() {
+        release_date = null;
+        isLoading = false;
+      });
+      return;
+    }
+    setState(() {
+      release_date = formattedDate;
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.white,
-        ),
+    if (isLoading) return const Center(child: CircularProgressIndicator());
+    if (!isLoading &&
+        (widget.title == 'First Release Date' ||
+            (details != null && details!.isNotEmpty))) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //Fixed Text
-          TextSpan(
-            text: '$title:  ',
+          //Title
+          Text(
+            '${widget.title}:',
             style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.white38),
-          ),
-
-          // Dynamic Text
-          for (var elem in list)
-            TextSpan(
-              text: '$elem    ',
+              fontWeight: FontWeight.bold,
+              color: Colors.white38,
+              fontSize: 16,
             ),
+          ),
+          const SizedBox(width: 7.5),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+                children: [
+                  //Platforms
+                  if (widget.title == 'Platforms' && details != null)
+                    ...details!.map((elem) => TextSpan(
+                          text: '${elem['abbreviation']}    ',
+                        )),
+
+                  //Developers
+                  if (widget.title == 'Developers' && details != null)
+                    ...details!.map((elem) => TextSpan(
+                          text: '${elem['name']}    ',
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushNamed(
+                                context,
+                                '/series',
+                                arguments: elem['developed'],
+                              );
+                            },
+                          style: const TextStyle(
+                            color: Colors.blue,
+                          ),
+                        )),
+
+                  //Publishers
+                  if (widget.title == 'Publishers' && details != null)
+                    ...details!.map((elem) => TextSpan(
+                          text: '${elem['name']}    ',
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushNamed(
+                                context,
+                                '/series',
+                                arguments: elem['published'],
+                              );
+                            },
+                          style: const TextStyle(
+                            color: Colors.blue,
+                          ),
+                        )),
+
+                  //Genres
+                  if (widget.title == 'Genres' && details != null)
+                    ...details!.map((elem) => TextSpan(
+                          text: '${elem['name']}    ',
+                        )),
+
+                  //First Release Date
+                  if (widget.title == 'First Release Date')
+                    TextSpan(
+                      text: release_date != null ? '$release_date    ' : 'n.d.',
+                    ),
+                ],
+              ),
+              maxLines: null,
+              softWrap: true,
+            ),
+          ),
+          const SizedBox(height: 27.5),
         ],
-      ),
-    );
+      );
+    } else {
+      return Container();
+    }
   }
 }

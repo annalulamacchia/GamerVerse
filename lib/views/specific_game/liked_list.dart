@@ -1,9 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/user.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/user_follower_card.dart';
 
-class LikedList extends StatelessWidget {
-  const LikedList({super.key});
+class LikedList extends StatefulWidget {
+  final List<User> users;
+
+  const LikedList({super.key, required this.users});
+
+  @override
+  _LikedListState createState() => _LikedListState();
+}
+
+class _LikedListState extends State<LikedList> {
+  int itemCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    itemCount = widget.users.length;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +36,12 @@ class LikedList extends StatelessWidget {
         title: const Text('Game Name', style: TextStyle(color: Colors.white)),
       ),
       body: ListView.builder(
-        itemCount: 10,
+        itemCount: itemCount,
         itemBuilder: (context, index) {
           return UserCard(
-            index: index,
+            index: (widget.users)[index].userId,
+            username: (widget.users)[index].username,
+            profilePicture: (widget.users)[index].profilePicture ?? '',
             onTap: () {
               Navigator.pushNamed(context, '/userProfile');
             },
@@ -34,5 +52,12 @@ class LikedList extends StatelessWidget {
         currentIndex: 1,
       ),
     );
+  }
+
+  // Puoi aggiungere metodi per aggiornare lo stato
+  void updateItemCount(int newCount) {
+    setState(() {
+      itemCount = newCount;
+    });
   }
 }
