@@ -3,9 +3,9 @@ import 'package:gamerverse/services/gameApiService.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 
 class SeriesGame extends StatefulWidget {
-  final List<Map<String, dynamic>>? collections;
+  final List<dynamic> gameIds;
 
-  const SeriesGame({super.key, required this.collections});
+  const SeriesGame({super.key, required this.gameIds});
 
   @override
   _SeriesGameState createState() => _SeriesGameState();
@@ -13,27 +13,18 @@ class SeriesGame extends StatefulWidget {
 
 class _SeriesGameState extends State<SeriesGame> {
   bool isLoading = true;
-  late List<dynamic> gameIds;
   List<Map<String, dynamic>>? coverGames;
 
   @override
   void initState() {
     super.initState();
-    gameIds = [];
-
-    if (widget.collections!.isNotEmpty) {
-      for (var collection in widget.collections!) {
-        List<dynamic> currentGameIds = List<dynamic>.from(collection['games']);
-        gameIds.addAll(currentGameIds);
-      }
-
-      gameIds.sort();
+    if (widget.gameIds.isNotEmpty) {
+      _loadCovers(widget.gameIds);
     }
-    _loadCovers(gameIds);
   }
 
-  Future<void> _loadCovers(List<dynamic> gameIds) async {
-    if (gameIds.isEmpty) {
+  Future<void> _loadCovers(List<dynamic> games) async {
+    if (games.isEmpty) {
       setState(() {
         coverGames = null;
         isLoading = false;
@@ -41,7 +32,7 @@ class _SeriesGameState extends State<SeriesGame> {
       return;
     }
 
-    final covers = await GameApiService.fetchCoverByGames(gameIds);
+    final covers = await GameApiService.fetchCoverByGames(games);
     setState(() {
       coverGames = covers;
       isLoading = false;
@@ -73,9 +64,9 @@ class _SeriesGameState extends State<SeriesGame> {
                   mainAxisSpacing: 4,
                   childAspectRatio: 0.8,
                 ),
-                itemCount: gameIds.length,
+                itemCount: widget.gameIds.length,
                 itemBuilder: (context, index) {
-                  int gameId = gameIds[index];
+                  int gameId = widget.gameIds[index];
                   if (gameId == coverGames?[index]['game']) {
                     final coverGame = coverGames?[index];
 

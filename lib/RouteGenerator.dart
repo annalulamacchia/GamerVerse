@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/user.dart';
 import 'package:gamerverse/views/admin_report_page.dart';
 import 'package:gamerverse/views/home/all_games_page.dart';
 import 'package:gamerverse/views/common_sections/comment_page.dart';
@@ -99,15 +100,19 @@ class RouteGenerator {
       case '/allReviews':
         return MaterialPageRoute(builder: (context) => const ReviewPage());
       case '/likedList':
-        return MaterialPageRoute(builder: (context) => const LikedList());
+        if (args is List<User>) {
+          return MaterialPageRoute(
+              builder: (context) => LikedList(users: args));
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case '/playedList':
         return MaterialPageRoute(builder: (context) => const PlayedList());
       case '/newPassword':
         return MaterialPageRoute(builder: (context) => NewPasswordPage());
       case '/series':
-        if (args is List<Map<String, dynamic>>?) {
+        if (args is List<dynamic>) {
           return MaterialPageRoute(
-              builder: (context) => SeriesGame(collections: args));
+              builder: (context) => SeriesGame(gameIds: args));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       default:

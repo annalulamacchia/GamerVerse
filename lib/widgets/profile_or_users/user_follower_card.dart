@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
 class UserCard extends StatelessWidget {
-  final int index; // Indice dell'utente
+  final String index; // Indice dell'utente
+  final String username;
+  final String profilePicture;
   final VoidCallback onTap; // Funzione per la navigazione
 
-  const UserCard({super.key, required this.index, required this.onTap});
+  const UserCard(
+      {super.key,
+      required this.index,
+      required this.onTap,
+      required this.username,
+      required this.profilePicture});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +28,13 @@ class UserCard extends StatelessWidget {
           child: ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            leading: const CircleAvatar(
-              child: Icon(Icons.person, color: Colors.white),
+            leading: CircleAvatar(
+              child: profilePicture != ''
+                  ? Image.network(profilePicture)
+                  : Icon(Icons.person, color: Colors.white),
             ),
             title: Text(
-              'User $index',
+              username,
               style: const TextStyle(color: Colors.white, fontSize: 18),
             ),
             trailing: ElevatedButton(

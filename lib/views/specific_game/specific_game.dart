@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/services/gameApiService.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 import 'package:gamerverse/widgets/specific_game/game_time.dart';
+import 'package:gamerverse/widgets/specific_game/liked_button_to_list.dart';
 import 'package:gamerverse/widgets/specific_game/media_game.dart';
 import 'package:gamerverse/widgets/specific_game/play_completed_buttons.dart';
 import 'package:gamerverse/widgets/specific_game/specific_game_list.dart';
@@ -10,6 +12,7 @@ import 'package:gamerverse/widgets/specific_game/specific_game_section.dart';
 import 'package:gamerverse/widgets/specific_game/single_review.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:gamerverse/widgets/specific_game/favourite_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SpecificGame extends StatefulWidget {
   final int gameId;
@@ -28,11 +31,28 @@ class _SpecificGameState extends State<SpecificGame> {
   List<Map<String, dynamic>>? videosGame;
   List<Map<String, dynamic>>? artworksGame;
   bool isLoading = true;
+  Game? game;
+  late String? userId = '';
+  ValueNotifier<int> likedCountNotifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
     super.initState();
     _loadGameData();
+    _loadUserData();
+  }
+
+  //load the user_id
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? uid = prefs.getString('user_uid');
+    setState(() {
+      if (uid != null) {
+        userId = uid;
+      } else {
+        userId = null;
+      }
+    });
   }
 
   //load all the info of the game
@@ -68,6 +88,21 @@ class _SpecificGameState extends State<SpecificGame> {
     setState(() {
       coverGame = cover;
     });
+
+    if (gameData?['id'] != null &&
+        gameData?['name'] != null &&
+        gameData?['cover'] != null) {
+      Map<String, dynamic> gameDetails = {
+        'id': gameData?['id'],
+        'name': gameData?['name'],
+        'cover': coverGame?['image_id'],
+        'aggregated_rating': gameData?['aggregated_rating'] != null
+            ? gameData!['aggregated_rating']
+            : 0,
+      };
+      game = Game.fromJson(gameDetails);
+      isLoading = false;
+    }
   }
 
   //load the cover of the similar games
@@ -75,7 +110,6 @@ class _SpecificGameState extends State<SpecificGame> {
     if (gameIds.isEmpty) {
       setState(() {
         coverSimilarGames = null;
-        isLoading = false;
       });
       return;
     }
@@ -83,13 +117,11 @@ class _SpecificGameState extends State<SpecificGame> {
     final covers = await GameApiService.fetchCoverByGames(gameIds);
     setState(() {
       coverSimilarGames = covers;
-      isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> developers = ['Red Team', 'Blue Team', 'Dev3'];
     if (isLoading) {
       return Scaffold(
         backgroundColor: const Color(0xff051f20),
@@ -120,11 +152,11 @@ class _SpecificGameState extends State<SpecificGame> {
             Navigator.pop(context);
           },
         ),
+
+        //Name and Add to Wishlist button
         title: Text(gameData?['name'],
             style: const TextStyle(color: Colors.white)),
-        actions: const [
-          FavoriteButton(),
-        ],
+        actions: [FavoriteButton(userId: userId, game: game, likedCountNotifier: likedCountNotifier)],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -155,10 +187,11 @@ class _SpecificGameState extends State<SpecificGame> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                      maxLines: null,
+                      softWrap: true,
                     ),
                   ),
+                  const SizedBox(width: 20),
 
                   //Users Rating
                   InkWell(
@@ -218,7 +251,7 @@ class _SpecificGameState extends State<SpecificGame> {
                         Text(
                           gameData?['aggregated_rating'] != null
                               ? ((gameData?['aggregated_rating'] * 5) / 100)
-                                  .toString()
+                                  .toStringAsFixed(1)
                               : 'n.d',
                           style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
@@ -233,30 +266,7 @@ class _SpecificGameState extends State<SpecificGame> {
                 const SizedBox(width: 20),
 
                 //Liked
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/likedList');
-                  },
-                  child: const Column(
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.favorite, color: Colors.white, size: 20),
-                          SizedBox(width: 4),
-                          Text(
-                            '100',
-                            style: TextStyle(fontSize: 18, color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        'Liked',
-                        style: TextStyle(fontSize: 14, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
+                LikedButtonToList(gameId: gameData!['id'].toString(), likedCountNotifier: likedCountNotifier),
                 const SizedBox(width: 20),
 
                 //Played
@@ -298,7 +308,7 @@ class _SpecificGameState extends State<SpecificGame> {
                 gameData?['collections'].length != 0)
               SpecificGameSectionWidget(
                 title: 'Series',
-                collections: gameData?['collections'],
+                games: gameData?['collections'],
                 storyline: "",
               ),
             const SizedBox(height: 10),
@@ -307,14 +317,14 @@ class _SpecificGameState extends State<SpecificGame> {
             if (gameData != null && gameData?['storyline'] != null)
               SpecificGameSectionWidget(
                   title: 'Storyline',
-                  collections: [],
+                  games: [],
                   storyline: gameData?['storyline']),
             if (gameData != null &&
                 gameData?['storyline'] == null &&
                 gameData?['summary'] != null)
               SpecificGameSectionWidget(
                   title: 'Storyline',
-                  collections: [],
+                  games: [],
                   storyline: gameData?['summary']),
             const SizedBox(height: 20),
 
@@ -355,24 +365,39 @@ class _SpecificGameState extends State<SpecificGame> {
             const Divider(height: 35),
 
             //Developers
-            SpecificGameList(title: 'Developers', list: developers),
-            const SizedBox(height: 3),
+            if (gameData != null && gameData?['involved_companies'] != null)
+              SpecificGameList(
+                  title: 'Developers',
+                  list: gameData?['involved_companies'],
+                  timestamp: 0),
 
             //Publisher
-            SpecificGameList(title: 'Publisher', list: developers),
-            const SizedBox(height: 3),
+            if (gameData != null && gameData?['involved_companies'] != null)
+              SpecificGameList(
+                  title: 'Publishers',
+                  list: gameData?['involved_companies'],
+                  timestamp: 0),
 
             //Genre
-            SpecificGameList(title: 'Genre', list: developers),
-            const SizedBox(height: 3),
+            if (gameData != null && gameData?['genres'] != null)
+              SpecificGameList(
+                  title: 'Genres', list: gameData?['genres'], timestamp: 0),
 
             //Platforms
-            SpecificGameList(title: 'Platforms', list: developers),
-            const SizedBox(height: 3),
+            if (gameData != null && gameData?['platforms'] != null)
+              SpecificGameList(
+                  title: 'Platforms',
+                  list: gameData?['platforms'],
+                  timestamp: 0),
 
             //Release Date
-            SpecificGameList(title: 'Release Date', list: developers),
-            const Divider(height: 35),
+            SpecificGameList(
+                title: 'First Release Date',
+                list: [],
+                timestamp:
+                    gameData != null && gameData?['first_release_date'] != null
+                        ? gameData!['first_release_date']
+                        : 0),
 
             //Suggested Games
             const Text('Suggested Games',

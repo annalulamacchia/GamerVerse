@@ -85,7 +85,9 @@ class _AdvisedUsersPageState extends State<AdvisedUsersPage> {
               itemCount: 10,
               itemBuilder: (context, index) {
                 return UserCard(
-                  index: index,
+                  username: '',
+                  profilePicture: '',
+                  index: index.toString(),
                   onTap: () {
                     // Quando la card viene cliccata, naviga alla pagina del profilo utente
                     Navigator.pushNamed(context, '/userProfile');

@@ -185,7 +185,8 @@ class GameApiService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>?> fetchArtworksGame(int gameId) async {
+  static Future<List<Map<String, dynamic>>?> fetchArtworksGame(
+      int gameId) async {
     final url = Uri.parse('https://api.igdb.com/v4/artworks');
 
     final String requestBody = '''
@@ -229,7 +230,163 @@ class GameApiService {
     final String requestBody = '''
       fields *;
       limit 500;
-      where id = $collectionIdsFormatted;
+      where id = $collectionIdsFormatted; sort name asc;
+    ''';
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Client-ID': clientId,
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+        },
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          return List<Map<String, dynamic>>.from(decoded);
+        }
+        return [decoded];
+      } else {
+        print('Errore: ${response.statusCode}');
+        print('Messaggio: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Errore durante la richiesta: $e');
+      return null;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> fetchPlatforms(
+      List<dynamic> platformsIds) async {
+    final url = Uri.parse('https://api.igdb.com/v4/platforms');
+    String platformsIdsFormatted = '(${platformsIds.join(',')})';
+
+    final String requestBody = '''
+      fields *;
+      limit 500;
+      where id = $platformsIdsFormatted; sort abbreviation asc;
+    ''';
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Client-ID': clientId,
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+        },
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          return List<Map<String, dynamic>>.from(decoded);
+        }
+        return [decoded];
+      } else {
+        print('Errore: ${response.statusCode}');
+        print('Messaggio: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Errore durante la richiesta: $e');
+      return null;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> fetchCompanies(
+      List<dynamic> companiesIds) async {
+    final url = Uri.parse('https://api.igdb.com/v4/involved_companies');
+    String companiesIdsFormatted = '(${companiesIds.join(',')})';
+
+    final String requestBody = '''
+      fields *;
+      limit 500;
+      where id = $companiesIdsFormatted;
+    ''';
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Client-ID': clientId,
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+        },
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          return List<Map<String, dynamic>>.from(decoded);
+        }
+        return [decoded];
+      } else {
+        print('Errore: ${response.statusCode}');
+        print('Messaggio: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Errore durante la richiesta: $e');
+      return null;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> fetchDevelopersOrPublishers(
+      List<dynamic> devOrPubIds) async {
+    final url = Uri.parse('https://api.igdb.com/v4/companies');
+    String devOrPubIdsFormatted = '(${devOrPubIds.join(',')})';
+
+    final String requestBody = '''
+      fields *;
+      limit 500;
+      where id = $devOrPubIdsFormatted; sort name asc;
+    ''';
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Client-ID': clientId,
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+        },
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          return List<Map<String, dynamic>>.from(decoded);
+        }
+        return [decoded];
+      } else {
+        print('Errore: ${response.statusCode}');
+        print('Messaggio: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Errore durante la richiesta: $e');
+      return null;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> fetchGenres(
+      List<dynamic> genresIds) async {
+    final url = Uri.parse('https://api.igdb.com/v4/genres');
+    String genresIdsFormatted = '(${genresIds.join(',')})';
+
+    final String requestBody = '''
+      fields *;
+      limit 500;
+      where id = $genresIdsFormatted; sort name asc;
     ''';
 
     try {
