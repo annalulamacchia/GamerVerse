@@ -21,6 +21,7 @@ class WishlistService {
         'criticsRating': game.criticsRating,
       }),
     );
+
     print(response.body);
 
     if (response.statusCode == 200) {
@@ -44,7 +45,6 @@ class WishlistService {
         'gameId': game!.id,
       }),
     );
-    print(response.body);
 
     if (response.statusCode == 200) {
       print('Game removed from wishlist successfully!');
@@ -67,7 +67,6 @@ class WishlistService {
         'gameId': game!.id,
       }),
     );
-    print(response.body);
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);

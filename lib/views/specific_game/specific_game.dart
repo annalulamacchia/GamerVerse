@@ -7,6 +7,7 @@ import 'package:gamerverse/widgets/specific_game/game_time.dart';
 import 'package:gamerverse/widgets/specific_game/liked_button_to_list.dart';
 import 'package:gamerverse/widgets/specific_game/media_game.dart';
 import 'package:gamerverse/widgets/specific_game/play_completed_buttons.dart';
+import 'package:gamerverse/widgets/specific_game/played_button_to_list.dart';
 import 'package:gamerverse/widgets/specific_game/specific_game_list.dart';
 import 'package:gamerverse/widgets/specific_game/specific_game_section.dart';
 import 'package:gamerverse/widgets/specific_game/single_review.dart';
@@ -34,6 +35,7 @@ class _SpecificGameState extends State<SpecificGame> {
   Game? game;
   late String? userId = '';
   ValueNotifier<int> likedCountNotifier = ValueNotifier<int>(0);
+  ValueNotifier<int> playedCountNotifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -46,8 +48,9 @@ class _SpecificGameState extends State<SpecificGame> {
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final String? uid = prefs.getString('user_uid');
+    final String? authToken = prefs.getString('auth_token');
     setState(() {
-      if (uid != null) {
+      if (authToken != null && uid != null) {
         userId = uid;
       } else {
         userId = null;
@@ -156,7 +159,12 @@ class _SpecificGameState extends State<SpecificGame> {
         //Name and Add to Wishlist button
         title: Text(gameData?['name'],
             style: const TextStyle(color: Colors.white)),
-        actions: [FavoriteButton(userId: userId, game: game, likedCountNotifier: likedCountNotifier)],
+        actions: [
+          FavoriteButton(
+              userId: userId,
+              game: game,
+              likedCountNotifier: likedCountNotifier)
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -233,7 +241,10 @@ class _SpecificGameState extends State<SpecificGame> {
             const SizedBox(height: 5),
 
             //Playing and Completed Buttons
-            const PlayCompleteButtons(),
+            PlayCompleteButtons(
+                userId: userId,
+                game: game,
+                playedCountNotifier: playedCountNotifier),
             const SizedBox(height: 12),
 
             //Critics Rating, Liked and Played
@@ -266,38 +277,15 @@ class _SpecificGameState extends State<SpecificGame> {
                 const SizedBox(width: 20),
 
                 //Liked
-                LikedButtonToList(gameId: gameData!['id'].toString(), likedCountNotifier: likedCountNotifier),
+                LikedButtonToList(
+                    gameId: gameData!['id'].toString(),
+                    likedCountNotifier: likedCountNotifier),
                 const SizedBox(width: 20),
 
                 //Played
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/playedList');
-                  },
-                  child: const Column(
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          HugeIcon(
-                            icon: HugeIcons.strokeRoundedGameController03,
-                            color: Colors.white,
-                            size: 25.0,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            '100',
-                            style: TextStyle(fontSize: 18, color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        'Played',
-                        style: TextStyle(fontSize: 14, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
+                PlayedButtonToList(
+                    gameId: gameData!['id'].toString(),
+                    playedCountNotifier: playedCountNotifier)
               ],
             ),
             const Divider(height: 30),
