@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/common_sections/card_game.dart'; // Import the ImageCardWidget
+import 'package:gamerverse/widgets/common_sections/card_game.dart';
 
 class CategorySection extends StatelessWidget {
   final String title;
-  final VoidCallback? onArrowTap; // Add onArrowTap callback for arrow icon
+  final VoidCallback? onArrowTap;
+  final List<Map<String, dynamic>>? games;
 
   const CategorySection({
     super.key,
     required this.title,
-    this.onArrowTap, // Accept an optional onArrowTap callback
+    this.onArrowTap,
+    this.games,
   });
 
   @override
@@ -24,33 +26,31 @@ class CategorySection extends StatelessWidget {
               Text(
                 title,
                 style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_forward),
-                onPressed:
-                    onArrowTap ?? () {}, // Trigger onArrowTap if provided
+                onPressed: onArrowTap ?? () {},
               ),
             ],
           ),
         ),
         SizedBox(
-          height: 220, // Aumentato l'altezza per dare più spazio alle card
+          height: 220,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 4, // Numero degli elementi da visualizzare
+            itemCount: games?.length ?? 0,
             itemBuilder: (context, index) {
-              // Usa URL di esempio o sostituisci con quelli effettivi
-              String imageUrl =
-                  'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg'; // Placeholder immagine
+              final game = games![index];
+              final imageUrl = game['coverUrl'] ?? '';
 
               return Container(
                 width: 180,
-                // Aumentato per rendere le card più grandi
-                margin: const EdgeInsets.symmetric(horizontal: 1),
-                // Ridotto il padding tra le card
-                child:
-                    ImageCardWidget(imageUrl: imageUrl, gameId: 279425), // Usa ImageCardWidget
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                child: ImageCardWidget(
+                  imageUrl: imageUrl,
+                  gameId: game['id'],
+                ),
               );
             },
           ),

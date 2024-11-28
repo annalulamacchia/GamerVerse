@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:core';
 
 class GameApiService {
   static const String clientId =
@@ -416,4 +417,82 @@ class GameApiService {
       return null;
     }
   }
+
+  static Future<List<Map<String, dynamic>>?> fetchGames(String query) async {
+    final url = Uri.parse('https://api.igdb.com/v4/games');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Client-ID': clientId,
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+        },
+        body: query,
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        return List<Map<String, dynamic>>.from(decoded.map((game) => {
+          'id': game['id'],
+          'name': game['name'],
+          'coverUrl': game['cover']?['url'] != null
+              ? "https:${game['cover']['url']}".replaceAll('t_thumb', 't_cover_big')
+              : null, // Transform thumbnail URLs if necessary
+        }));
+      } else {
+        print('Error: ${response.statusCode}');
+        print('Message: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error during API call: $e');
+      return null;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> fetchGameDataList() async {
+    const query = '''
+      fields id, name, cover.url;
+      where cover != null; 
+      sort popularity desc;
+      limit 10;
+    ''';
+    return fetchGames(query);
+  }
+
+  static Future<List<Map<String, dynamic>>?> fetchPopularGames() async {
+    const query = '''
+      fields id, name, cover.url;
+      where cover != null; 
+      sort rating desc;
+      limit 10;
+    ''';
+    return fetchGames(query);
+  }
+
+  static Future<List<Map<String, dynamic>>?> fetchReleasedThisMonthGames() async {
+    // Remove the `const` from the query string so that DateTime.now() can be used.
+    final query = '''
+    fields id, name, cover.url;
+    where cover != null & first_release_date > ${DateTime.now().subtract(Duration(days: 30)).millisecondsSinceEpoch ~/ 1000}; 
+    sort first_release_date desc;
+    limit 10;
+  ''';
+    return fetchGames(query);
+  }
+
+  static Future<List<Map<String, dynamic>>?> fetchUpcomingGames() async {
+    // Remove the `const` from the query string so that DateTime.now() can be used.
+    final query = '''
+    fields id, name, cover.url;
+    where cover != null & first_release_date > ${DateTime.now().millisecondsSinceEpoch ~/ 1000}; 
+    sort first_release_date asc;
+    limit 10;
+  ''';
+    return fetchGames(query);
+  }
+
+
 }
