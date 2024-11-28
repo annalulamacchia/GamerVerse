@@ -73,7 +73,7 @@ class LoginWithEmailService {
     final expirationTime = DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch;
 
     await prefs.setString('auth_token', token);
-    await prefs.setString('user_uid', uid);
+    await prefs.setString('uid', uid);
     await prefs.setInt('token_expiration_time', expirationTime);
   }
 

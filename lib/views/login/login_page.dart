@@ -1,9 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/services/loginWithGoogle_service.dart'; // Ensure this matches your service location
 import 'package:gamerverse/utils/colors.dart';
+import 'package:fluttertoast/fluttertoast.dart'; // For displaying messages
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Ensure this is the correct import for your BottomNavBar
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
+
+  Future<void> _handleGoogleLogin(BuildContext context) async {
+    try {
+      // Trigger the Google login service
+      final result = await LoginWithGoogleService.loginWithGoogle();
+
+      if (result['success']) {
+        // Navigate to '/home' if login is successful
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        // Show error message if login failed
+        Fluttertoast.showToast(
+          msg: result['message'],
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+      }
+    } catch (e) {
+      // Handle any unexpected errors
+      Fluttertoast.showToast(
+        msg: 'An unexpected error occurred. Please try again later.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +51,12 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // App Icon
                 const Icon(
                   Icons.videogame_asset,
                   size: 100,
                   color: AppColors.lightestGreen,
                 ),
                 const SizedBox(height: 20),
-
-                // App Name
                 const Text(
                   'GamerVerse',
                   style: TextStyle(
@@ -41,8 +66,6 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 40),
-
-                // Login with Email Button
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/emailLogin');
@@ -58,12 +81,8 @@ class LoginPage extends StatelessWidget {
                   child: const Text('Continue with Email'),
                 ),
                 const SizedBox(height: 15),
-
-                // Login with Google Button
                 ElevatedButton(
-                  onPressed: () {
-                    // Implement Google sign-in functionality here
-                  },
+                  onPressed: () => _handleGoogleLogin(context), // Call the handler
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red.shade700,
                     foregroundColor: Colors.white,
@@ -73,39 +92,6 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   child: const Text('Log-in with Google'),
-                ),
-                const SizedBox(height: 15),
-
-                // Login with Facebook Button
-                ElevatedButton(
-                  onPressed: () {
-                    // Implement Facebook sign-in functionality here
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade800,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: const Text('Log-in with Facebook'),
-                ),
-                const SizedBox(height: 20),
-
-                // Forgot Password Link
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/resetPassword');
-                  },
-                  child: const Text(
-                    "Forgot the password? Reset",
-                    style: TextStyle(
-                      color: AppColors.lightestGreen,
-                      decoration: TextDecoration.underline,
-                      fontSize: 16,
-                    ),
-                  ),
                 ),
               ],
             ),

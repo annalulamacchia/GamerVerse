@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "298603606997",
+    "firebase_url": "https://gamerverse-6fc6f-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "gamerverse-6fc6f",
     "storage_bucket": "gamerverse-6fc6f.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.gamerverse.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "298603606997-blkp168stikin95ar8o8ka9o58a3rdp8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gamerverse.app",
+            "certificate_hash": "523e14ccda157a0de3148aee4c3e102c62862074"
+          }
+        },
+        {
+          "client_id": "298603606997-554ca7kktprmhr6ql41qnfesiffv8nsc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBKbzV4jp9xADRoqrN12DxIKLgTjM5vWJE"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "298603606997-554ca7kktprmhr6ql41qnfesiffv8nsc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
