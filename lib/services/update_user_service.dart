@@ -4,9 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UpdateUserService {
+  static const String _baseUrl = "https://gamerversemobile.pythonanywhere.com";
   static Future<Map<String, dynamic>> updateUser(Map<String, dynamic> userData) async {
-    final url = Uri.parse('https://yourapi.com/update_user'); // Sostituisci con il tuo endpoint
-
+    final url = Uri.parse("$_baseUrl/update-profile");
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -16,6 +16,7 @@ class UpdateUserService {
     if (response.statusCode == 200) {
       return {'success': true};
     } else {
+      print(response.statusCode);
       return {'success': false, 'message': 'Failed to update user'};
     }
   }

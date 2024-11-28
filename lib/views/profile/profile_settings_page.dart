@@ -3,6 +3,8 @@ import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/services/logout.dart'; // Servizio logout
 import 'package:gamerverse/services/Get_user_info.dart'; // Servizio per ottenere dati utente
 import 'package:gamerverse/services/update_user_service.dart'; // Servizio per aggiornare dati utente
+import 'package:gamerverse/services/delete_user_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountSettingsPage extends StatefulWidget {
   const AccountSettingsPage({super.key});
@@ -26,9 +28,18 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   void initState() {
     super.initState();
     fetchUserData();
+
+    // Aggiungi listener per abilitare/disabilitare i pulsanti in tempo reale
+    nameController.addListener(() => setState(() {}));
+    usernameController.addListener(() => setState(() {}));
+    emailController.addListener(() => setState(() {}));
+    oldPasswordController.addListener(() => setState(() {}));
+    newPasswordController.addListener(() => setState(() {}));
+    repeatPasswordController.addListener(() => setState(() {}));
   }
 
   Future<void> fetchUserData() async {
+    final prefs = await SharedPreferences.getInstance();
     final response = await UserProfileService.getUserByUid();
 
     if (response['success']) {
@@ -45,252 +56,306 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       setState(() {
         isLoading = false;
       });
-      // Gestisci errori
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response['message'] ?? 'Error fetching data')),
       );
     }
   }
+//Function for the deleting of the account
+    Future<void> deleteUserAccount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final uid = prefs.getString('user_uid');
 
-  Future<void> updateUserData() async {
-    // Verifica che i campi obbligatori siano compilati
-    if (nameController.text.isEmpty ||
-        usernameController.text.isEmpty ||
-        emailController.text.isEmpty) {
+    if (uid == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all required fields')),
+        const SnackBar(content: Text('User ID not found.')),
       );
       return;
     }
 
-    // Verifica che le password corrispondano
-    if (newPasswordController.text != repeatPasswordController.text) {
+    final response = await DeleteUserService.deleteUser(uid);
+
+    if (response.containsKey('message')) {
+      // If there's a "message" key, account was deleted successfully
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('New passwords do not match')),
+        const SnackBar(content: Text('Account deleted successfully.')),
       );
-      return;
-    }
 
-    setState(() {
-      isLoading = true; // Mostra il caricamento
-    });
-
-    // Dati da inviare al backend
-    final dataToUpdate = {
-      'name': nameController.text,
-      'username': usernameController.text,
-      'email': emailController.text,
-      'old_password': oldPasswordController.text,
-      'new_password': newPasswordController.text,
-    };
-
-    final response = await UpdateUserService.updateUser(dataToUpdate);
-
-    setState(() {
-      isLoading = false; // Nasconde il caricamento
-    });
-
-    if (response['success']) {
+    } else if (response.containsKey('error')) {
+      // If there's an "error" key, handle the error
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully!')),
+        SnackBar(content: Text('Error: ${response['error']}')),
       );
+
     } else {
+      // Handle unexpected response
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response['message'] ?? 'Failed to update profile')),
+        const SnackBar(content: Text('Unexpected response from server.')),
       );
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+//Function for the updating of the account
+    Future<void> updateUserData() async {
+      if (oldPasswordController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Old password is required')),
+        );
+        return;
+      }
+
+      if (newPasswordController.text.isNotEmpty &&
+          newPasswordController.text != repeatPasswordController.text) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('New passwords do not match')),
+        );
+        return;
+      }
+
+      setState(() {
+        isLoading = true;
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final uid = prefs.getString('user_uid');
+      final dataToUpdate = {
+        'name': nameController.text,
+        'username': usernameController.text,
+        'email': emailController.text,
+        'password': oldPasswordController.text,
+        'new_password': newPasswordController.text,
+        'uid': uid,
+      };
+
+      final response = await UpdateUserService.updateUser(dataToUpdate);
+
+      setState(() {
+        isLoading = false;
+      });
+
+      if (response['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile updated successfully!')),
+        );
+        fetchUserData(); // Ricarica i dati aggiornati
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(response['message'] ?? 'Failed to update profile')),
+        );
+      }
     }
 
-    return Scaffold(
-      backgroundColor: const Color(0xff051f20), // Colore di sfondo
-      appBar: AppBar(
-        title: Text(
-          userData?['username'] ?? 'Account Settings',
-          style: const TextStyle(color: Colors.white),
+    bool _hasChanges() {
+      return nameController.text != (userData?['name'] ?? '') ||
+          usernameController.text != (userData?['username'] ?? '') ||
+          emailController.text != (userData?['email'] ?? '') ||
+          oldPasswordController.text.isNotEmpty ||
+          newPasswordController.text.isNotEmpty ||
+          repeatPasswordController.text.isNotEmpty;
+    }
+
+    @override
+    Widget build(BuildContext context) {
+      if (isLoading) {
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      }
+
+      return Scaffold(
+        backgroundColor: const Color(0xff051f20), // Colore di sfondo
+        appBar: AppBar(
+          title: Text(
+            userData?['username'] ?? 'Account Settings',
+            style: const TextStyle(color: Colors.white),
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+          backgroundColor: const Color(0xff163832),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: const Color(0xff163832),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Immagine del profilo
-            Row(
-              children: [
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        // Logica per cambiare immagine profilo
-                      },
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Colors.grey[800],
-                        backgroundImage: userData?['profile_picture'] != null
-                            ? NetworkImage(userData!['profile_picture'])
-                            : null,
-                        child: userData?['profile_picture'] == null
-                            ? const Icon(Icons.person, size: 40, color: Colors.white70)
-                            : null,
-                      ),
-                    ),
-                    const Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: CircleAvatar(
-                        radius: 12,
-                        backgroundColor: Colors.blue,
-                        child: Icon(Icons.edit, size: 14, color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Immagine del profilo
+              Row(
+                children: [
+                  Stack(
+                    alignment: Alignment.bottomRight,
                     children: [
-                      TextField(
-                        controller: nameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Name',
-                          labelStyle: TextStyle(color: Colors.white70),
+                      GestureDetector(
+                        onTap: () {
+                          // Logica per cambiare immagine profilo
+                        },
+                        child: CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.grey[800],
+                          backgroundImage: userData?['profile_picture'] != null
+                              ? NetworkImage(userData!['profile_picture'])
+                              : null,
+                          child: userData?['profile_picture'] == null
+                              ? const Icon(Icons.person, size: 40, color: Colors
+                              .white70)
+                              : null,
                         ),
-                        style: const TextStyle(color: Colors.white),
                       ),
-                      TextField(
-                        controller: usernameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Username',
-                          labelStyle: TextStyle(color: Colors.white70),
+                      const Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Colors.blue,
+                          child: Icon(Icons.edit, size: 14, color: Colors
+                              .white),
                         ),
-                        style: const TextStyle(color: Colors.white),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            const Text(
-              'Modify Account',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            const SizedBox(height: 10),
-
-            // Email
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                labelStyle: TextStyle(color: Colors.white70),
-              ),
-              style: const TextStyle(color: Colors.white),
-            ),
-            const SizedBox(height: 10),
-
-            // Password Fields
-            TextField(
-              controller: oldPasswordController,
-              decoration: const InputDecoration(
-                labelText: 'Old Password',
-                labelStyle: TextStyle(color: Colors.white70),
-              ),
-              obscureText: true,
-              style: const TextStyle(color: Colors.white),
-            ),
-            TextField(
-              controller: newPasswordController,
-              decoration: const InputDecoration(
-                labelText: 'New Password',
-                labelStyle: TextStyle(color: Colors.white70),
-              ),
-              obscureText: true,
-              style: const TextStyle(color: Colors.white),
-            ),
-            TextField(
-              controller: repeatPasswordController,
-              decoration: const InputDecoration(
-                labelText: 'Repeat Password',
-                labelStyle: TextStyle(color: Colors.white70),
-              ),
-              obscureText: true,
-              style: const TextStyle(color: Colors.white),
-            ),
-            const SizedBox(height: 20),
-
-            // Pulsanti Conferma/Annulla
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.close, size: 40, color: Colors.red),
-                  onPressed: () {
-                    // Logica per annullare le modifiche
-                  },
-                ),
-                const SizedBox(width: 40),
-                IconButton(
-                  icon: const Icon(Icons.check, size: 40, color: Colors.green),
-                  onPressed: () {
-                    updateUserData();
-                  },
-                ),
-              ],
-            ),
-            const Spacer(),
-
-            // Pulsante Logout
-            Center(
-              child: ElevatedButton(
-                onPressed: () => Logout.logout(context),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-                  backgroundColor: const Color(0xff3e6259),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: nameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Name',
+                            labelStyle: TextStyle(color: Colors.white70),
+                          ),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        TextField(
+                          controller: usernameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Username',
+                            labelStyle: TextStyle(color: Colors.white70),
+                          ),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                child: const Text('Logout', style: TextStyle(color: Colors.white)),
+                ],
               ),
-            ),
-            const SizedBox(height: 20),
-            // Pulsante Elimina Account
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // Logica per eliminare l'account
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[700],
-                  padding: const EdgeInsets.symmetric(horizontal: 38, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              const SizedBox(height: 20),
+
+              const Text(
+                'Modify Account',
+                style: TextStyle(fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+              const SizedBox(height: 10),
+
+              // Email
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  labelStyle: TextStyle(color: Colors.white70),
+                ),
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 10),
+
+              // Password Fields
+              TextField(
+                controller: oldPasswordController,
+                decoration: const InputDecoration(
+                  labelText: 'Old Password',
+                  labelStyle: TextStyle(color: Colors.white70),
+                ),
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+              ),
+              TextField(
+                controller: newPasswordController,
+                decoration: const InputDecoration(
+                  labelText: 'New Password',
+                  labelStyle: TextStyle(color: Colors.white70),
+                ),
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+              ),
+              TextField(
+                controller: repeatPasswordController,
+                decoration: const InputDecoration(
+                  labelText: 'Repeat Password',
+                  labelStyle: TextStyle(color: Colors.white70),
+                ),
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+
+              // Pulsanti Conferma/Annulla
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 40, color: Colors.red),
+                    onPressed: _hasChanges()
+                        ? fetchUserData
+                        : null, // Disabilita se non ci sono modifiche
                   ),
-                ),
-                icon: const Icon(Icons.delete, color: Colors.white),
-                label: const Text('Delete Account', style: TextStyle(color: Colors.white)),
+                  const SizedBox(width: 40),
+                  IconButton(
+                    icon: const Icon(
+                        Icons.check, size: 40, color: Colors.green),
+                    onPressed: _hasChanges()
+                        ? updateUserData
+                        : null, // Disabilita se non ci sono modifiche
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 10),
-          ],
+              const Spacer(),
+
+              // Pulsante Logout
+              Center(
+                child: ElevatedButton(
+                  onPressed: () => Logout.logout(context),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 80, vertical: 15),
+                    backgroundColor: const Color(0xff3e6259),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                      'Logout', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+              const SizedBox(height: 10),
+// Pulsante Elimina Account
+              Center(
+                child: ElevatedButton(
+                  onPressed: () => deleteUserAccount(),
+                  // Funzione per eliminare l'account
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 80, vertical: 15),
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                      'Delete Account', style: TextStyle(color: Colors.white)),
+                ),
+
+              ),
+
+            ],
+
+          ),
         ),
-      ),
-      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 2),
-    );
+        bottomNavigationBar: const CustomBottomNavBar(
+            currentIndex: 2), // Navbar personalizzata
+      );
+    }
   }
-}
+
+
