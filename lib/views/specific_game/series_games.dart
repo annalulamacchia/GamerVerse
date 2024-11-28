@@ -4,8 +4,9 @@ import 'package:gamerverse/widgets/common_sections/card_game.dart';
 
 class SeriesGame extends StatefulWidget {
   final List<dynamic> gameIds;
+  final String title;
 
-  const SeriesGame({super.key, required this.gameIds});
+  const SeriesGame({super.key, required this.gameIds, required this.title});
 
   @override
   _SeriesGameState createState() => _SeriesGameState();
@@ -44,7 +45,7 @@ class _SeriesGameState extends State<SeriesGame> {
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
-        title: const Text('Series Game', style: TextStyle(color: Colors.white)),
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {

@@ -84,8 +84,14 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
             } else {
               isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : Navigator.pushNamed(context, '/series',
-                      arguments: gameIds);
+                  : Navigator.pushNamed(
+                      context,
+                      '/series',
+                      arguments: {
+                        'gameIds': gameIds,
+                        'title': 'Series',
+                      },
+                    );
             }
           },
           child: Container(

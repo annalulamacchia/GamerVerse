@@ -49,11 +49,16 @@ class _SpecificGameState extends State<SpecificGame> {
     final prefs = await SharedPreferences.getInstance();
     final String? uid = prefs.getString('user_uid');
     final String? authToken = prefs.getString('auth_token');
+    final int? tokenExpirationTime = prefs.getInt('token_expiration_time');
+    final currentTime = DateTime.now().millisecondsSinceEpoch;
     setState(() {
-      if (authToken != null && uid != null) {
-        userId = uid;
-      } else {
+      if (authToken == null ||
+          uid == null ||
+          tokenExpirationTime == null ||
+          (currentTime > tokenExpirationTime)) {
         userId = null;
+      } else {
+        userId = uid;
       }
     });
   }

@@ -110,9 +110,9 @@ class RouteGenerator {
       case '/newPassword':
         return MaterialPageRoute(builder: (context) => NewPasswordPage());
       case '/series':
-        if (args is List<dynamic>) {
+        if (args is Map<String, dynamic> && args.containsKey('gameIds') && args.containsKey('title')) {
           return MaterialPageRoute(
-              builder: (context) => SeriesGame(gameIds: args));
+              builder: (context) => SeriesGame(gameIds: args['gameIds'], title: args['title']));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       default:

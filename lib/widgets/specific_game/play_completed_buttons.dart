@@ -121,6 +121,12 @@ class PlayCompleteButtonsState extends State<PlayCompleteButtons> {
     });
   }
 
+  //function to redirect to login if the user is not logged
+  void _toLoginForStatus() {
+    Navigator.pushNamed(context, '/login');
+    isLoading = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return isLoading && widget.userId != null
@@ -136,7 +142,7 @@ class PlayCompleteButtonsState extends State<PlayCompleteButtons> {
               //Playing Button
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _onPlayingPressed,
+                  onPressed: widget.userId != null ? _onPlayingPressed : _toLoginForStatus,
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
                         isPlayingPressed ? Colors.yellow : Colors.white,
@@ -149,8 +155,8 @@ class PlayCompleteButtonsState extends State<PlayCompleteButtons> {
               //Completed Button
               Expanded(
                 child: ElevatedButton(
-                    onPressed: _onCompletedPressed,
-                    onLongPress: _zeroCompleted,
+                    onPressed: widget.userId != null ? _onCompletedPressed : _toLoginForStatus,
+                    onLongPress: widget.userId != null ? _zeroCompleted : _toLoginForStatus,
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           isCompletedPressed ? Colors.green : Colors.white,

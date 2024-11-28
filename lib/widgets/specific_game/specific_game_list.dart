@@ -213,7 +213,10 @@ class _SpecificGameList extends State<SpecificGameList> {
                               Navigator.pushNamed(
                                 context,
                                 '/series',
-                                arguments: elem['developed'],
+                                arguments: {
+                                  'gameIds': elem['published'],
+                                  'title': 'Developed Games',
+                                },
                               );
                             },
                           style: const TextStyle(
@@ -230,7 +233,10 @@ class _SpecificGameList extends State<SpecificGameList> {
                               Navigator.pushNamed(
                                 context,
                                 '/series',
-                                arguments: elem['published'],
+                                arguments: {
+                                  'gameIds': elem['published'],
+                                  'title': 'Published Games',
+                                },
                               );
                             },
                           style: const TextStyle(
