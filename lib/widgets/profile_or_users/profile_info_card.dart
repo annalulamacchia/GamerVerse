@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/views/common_sections/followers_or_following_page.dart';
 import 'package:gamerverse/services/Get_user_info.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileInfoCard extends StatefulWidget {
   const ProfileInfoCard({super.key});
