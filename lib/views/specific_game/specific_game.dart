@@ -246,10 +246,11 @@ class _SpecificGameState extends State<SpecificGame> {
             const SizedBox(height: 5),
 
             //Playing and Completed Buttons
-            PlayCompleteButtons(
-                userId: userId,
-                game: game,
-                playedCountNotifier: playedCountNotifier),
+            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+              PlayCompleteButtons(
+                  userId: userId,
+                  game: game,
+                  playedCountNotifier: playedCountNotifier),
             const SizedBox(height: 12),
 
             //Critics Rating, Liked and Played
@@ -319,43 +320,54 @@ class _SpecificGameState extends State<SpecificGame> {
                   title: 'Storyline',
                   games: [],
                   storyline: gameData?['summary']),
-            const SizedBox(height: 20),
 
             //Media
             MediaGameWidget(
               gameData: gameData,
             ),
-            const SizedBox(height: 20),
+            if (gameData != null &&
+                (gameData?['videos'] != null ||
+                    gameData?['artworks'] != null ||
+                    gameData?['screenshots'] != null))
+              const SizedBox(height: 20),
 
-            //Last Review
-            const SingleReview(
-                username: "Giocatore1",
-                rating: 4.5,
-                comment: "Questo gioco è fantastico, mi piace molto!",
-                avatarUrl:
-                    "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
-                likes: 11,
-                dislikes: 11),
-            const SizedBox(height: 2),
+            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+              //Last Review
+              const SingleReview(
+                  username: "Giocatore1",
+                  rating: 4.5,
+                  comment: "Questo gioco è fantastico, mi piace molto!",
+                  avatarUrl:
+                      "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
+                  likes: 11,
+                  dislikes: 11),
+            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+              const SizedBox(height: 2),
 
             //All Reviews
-            Container(
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff3e6259),
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/allReviews');
-                  },
-                  child: const Text('All Reviews',
-                      style: TextStyle(color: Colors.white))),
-            ),
-            const SizedBox(height: 20),
+            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+              Container(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff3e6259),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/allReviews');
+                    },
+                    child: const Text('All Reviews',
+                        style: TextStyle(color: Colors.white))),
+              ),
+            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+              const SizedBox(height: 20),
 
             //Playing Time
-            const GameTimeWidget(),
-            const Divider(height: 35),
+            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+              GameTimeWidget(userId: userId, game: game),
+            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+              const Divider(height: 35),
+            if(gameData?['first_release_date']*1000 > DateTime.now().millisecondsSinceEpoch)
+              const Divider(height: 25),
 
             //Developers
             if (gameData != null && gameData?['involved_companies'] != null)

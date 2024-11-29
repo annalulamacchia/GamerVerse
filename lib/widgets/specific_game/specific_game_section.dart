@@ -117,6 +117,8 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
             ),
           ),
         ),
+        if (widget.storyline != "")
+          const SizedBox(height: 20),
       ],
     );
   }

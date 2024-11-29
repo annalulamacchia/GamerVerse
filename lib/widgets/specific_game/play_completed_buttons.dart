@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
-import 'package:gamerverse/services/statusGameService.dart';
+import 'package:gamerverse/services/specific_game/statusGameService.dart';
 
 class PlayCompleteButtons extends StatefulWidget {
   final String? userId;

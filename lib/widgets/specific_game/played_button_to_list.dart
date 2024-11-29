@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/userReview.dart';
-import 'package:gamerverse/services/statusGameService.dart';
+import 'package:gamerverse/services/specific_game/statusGameService.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class PlayedButtonToList extends StatefulWidget {
@@ -73,7 +73,7 @@ class _PlayedButtonToListState extends State<PlayedButtonToList> {
                   ],
                 ),
                 Text(
-                  'Liked',
+                  'Played',
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ],

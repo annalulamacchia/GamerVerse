@@ -173,7 +173,14 @@ class _SpecificGameList extends State<SpecificGameList> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) return const Center(child: CircularProgressIndicator());
+    if (isLoading) {
+      return const Center(
+        child: Opacity(
+          opacity: 0,
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     if (!isLoading &&
         (widget.title == 'First Release Date' ||
             (details != null && details!.isNotEmpty))) {
