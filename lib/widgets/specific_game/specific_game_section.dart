@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/services/gameApiService.dart';
+import 'package:gamerverse/services/game_api_service.dart';
 
 class SpecificGameSectionWidget extends StatefulWidget {
   final String title;

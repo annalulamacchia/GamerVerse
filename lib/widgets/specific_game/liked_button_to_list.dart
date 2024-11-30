@@ -10,18 +10,23 @@ class LikedButtonToList extends StatefulWidget {
       {super.key, required this.gameId, required this.likedCountNotifier});
 
   @override
-  _LikedButtonToListState createState() => _LikedButtonToListState();
+  LikedButtonToListState createState() => LikedButtonToListState();
 }
 
-class _LikedButtonToListState extends State<LikedButtonToList> {
+class LikedButtonToListState extends State<LikedButtonToList> {
   List<User>? users;
   bool isLoading = true;
   int oldCount = 0;
+  bool _isLoadingUsers = false;
 
   @override
   void initState() {
     super.initState();
     widget.likedCountNotifier.addListener(_loadUsersByGame);
+    setState(() {
+      isLoading = true;
+      oldCount = widget.likedCountNotifier.value;
+    });
     _loadUsersByGame();
   }
 
@@ -33,17 +38,24 @@ class _LikedButtonToListState extends State<LikedButtonToList> {
 
   //load all the users that have that game in the wishlist
   Future<void> _loadUsersByGame() async {
-    setState(() {
-      isLoading = true;
-      oldCount = widget.likedCountNotifier.value;
-    });
+    if (_isLoadingUsers) return;
+    _isLoadingUsers = true;
+
+    if (!mounted) {
+      _isLoadingUsers = false;
+      return;
+    }
+
     final us = await WishlistService.getUsersByGame(widget.gameId);
     setState(() {
       users = us;
+      if (us != null && widget.likedCountNotifier.value != us.length) {
+        widget.likedCountNotifier.value = us.length;
+      }
       isLoading = false;
     });
 
-    widget.likedCountNotifier.value = us!.length;
+    _isLoadingUsers = false;
   }
 
   @override

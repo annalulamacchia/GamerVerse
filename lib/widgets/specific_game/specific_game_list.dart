@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:gamerverse/services/gameApiService.dart';
+import 'package:gamerverse/services/game_api_service.dart';
 
 class SpecificGameList extends StatefulWidget {
   final List<dynamic> list;
@@ -208,7 +208,9 @@ class SpecificGameListState extends State<SpecificGameList> {
                   //Platforms
                   if (widget.title == 'Platforms' && details != null)
                     ...details!.map((elem) => TextSpan(
-                          text: '${elem['abbreviation']}    ',
+                          text: elem['abbreviation'] != null
+                              ? '${elem['abbreviation']}    '
+                              : '${elem['name']}    ',
                         )),
 
                   //Developers
@@ -260,7 +262,7 @@ class SpecificGameListState extends State<SpecificGameList> {
                   //First Release Date
                   if (widget.title == 'First Release Date')
                     TextSpan(
-                      text: releaseDate != null ? '$releaseDate    ' : 'N/A',
+                      text: releaseDate != null ? '$releaseDate    ' : 'TBD',
                     ),
                 ],
               ),

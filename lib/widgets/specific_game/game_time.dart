@@ -18,6 +18,7 @@ class GameTimeWidget extends StatefulWidget {
 class GameTimeWidgetState extends State<GameTimeWidget> {
   bool isLoading = true;
   final TextEditingController _timeController = TextEditingController();
+  bool _isLoadingTime = false;
 
   @override
   void initState() {
@@ -27,8 +28,22 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
     _getPlayingTime();
   }
 
+  @override
+  void dispose() {
+    widget.averageTimeNotifier.removeListener(_getAveragePlayingTime);
+    super.dispose();
+  }
+
   //load the average playing time
   Future<void> _getAveragePlayingTime() async {
+    if (_isLoadingTime) return;
+    _isLoadingTime = true;
+
+    if (!mounted) {
+      _isLoadingTime = false;
+      return;
+    }
+
     final averagePlayingTime =
         await PlayingTimeService.getAveragePlayingTime(game: widget.game);
     setState(() {
@@ -39,6 +54,8 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
       }
       isLoading = false;
     });
+
+    _isLoadingTime = false;
   }
 
   //load the playing time of the current user for a specific game

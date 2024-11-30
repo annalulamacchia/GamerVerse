@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/home/category_section.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
-import 'package:gamerverse/services/gameApiService.dart';
+import 'package:gamerverse/services/game_api_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

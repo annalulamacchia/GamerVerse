@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
-import 'package:gamerverse/services/gameApiService.dart';
+import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 import 'package:gamerverse/widgets/specific_game/game_time.dart';
@@ -367,7 +367,7 @@ class SpecificGameState extends State<SpecificGame> {
                     child: const Text('All Reviews',
                         style: TextStyle(color: Colors.white))),
               ),
-            if (gameData?['first_release_date'] * 1000 <
+            if (gameData?['first_release_date'] != null && gameData?['first_release_date'] * 1000 <
                 DateTime.now().millisecondsSinceEpoch)
               const SizedBox(height: 20),
 
@@ -383,7 +383,7 @@ class SpecificGameState extends State<SpecificGame> {
                 gameData?['first_release_date'] * 1000 <
                     DateTime.now().millisecondsSinceEpoch)
               const Divider(height: 35),
-            if (gameData?['first_release_date'] * 1000 >
+            if (gameData?['first_release_date'] != null && gameData?['first_release_date'] * 1000 >
                 DateTime.now().millisecondsSinceEpoch)
               const Divider(height: 25),
 

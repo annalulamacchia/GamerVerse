@@ -18,12 +18,17 @@ class PlayedButtonToListState extends State<PlayedButtonToList> {
   List<UserReview>? users;
   bool isLoading = true;
   int oldCount = 0;
+  bool _isLoadingUsers = false;
 
   @override
   void initState() {
     super.initState();
     //listener to sync the counter of users that are playing or have completed the current game
     widget.playedCountNotifier.addListener(_loadUsersByStatusGame);
+    setState(() {
+      isLoading = true;
+      oldCount = widget.playedCountNotifier.value;
+    });
     _loadUsersByStatusGame();
   }
 
@@ -35,17 +40,24 @@ class PlayedButtonToListState extends State<PlayedButtonToList> {
 
   //load all the users that have that game in the wishlist
   Future<void> _loadUsersByStatusGame() async {
-    setState(() {
-      isLoading = true;
-      oldCount = widget.playedCountNotifier.value;
-    });
+    if (_isLoadingUsers) return;
+    _isLoadingUsers = true;
+
+    if (!mounted) {
+      _isLoadingUsers = false;
+      return;
+    }
+
     final us = await StatusGameService.getUsersByStatusGame(widget.gameId);
     setState(() {
       users = us;
+      if (us != null && widget.playedCountNotifier.value != us.length) {
+        widget.playedCountNotifier.value = us.length;
+      }
       isLoading = false;
     });
 
-    widget.playedCountNotifier.value = us!.length;
+    _isLoadingUsers = false;
   }
 
   @override

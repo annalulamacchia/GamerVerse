@@ -107,7 +107,9 @@ class StatusGameService {
         'gameId': game!.id,
       }),
     );
-
+    if (kDebugMode) {
+      print(response.body);
+    }
     if (response.statusCode == 200) {
       if (kDebugMode) {
         print('Remove Completed status successfully!');
