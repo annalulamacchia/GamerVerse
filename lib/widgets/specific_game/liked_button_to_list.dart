@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/user.dart';
-import 'package:gamerverse/services/specific_game/whishlistService.dart';
+import 'package:gamerverse/services/specific_game/wishlist_service.dart';
 
 class LikedButtonToList extends StatefulWidget {
   final String gameId;

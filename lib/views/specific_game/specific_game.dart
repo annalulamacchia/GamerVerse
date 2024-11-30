@@ -21,10 +21,10 @@ class SpecificGame extends StatefulWidget {
   const SpecificGame({super.key, required this.gameId});
 
   @override
-  _SpecificGameState createState() => _SpecificGameState();
+  SpecificGameState createState() => SpecificGameState();
 }
 
-class _SpecificGameState extends State<SpecificGame> {
+class SpecificGameState extends State<SpecificGame> {
   Map<String, dynamic>? gameData;
   Map<String, dynamic>? coverGame;
   List<Map<String, dynamic>>? coverSimilarGames;
@@ -36,6 +36,7 @@ class _SpecificGameState extends State<SpecificGame> {
   late String? userId = '';
   ValueNotifier<int> likedCountNotifier = ValueNotifier<int>(0);
   ValueNotifier<int> playedCountNotifier = ValueNotifier<int>(0);
+  ValueNotifier<double> averageTimeNotifier = ValueNotifier<double>(0);
 
   @override
   void initState() {
@@ -246,7 +247,9 @@ class _SpecificGameState extends State<SpecificGame> {
             const SizedBox(height: 5),
 
             //Playing and Completed Buttons
-            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+            if (gameData?['first_release_date'] != null &&
+                gameData?['first_release_date'] * 1000 <
+                    DateTime.now().millisecondsSinceEpoch)
               PlayCompleteButtons(
                   userId: userId,
                   game: game,
@@ -269,7 +272,7 @@ class _SpecificGameState extends State<SpecificGame> {
                           gameData?['aggregated_rating'] != null
                               ? ((gameData?['aggregated_rating'] * 5) / 100)
                                   .toStringAsFixed(1)
-                              : 'n.d',
+                              : 'N/A',
                           style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       ],
@@ -282,13 +285,13 @@ class _SpecificGameState extends State<SpecificGame> {
                 ),
                 const SizedBox(width: 20),
 
-                //Liked
+                //Liked List
                 LikedButtonToList(
                     gameId: gameData!['id'].toString(),
                     likedCountNotifier: likedCountNotifier),
                 const SizedBox(width: 20),
 
-                //Played
+                //Played List
                 PlayedButtonToList(
                     gameId: gameData!['id'].toString(),
                     playedCountNotifier: playedCountNotifier)
@@ -331,7 +334,9 @@ class _SpecificGameState extends State<SpecificGame> {
                     gameData?['screenshots'] != null))
               const SizedBox(height: 20),
 
-            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+            if (gameData?['first_release_date'] != null &&
+                gameData?['first_release_date'] * 1000 <
+                    DateTime.now().millisecondsSinceEpoch)
               //Last Review
               const SingleReview(
                   username: "Giocatore1",
@@ -341,11 +346,15 @@ class _SpecificGameState extends State<SpecificGame> {
                       "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
                   likes: 11,
                   dislikes: 11),
-            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+            if (gameData?['first_release_date'] != null &&
+                gameData?['first_release_date'] * 1000 <
+                    DateTime.now().millisecondsSinceEpoch)
               const SizedBox(height: 2),
 
             //All Reviews
-            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+            if (gameData?['first_release_date'] != null &&
+                gameData?['first_release_date'] * 1000 <
+                    DateTime.now().millisecondsSinceEpoch)
               Container(
                 alignment: Alignment.center,
                 child: ElevatedButton(
@@ -358,15 +367,24 @@ class _SpecificGameState extends State<SpecificGame> {
                     child: const Text('All Reviews',
                         style: TextStyle(color: Colors.white))),
               ),
-            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+            if (gameData?['first_release_date'] * 1000 <
+                DateTime.now().millisecondsSinceEpoch)
               const SizedBox(height: 20),
 
             //Playing Time
-            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
-              GameTimeWidget(userId: userId, game: game),
-            if(gameData?['first_release_date']*1000 < DateTime.now().millisecondsSinceEpoch)
+            if (gameData?['first_release_date'] != null &&
+                gameData?['first_release_date'] * 1000 <
+                    DateTime.now().millisecondsSinceEpoch)
+              GameTimeWidget(
+                  userId: userId,
+                  game: game,
+                  averageTimeNotifier: averageTimeNotifier),
+            if (gameData?['first_release_date'] != null &&
+                gameData?['first_release_date'] * 1000 <
+                    DateTime.now().millisecondsSinceEpoch)
               const Divider(height: 35),
-            if(gameData?['first_release_date']*1000 > DateTime.now().millisecondsSinceEpoch)
+            if (gameData?['first_release_date'] * 1000 >
+                DateTime.now().millisecondsSinceEpoch)
               const Divider(height: 25),
 
             //Developers

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
-import 'package:gamerverse/services/specific_game/whishlistService.dart';
+import 'package:gamerverse/services/specific_game/wishlist_service.dart';
 
 class FavoriteButton extends StatefulWidget {
   final String? userId;

@@ -11,6 +11,7 @@ class Game {
     required this.criticsRating,
   });
 
+  //create the Game model from a JSON result
   factory Game.fromJson(Map<String, dynamic> json) {
     return Game(
       id: json['id'].toString(),

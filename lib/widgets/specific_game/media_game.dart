@@ -3,18 +3,18 @@ import 'package:gamerverse/services/gameApiService.dart';
 import 'package:gamerverse/widgets/specific_game/youtube_player.dart';
 
 class MediaGameWidget extends StatefulWidget {
-  Map<String, dynamic>? gameData;
+  final Map<String, dynamic>? gameData;
 
-  MediaGameWidget({
+  const MediaGameWidget({
     super.key,
     required this.gameData,
   });
 
   @override
-  _MediaGameWidget createState() => _MediaGameWidget();
+  MediaGameWidgetState createState() => MediaGameWidgetState();
 }
 
-class _MediaGameWidget extends State<MediaGameWidget> {
+class MediaGameWidgetState extends State<MediaGameWidget> {
   List<Map<String, dynamic>>? screenshotsGame;
   List<Map<String, dynamic>>? videosGame;
   List<Map<String, dynamic>>? artworksGame;
@@ -195,6 +195,7 @@ class _MediaGameWidget extends State<MediaGameWidget> {
             );
     }).toList());
 
+    //Artworks
     mediaWidgets.addAll(artworks.map((media) {
       return Container(
         width: 200,

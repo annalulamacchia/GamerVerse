@@ -7,10 +7,10 @@ class YoutubePlayerWidget extends StatefulWidget {
   const YoutubePlayerWidget({super.key, required this.videoId});
 
   @override
-  _YoutubePlayerWidgetState createState() => _YoutubePlayerWidgetState();
+  YoutubePlayerWidgetState createState() => YoutubePlayerWidgetState();
 }
 
-class _YoutubePlayerWidgetState extends State<YoutubePlayerWidget> {
+class YoutubePlayerWidgetState extends State<YoutubePlayerWidget> {
   late YoutubePlayerController _controller;
 
   @override

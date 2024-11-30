@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
-import 'package:gamerverse/services/specific_game/statusGameService.dart';
+import 'package:gamerverse/services/specific_game/status_game_service.dart';
 
 class PlayCompleteButtons extends StatefulWidget {
   final String? userId;
@@ -53,13 +53,15 @@ class PlayCompleteButtonsState extends State<PlayCompleteButtons> {
     });
   }
 
-  //function to alternate playing and completed if completed < 1
+  //alternate playing and completed if completed < 1
   void _onPlayingPressed() {
     setState(() {
       isPlayingPressed = !isPlayingPressed;
+      //if playing is pressed, set the playing status for the current game
       if (isPlayingPressed) {
         StatusGameService.setPlaying(userId: widget.userId, game: widget.game);
       }
+      //if playing is not pressed, remove the playing status for the current game
       if (!isPlayingPressed) {
         StatusGameService.removePlaying(
             userId: widget.userId, game: widget.game);
@@ -70,16 +72,18 @@ class PlayCompleteButtonsState extends State<PlayCompleteButtons> {
         //if completed > 1 completed is always pressed
         isCompletedPressed = true;
       }
+      //if one between playing and completed is pressed, increment the sync counter
       if (isPlayingPressed && !isCompletedPressed) {
         widget.playedCountNotifier.value++;
       }
+      //if both playing and completed is pressed, decrement the sync counter
       if (!isPlayingPressed && !isCompletedPressed) {
         widget.playedCountNotifier.value--;
       }
     });
   }
 
-  //function to substract a completed time on longPress
+  //remove the complete status or decrement the number_completed times
   void _zeroCompleted() {
     setState(() {
       completed--;
@@ -121,7 +125,7 @@ class PlayCompleteButtonsState extends State<PlayCompleteButtons> {
     });
   }
 
-  //function to redirect to login if the user is not logged
+  //redirect to login if the user is not logged
   void _toLoginForStatus() {
     Navigator.pushNamed(context, '/login');
     isLoading = false;
@@ -142,7 +146,9 @@ class PlayCompleteButtonsState extends State<PlayCompleteButtons> {
               //Playing Button
               Expanded(
                 child: ElevatedButton(
-                  onPressed: widget.userId != null ? _onPlayingPressed : _toLoginForStatus,
+                  onPressed: widget.userId != null
+                      ? _onPlayingPressed
+                      : _toLoginForStatus,
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
                         isPlayingPressed ? Colors.yellow : Colors.white,
@@ -155,8 +161,12 @@ class PlayCompleteButtonsState extends State<PlayCompleteButtons> {
               //Completed Button
               Expanded(
                 child: ElevatedButton(
-                    onPressed: widget.userId != null ? _onCompletedPressed : _toLoginForStatus,
-                    onLongPress: widget.userId != null ? _zeroCompleted : _toLoginForStatus,
+                    onPressed: widget.userId != null
+                        ? _onCompletedPressed
+                        : _toLoginForStatus,
+                    onLongPress: widget.userId != null
+                        ? _zeroCompleted
+                        : _toLoginForStatus,
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           isCompletedPressed ? Colors.green : Colors.white,

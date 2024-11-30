@@ -9,10 +9,10 @@ class SeriesGame extends StatefulWidget {
   const SeriesGame({super.key, required this.gameIds, required this.title});
 
   @override
-  _SeriesGameState createState() => _SeriesGameState();
+  SeriesGameState createState() => SeriesGameState();
 }
 
-class _SeriesGameState extends State<SeriesGame> {
+class SeriesGameState extends State<SeriesGame> {
   bool isLoading = true;
   List<Map<String, dynamic>>? coverGames;
 
@@ -24,6 +24,7 @@ class _SeriesGameState extends State<SeriesGame> {
     }
   }
 
+  //load the cover of some games
   Future<void> _loadCovers(List<dynamic> games) async {
     if (games.isEmpty) {
       setState(() {
@@ -70,7 +71,6 @@ class _SeriesGameState extends State<SeriesGame> {
                   int gameId = widget.gameIds[index];
                   if (gameId == coverGames?[index]['game']) {
                     final coverGame = coverGames?[index];
-
                     return Container(
                       width: 180,
                       margin: const EdgeInsets.symmetric(horizontal: 1),

@@ -15,12 +15,12 @@ class SpecificGameList extends StatefulWidget {
   });
 
   @override
-  _SpecificGameList createState() => _SpecificGameList();
+  SpecificGameListState createState() => SpecificGameListState();
 }
 
-class _SpecificGameList extends State<SpecificGameList> {
+class SpecificGameListState extends State<SpecificGameList> {
   List<Map<String, dynamic>>? details;
-  String? release_date;
+  String? releaseDate;
   bool isLoading = true;
 
   @override
@@ -160,13 +160,13 @@ class _SpecificGameList extends State<SpecificGameList> {
     String formattedDate = "${date.day} $monthName ${date.year}";
     if (unixTimestamp == 0) {
       setState(() {
-        release_date = null;
+        releaseDate = null;
         isLoading = false;
       });
       return;
     }
     setState(() {
-      release_date = formattedDate;
+      releaseDate = formattedDate;
       isLoading = false;
     });
   }
@@ -260,7 +260,7 @@ class _SpecificGameList extends State<SpecificGameList> {
                   //First Release Date
                   if (widget.title == 'First Release Date')
                     TextSpan(
-                      text: release_date != null ? '$release_date    ' : 'n.d.',
+                      text: releaseDate != null ? '$releaseDate    ' : 'N/A',
                     ),
                 ],
               ),

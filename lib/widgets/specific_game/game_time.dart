@@ -1,51 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
-import 'package:gamerverse/services/specific_game/playingTimeService.dart';
+import 'package:gamerverse/services/specific_game/playing_time_service.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class GameTimeWidget extends StatefulWidget {
   final String? userId;
   final Game? game;
+  final ValueNotifier<double> averageTimeNotifier;
 
-  const GameTimeWidget({super.key, this.userId, this.game});
+  const GameTimeWidget(
+      {super.key, this.userId, this.game, required this.averageTimeNotifier});
 
   @override
-  _GameTimeWidgetState createState() => _GameTimeWidgetState();
+  GameTimeWidgetState createState() => GameTimeWidgetState();
 }
 
-class _GameTimeWidgetState extends State<GameTimeWidget> {
+class GameTimeWidgetState extends State<GameTimeWidget> {
   bool isLoading = true;
   final TextEditingController _timeController = TextEditingController();
-  ValueNotifier<double> averageTimeNotifier = ValueNotifier<double>(0);
 
   @override
   void initState() {
     super.initState();
-    averageTimeNotifier.addListener(_getAveragePlayingTime);
+    widget.averageTimeNotifier.addListener(_getAveragePlayingTime);
     _getAveragePlayingTime();
     _getPlayingTime();
   }
 
-  @override
-  void dispose() {
-    averageTimeNotifier.removeListener(_getAveragePlayingTime);
-    super.dispose();
-  }
-
+  //load the average playing time
   Future<void> _getAveragePlayingTime() async {
     final averagePlayingTime =
         await PlayingTimeService.getAveragePlayingTime(game: widget.game);
     setState(() {
       if (averagePlayingTime != null) {
-        averageTimeNotifier.value = averagePlayingTime;
+        widget.averageTimeNotifier.value = averagePlayingTime;
       } else {
-        averageTimeNotifier.value = 0;
+        widget.averageTimeNotifier.value = 0;
       }
       isLoading = false;
     });
   }
 
-  // Funzione per ottenere il tempo giocato dal database
+  //load the playing time of the current user for a specific game
   Future<void> _getPlayingTime() async {
     final playingTime = await PlayingTimeService.getPlayingTime(
       userId: widget.userId,
@@ -53,18 +49,17 @@ class _GameTimeWidgetState extends State<GameTimeWidget> {
     );
     setState(() {
       if (playingTime != null) {
-        _timeController.text = playingTime
-            .toString(); // Imposta il valore delle ore nel campo di input
+        _timeController.text = playingTime.toString();
       } else {
-        _timeController.text = ''; // Se non ci sono ore, lascia il campo vuoto
+        _timeController.text = '';
       }
       isLoading = false;
     });
   }
 
+  //set playing time for a specific game
   Future<void> _sendTime(double hours) async {
     try {
-      // Logica per inviare il tempo al servizio backend
       final success = await PlayingTimeService.setPlayingTime(
         userId: widget.userId,
         game: widget.game,
@@ -72,13 +67,17 @@ class _GameTimeWidgetState extends State<GameTimeWidget> {
       );
 
       if (success) {
+        isLoading = true;
         await _getAveragePlayingTime();
         if (hours == 0) {
+          //success modal for removing the playing time
           _showSuccessDialog("Playing time removed successfully!");
         } else {
+          //success modal for adding the playing time
           _showSuccessDialog("Playing time added successfully!");
         }
       } else {
+        //error modal if the game is not in a playing or completed status
         _showErrorDialog(
             "You are not playing or you don't have completed this game. Please try again.");
       }
@@ -87,11 +86,13 @@ class _GameTimeWidgetState extends State<GameTimeWidget> {
     }
   }
 
+  //redirect to login if the user is not logged
   void _toLoginForTime(BuildContext context) {
     Navigator.pushNamed(context, '/login');
     isLoading = false;
   }
 
+  //form for adding the playing time
   void _showAddTimeModal(BuildContext context) {
     double hours = 0;
 
@@ -116,9 +117,9 @@ class _GameTimeWidgetState extends State<GameTimeWidget> {
                 ),
               ),
               const SizedBox(height: 16),
+              //input field
               TextField(
                 controller: _timeController,
-                // Assegna il controller al campo di input
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Hours',
@@ -133,6 +134,7 @@ class _GameTimeWidgetState extends State<GameTimeWidget> {
                 },
               ),
               const SizedBox(height: 16),
+              //send button
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
@@ -160,6 +162,7 @@ class _GameTimeWidgetState extends State<GameTimeWidget> {
     );
   }
 
+  //success dialog
   void _showSuccessDialog(String message) {
     showDialog(
       context: context,
@@ -176,6 +179,7 @@ class _GameTimeWidgetState extends State<GameTimeWidget> {
     );
   }
 
+  //error dialog
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -202,7 +206,7 @@ class _GameTimeWidgetState extends State<GameTimeWidget> {
             child: CircularProgressIndicator(),
           )
         : ValueListenableBuilder<double>(
-            valueListenable: averageTimeNotifier,
+            valueListenable: widget.averageTimeNotifier,
             builder: (context, averageTime, child) {
               return Container(
                 padding: const EdgeInsets.all(12),
@@ -213,14 +217,14 @@ class _GameTimeWidgetState extends State<GameTimeWidget> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Icona della clessidra
+                    //Hourglass icon
                     const HugeIcon(
                       icon: HugeIcons.strokeRoundedLoading01,
                       color: Colors.white70,
                       size: 45.0,
                     ),
 
-                    // Ore di gioco medie
+                    //Average playing time
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -243,7 +247,7 @@ class _GameTimeWidgetState extends State<GameTimeWidget> {
                       ],
                     ),
 
-                    // Aggiungi ore
+                    //Add playing time button
                     Column(
                       children: [
                         ElevatedButton(
