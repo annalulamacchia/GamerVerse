@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/game.dart';
+import 'package:gamerverse/services/Community/post_service.dart'; // Importa il servizio
 
-class NewPostBottomSheet extends StatelessWidget {
-  final List<String> gameOptions = ['Game 1', 'Game 2', 'Game 3'];
+class NewPostBottomSheet extends StatefulWidget {
+  final Function(String description, String gameId) onPostCreated;
+  final List<Game> wishlistGames;
 
-  NewPostBottomSheet(
-      {super.key}); // Opzioni del menu a discesa per il campo "Game"
+  const NewPostBottomSheet({
+    super.key,
+    required this.onPostCreated,
+    required this.wishlistGames,
+  });
+
+  @override
+  _NewPostBottomSheetState createState() => _NewPostBottomSheetState();
+}
+
+class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
+  String? selectedGameId;
+  TextEditingController descriptionController = TextEditingController();
+  bool isLoading = false; // Per gestire lo stato di caricamento
 
   @override
   Widget build(BuildContext context) {
-    String? selectedGame;
-
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 16,
-        left: 16,
-        right: 16,
-        top: 16,
-      ),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -27,17 +35,22 @@ class NewPostBottomSheet extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // Dropdown menu per il campo "Game"
+          // Dropdown menu
           DropdownButtonFormField<String>(
-            value: selectedGame,
-            items: gameOptions.map((String game) {
+            value: selectedGameId,
+            items: widget.wishlistGames.map((Game game) {
               return DropdownMenuItem<String>(
-                value: game,
-                child: Text(game, style: TextStyle(color: Colors.grey[800])),
+                value: game.id,
+                child: Text(
+                  game.name,
+                  style: TextStyle(color: Colors.grey[800]),
+                ),
               );
             }).toList(),
             onChanged: (newValue) {
-              selectedGame = newValue; // Aggiorna il valore selezionato
+              setState(() {
+                selectedGameId = newValue;
+              });
             },
             decoration: InputDecoration(
               labelText: 'Game',
@@ -53,8 +66,9 @@ class NewPostBottomSheet extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // Campo di testo per la descrizione
+          // Text field for the description
           TextField(
+            controller: descriptionController,
             maxLines: 5,
             decoration: InputDecoration(
               labelText: 'Description',
@@ -72,18 +86,55 @@ class NewPostBottomSheet extends StatelessWidget {
 
           const SizedBox(height: 20),
 
+          // Submit button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 32),
             ),
-            onPressed: () {
-              // Logica per salvare il post
-              Navigator.of(context).pop(); // Chiude il bottom sheet
+            onPressed: () async {
+              String description = descriptionController.text;
+
+              if (selectedGameId != null && description.isNotEmpty) {
+                // Mostra un indicatore di caricamento
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                );
+                // Chiama il servizio per inviare il post
+                final result = await PostService.sendPost(description, selectedGameId!);
+
+                // Chiudi l'indicatore di caricamento
+                Navigator.of(context).pop();
+
+                // Controlla il risultato
+                if (result['success'] == true) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Post created successfully!')),
+                  );
+                  Navigator.of(context).pop(); // Chiudi il bottom sheet
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to create post: ${result["message"]}')),
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Please fill in all fields')),
+                );
+              }
             },
-            child: const Text('Post',
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+            child: const Text(
+              'Post',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
           ),
+
         ],
       ),
     );

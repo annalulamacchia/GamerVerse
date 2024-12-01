@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/profile_or_users/profile_info_card.dart';
-
-// Importa i widget personalizzati dalla cartella widgets
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/profile_tab_bar.dart';
 import 'package:gamerverse/widgets/profile_or_users/NewPostBottomSheet.dart'; // Importa il nuovo widget NewPostBottomSheet
-import 'package:gamerverse/widgets/profile_or_users/PostCardProfile.dart'; // Importa il nuovo widget NewPostBottomSheet
-
+import 'package:gamerverse/widgets/profile_or_users/PostCardProfile.dart'; // Importa il nuovo widget PostCardProfile
+import 'package:gamerverse/services/Community/post_service.dart';
+import 'package:gamerverse/models/game.dart'; // Importa il modello Game
+import 'package:intl/intl.dart'; // Per formattazione della data
 
 class ProfilePostPage extends StatefulWidget {
   const ProfilePostPage({super.key});
@@ -16,23 +16,39 @@ class ProfilePostPage extends StatefulWidget {
 }
 
 class _ProfilePostPageState extends State<ProfilePostPage> {
-  // Puoi aggiungere variabili di stato qui
   final int _likeCount = 11;
   final int _commentCount = 5;
+
+  Future<List<Game>> _getUserWishlist() async {
+    // Logica per recuperare la wishlist dell'utente (al momento vuota per esempio)
+    return [];
+  }
+
+  Future<List<Map<String, dynamic>>> _getUserPosts() async {
+    final result = await PostService.GetPosts(); // Recupera i post dal backend
+    if (result["success"]) {
+      final posts = List<Map<String, dynamic>>.from(result["posts"]);
+      // Ordina i post per timestamp dal più recente al più vecchio
+      posts.sort((a, b) {
+        final dateA = DateTime.parse(a["timestamp"]);
+        final dateB = DateTime.parse(b["timestamp"]);
+        return dateB.compareTo(dateA);
+      });
+      return posts;
+    }
+    return [];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
-      // Sfondo scuro della pagina
       appBar: AppBar(
         title: const Text('Username', style: TextStyle(color: Colors.white)),
-        // Sostituisci con il nome utente dinamico, se necessario
         backgroundColor: const Color(0xff163832),
-        // Verde scuro per l'app bar
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings), // Icona a forma di ingranaggio
+            icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.pushNamed(context, '/profileSettings');
             },
@@ -44,41 +60,60 @@ class _ProfilePostPageState extends State<ProfilePostPage> {
           const ProfileInfoCard(), // Scheda informazioni utente
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
-            // Sezione Tab
           ),
           const TabBarSection(mode: 0, selected: 2),
           Expanded(
-            child: ListView.builder(
-              itemCount: 3, // Numero dei post
-              itemBuilder: (context, index) {
-                return PostCard(
-                  gameName: 'Game Name $index', // Nome dinamico del gioco
-                  gameImageUrl: 'https://via.placeholder.com/90', // URL immagine
-                  description: 'Descrizione dinamica del gioco $index...', // Descrizione dinamica
-                  likeCount: 11, // Like iniziali
-                  commentCount: 5, // Commenti iniziali
-                  onCommentPressed: () {
-                    Navigator.pushNamed(context, '/comments'); // Apri la pagina dei commenti
-                  },
-                  onDeletePressed: () {
-                    setState(() {
-                      // Logica per eliminare il post
-                    });
+            child: FutureBuilder<List<Map<String, dynamic>>>( // Recupero dei post utente
+              future: _getUserPosts(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text("Error loading posts"));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text("No posts available"));
+                }
+
+                final posts = snapshot.data!;
+
+                return ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    final timestamp = DateFormat('yyyy-MM-dd HH:mm').format(
+                      DateTime.parse(post["timestamp"]),
+                    );
+
+                    return PostCard(
+                      userId: post["writer_id"],
+                      gameId: post["game_id"],
+                      description: post["description"],
+                      likeCount: post["likes"],
+                      commentCount: 5,
+                      timestamp: timestamp,
+                      onCommentPressed: () {
+                        Navigator.pushNamed(context, '/comments', arguments: post["id"]);
+                      },
+                      onDeletePressed: () {
+                        setState(() {
+                          // Logica per eliminare il post
+                        });
+                      },
+                    );
                   },
                 );
               },
             ),
           ),
-
         ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1, // Seleziona 'Home' per questa pagina
+        currentIndex: 1,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showNewPostBottomSheet(
-              context); // Mostra il bottom sheet per il nuovo post
+        onPressed: () async {
+          List<Game> wishlistGames = await _getUserWishlist(); // Recupera la wishlist
+          _showNewPostBottomSheet(context, wishlistGames); // Passa la wishlist al bottom sheet
         },
         backgroundColor: const Color(0xff3e6259),
         child: const Icon(Icons.add, color: Colors.white),
@@ -86,8 +121,7 @@ class _ProfilePostPageState extends State<ProfilePostPage> {
     );
   }
 
-  // Funzione per mostrare il Modal Bottom Sheet per creare un nuovo post
-  void _showNewPostBottomSheet(BuildContext context) {
+  void _showNewPostBottomSheet(BuildContext context, List<Game> wishlistGames) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -96,8 +130,27 @@ class _ProfilePostPageState extends State<ProfilePostPage> {
       ),
       backgroundColor: const Color(0xff051f20),
       builder: (BuildContext context) {
-        return NewPostBottomSheet(); // Usa il nuovo widget NewPostBottomSheet
+        return NewPostBottomSheet(
+          wishlistGames: wishlistGames,
+          onPostCreated: (description, gameId) {
+            _createPost(context, description, gameId); // Chiamata alla funzione di creazione post
+          },
+        );
       },
     );
+  }
+
+  Future<void> _createPost(BuildContext context, String description, String gameId) async {
+    final result = await PostService.sendPost(description, gameId);
+
+    if (result["success"]) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Post creato con successo')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Errore: ${result["message"]}')),
+      );
+    }
   }
 }

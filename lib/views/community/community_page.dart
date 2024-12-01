@@ -5,87 +5,126 @@ import 'package:gamerverse/widgets/profile_or_users/NewPostBottomSheet.dart'; //
 import 'package:gamerverse/widgets/common_sections/report_user.dart';
 import 'package:gamerverse/widgets/common_sections/report.dart';
 import 'package:gamerverse/widgets/community/PostCardCommunity.dart';
+import 'package:gamerverse/services/specific_game/wishlist_service.dart';
+import 'package:gamerverse/services/community/post_service.dart';// Importa il servizio Wishlist
+import 'package:gamerverse/models/game.dart'; // Assicurati di avere il modello Game importato
+import 'package:gamerverse/models/post.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class CommunityPage extends StatelessWidget {
+class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
 
-  // Variabili statiche per mantenere i conteggi iniziali
-  final int likeCount = 11;
-  final int commentCount = 5;
+  @override
+  _CommunityPageState createState() => _CommunityPageState();
+}
+
+class _CommunityPageState extends State<CommunityPage> {
+  WishlistService wishlistService = WishlistService();
+  List<Game> wishlistGames = []; // Lista di giochi nella wishlist
+  List<Post> Posts = [];
+  // Metodo per recuperare la wishlist
+
+  Future<void> _getUserWishlist() async {
+    try {
+      // Recupera l'ID utente da SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? userId = prefs.getString('user_uid'); // Recupera l'ID dell'utente
+
+      if (userId != null) {
+        // Recupera la lista dei giochi dalla wishlist usando il servizio
+        List<Game> games = await WishlistService.getWishlist(userId);
+        if (mounted) {
+          // Controlla che il widget sia ancora montato
+          setState(() {
+            wishlistGames = games;
+          });
+        }
+      } else {
+        print('User ID not found in SharedPreferences');
+      }
+    } catch (e) {
+      print('Error fetching wishlist: $e');
+    }
+  }
+
+  Future<void> _getPosts() async {
+    try {
+      // Chiama la funzione GetPosts dal servizio
+      Map<String, dynamic> result = await PostService.GetPosts();
+
+      // Verifica se la risposta è positiva
+      if (result["success"] == true) {
+        // Mappa i post in oggetti Post
+        List<Post> postsList = (result["posts"] as List)
+            .map((postJson) => Post.fromJson(postJson))
+            .toList();
+
+        setState(() {
+          Posts = postsList; // Salva i post mappati nella lista
+        });
+      } else {
+        print("Failed to fetch posts: ${result["message"]}");
+      }
+    } catch (e) {
+      print("Error fetching posts: $e");
+    }
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserWishlist();
+    _getPosts();// Recupera la wishlist dell'utente al momento dell'inizializzazione
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
-      // Sfondo scuro della pagina
       appBar: AppBar(
-        title: const Text('Username', style: TextStyle(color: Colors.white)),
-        // Sostituisci con il nome utente dinamico, se necessario
+        title: const Text('Community', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xff163832),
-        // Verde scuro per l'app bar
-        actions: [
-          Align(
-            alignment: Alignment.topRight,
-            // Sposta il pulsante nell'angolo in alto a destra
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16.0, top: 0.0),
-              // Margine rispetto al bordo
-              child: IconButton(
-                padding: EdgeInsets.zero, // Rimuove il padding predefinito
-                iconSize: 48.0, // Rende l'icona più grande
-                icon: const HugeIcon(
-                  icon: HugeIcons.strokeRoundedUserAdd02,
-                  color: Colors.white,
-                  size: 40.0,
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/suggestedUsers');
-                },
-              ),
-            ),
-          ),
-        ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: 3, // Ora ci sono 3 post simulati
-              itemBuilder: (context, index) {
-                return PostCard(
-                  gameName: "Game Name",
-                  author: "Username",
-                  content: "Riga 1 Riga 2" * 20, // Testo simulato
-                  imageUrl: "https://images.everyeye.it/img-cover/call-of-duty-black-ops-6-v9-49819-320x450.webp",
-                  timestamp: "5 hours ago",
-                  likeCount: 11,
-                  commentCount: 5,
-                  onLikePressed: () {
-                    // Logica per aggiungere un like
-                  },
-                  onCommentPressed: () {
-                    Navigator.pushNamed(context, '/comments');
-                  },
-                  onReportUserPressed: () {
-                    _showReportUserDialog(context);
-                  },
-                  onReportPostPressed: () {
-                    _showReportPostDialog(context);
-                  },
-                );
-              },
-            ),
-          ),
-
-        ],
+      body: Posts.isEmpty
+          ? const Center(child: CircularProgressIndicator()) // Mostra un caricamento finché i post non sono disponibili
+          : ListView.builder(
+        itemCount: Posts.length, // Numero di post
+        itemBuilder: (context, index) {
+          final post = Posts[index];
+          return PostCard(
+            gameId: post.gameId, // Assicurati che GameName sia correttamente mappato
+            userId: post.writerId, // Mostra lo writerId come autore
+            content: post.description, // Passa la descrizione del post
+            imageUrl: '', // Aggiungi un URL immagine appropriato
+            timestamp: post.timestamp, // Puoi calcolare un timestamp dinamico
+            likeCount: post.likes,
+            commentCount: 5, // Puoi aggiungere la logica per contare i commenti
+            onLikePressed: () {
+              // Logica per il like
+              print('Liked Post: ${post.id}');
+            },
+            onCommentPressed: () {
+              // Logica per il commento
+              print('Commented Post: ${post.id}');
+            },
+            onReportUserPressed: () {
+              // Logica per report dell'utente
+              print('Reported User: ${post.writerId}');
+            },
+            onReportPostPressed: () {
+              // Logica per report del post
+              print('Reported Post: ${post.id}');
+            },
+          );
+        },
       ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 0, // Seleziona 'Home' per questa pagina
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showNewPostBottomSheet(
-              context); // Mostra il bottom sheet per il nuovo post
+          _showNewPostBottomSheet(context); // Mostra il bottom sheet per il nuovo post
         },
         backgroundColor: const Color(0xff3e6259),
         child: const Icon(Icons.add, color: Colors.white),
@@ -103,8 +142,22 @@ class CommunityPage extends StatelessWidget {
       ),
       backgroundColor: const Color(0xff051f20),
       builder: (BuildContext context) {
-        return NewPostBottomSheet(); // Usa il nuovo widget NewPostBottomSheet
+        return NewPostBottomSheet(
+          wishlistGames: wishlistGames, // Passa la lista di giochi alla bottom sheet
+          onPostCreated: (description, gameId) {
+            _createPost(context, description, gameId); // Gestisci la creazione del post
+          },
+        );
       },
+    );
+  }
+
+  // Funzione per inviare i dati del post al backend
+  Future<void> _createPost(BuildContext context, String description, String gameId) async {
+    // Logica per inviare il nuovo post
+    print('Creating post with description: $description and game ID: $gameId');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Post creato con successo')),
     );
   }
 
@@ -127,4 +180,8 @@ class CommunityPage extends StatelessWidget {
           return const ReportWidget();
         });
   }
+
+
 }
+
+
