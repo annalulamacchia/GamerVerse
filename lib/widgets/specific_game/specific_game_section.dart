@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/services/gameApiService.dart';
+import 'package:gamerverse/services/game_api_service.dart';
 
 class SpecificGameSectionWidget extends StatefulWidget {
   final String title;
@@ -84,8 +84,14 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
             } else {
               isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : Navigator.pushNamed(context, '/series',
-                      arguments: gameIds);
+                  : Navigator.pushNamed(
+                      context,
+                      '/series',
+                      arguments: {
+                        'gameIds': gameIds,
+                        'title': 'Series',
+                      },
+                    );
             }
           },
           child: Container(
@@ -111,6 +117,8 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
             ),
           ),
         ),
+        if (widget.storyline != "")
+          const SizedBox(height: 20),
       ],
     );
   }

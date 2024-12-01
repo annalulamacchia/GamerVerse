@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/models/userReview.dart';
 import 'package:http/http.dart' as http;
 
 class StatusGameService {
+  //function to set the Playing status on a specific game
   static Future<void> setPlaying({
     required String? userId,
     required Game? game,
@@ -22,20 +24,24 @@ class StatusGameService {
       }),
     );
 
-    print(response.body);
     if (response.statusCode == 200) {
-      print('Set Playing status successfully!');
+      if (kDebugMode) {
+        print('Set Playing status successfully!');
+      }
     } else {
-      print('Failed to set Playing status');
+      if (kDebugMode) {
+        print('Failed to set Playing status');
+      }
     }
   }
 
+  //function to set the Completed status on a specific game
   static Future<void> setCompleted({
     required String? userId,
     required Game? game,
   }) async {
     final url =
-    Uri.parse('https://gamerversemobile.pythonanywhere.com/set_completed');
+        Uri.parse('https://gamerversemobile.pythonanywhere.com/set_completed');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -48,20 +54,24 @@ class StatusGameService {
       }),
     );
 
-    print(response.body);
     if (response.statusCode == 200) {
-      print('Set Completed status successfully!');
+      if (kDebugMode) {
+        print('Set Completed status successfully!');
+      }
     } else {
-      print('Failed to set Completed status');
+      if (kDebugMode) {
+        print('Failed to set Completed status');
+      }
     }
   }
 
+  //function to remove the Playing status on a specific game
   static Future<void> removePlaying({
     required String? userId,
     required Game? game,
   }) async {
     final url =
-    Uri.parse('https://gamerversemobile.pythonanywhere.com/remove_playing');
+        Uri.parse('https://gamerversemobile.pythonanywhere.com/remove_playing');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -71,20 +81,24 @@ class StatusGameService {
       }),
     );
 
-    print(response.body);
     if (response.statusCode == 200) {
-      print('Remove Playing status successfully!');
+      if (kDebugMode) {
+        print('Remove Playing status successfully!');
+      }
     } else {
-      print('Failed to remove Playing status');
+      if (kDebugMode) {
+        print('Failed to remove Playing status');
+      }
     }
   }
 
+  //function to remove the Completed status on a specific game
   static Future<void> removeCompleted({
     required String? userId,
     required Game? game,
   }) async {
-    final url =
-    Uri.parse('https://gamerversemobile.pythonanywhere.com/remove_completed');
+    final url = Uri.parse(
+        'https://gamerversemobile.pythonanywhere.com/remove_completed');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -93,15 +107,21 @@ class StatusGameService {
         'gameId': game!.id,
       }),
     );
-
-    print(response.body);
+    if (kDebugMode) {
+      print(response.body);
+    }
     if (response.statusCode == 200) {
-      print('Remove Completed status successfully!');
+      if (kDebugMode) {
+        print('Remove Completed status successfully!');
+      }
     } else {
-      print('Failed to remove Completed status');
+      if (kDebugMode) {
+        print('Failed to remove Completed status');
+      }
     }
   }
 
+  //function to get the status of a specific game
   static Future<Map<String, dynamic>?> getGameStatus({
     required String? userId,
     required Game? game,
@@ -119,13 +139,19 @@ class StatusGameService {
 
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
+      if (kDebugMode) {
+        print('Success to get game status from wishlist');
+      }
       return decoded;
     } else {
-      print('Failed to get game status from wishlist');
+      if (kDebugMode) {
+        print('Failed to get game status from wishlist');
+      }
       return null;
     }
   }
 
+  //function to get all the users that are currently playing or have completed a specific game
   static Future<List<UserReview>?> getUsersByStatusGame(String gameId) async {
     final String url =
         'https://gamerversemobile.pythonanywhere.com/get_users_by_status_game';
@@ -137,22 +163,30 @@ class StatusGameService {
           'gameId': gameId,
         }),
       );
-      print(response.body);
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
         if (data['users'] != null) {
+          if (kDebugMode) {
+            print('Success to load users with status game');
+          }
           return (data['users'] as List).map((userJson) {
             return UserReview.fromJson(userJson);
           }).toList();
         } else {
+          if (kDebugMode) {
+            print('Failed to load users with status game');
+          }
           return [];
         }
       } else {
         throw Exception('Failed to load users');
       }
     } catch (e) {
-      print('Error: $e');
+      if (kDebugMode) {
+        print('Error: $e');
+      }
       return [];
     }
   }

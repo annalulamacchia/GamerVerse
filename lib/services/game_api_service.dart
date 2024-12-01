@@ -457,7 +457,7 @@ class GameApiService {
       fields id, name, cover.url;
       where cover != null; 
       sort popularity desc;
-      limit 100;
+      limit 10;
     ''';
     return fetchGames(query);
   }
@@ -467,7 +467,7 @@ class GameApiService {
       fields id, name, cover.url;
       where cover != null; 
       sort rating desc;
-      limit 100;
+      limit 10;
     ''';
     return fetchGames(query);
   }
@@ -478,7 +478,7 @@ class GameApiService {
     fields id, name, cover.url;
     where cover != null & first_release_date > ${DateTime.now().subtract(Duration(days: 30)).millisecondsSinceEpoch ~/ 1000}; 
     sort first_release_date desc;
-    limit 100;
+    limit 10;
   ''';
     return fetchGames(query);
   }
@@ -489,20 +489,10 @@ class GameApiService {
     fields id, name, cover.url;
     where cover != null & first_release_date > ${DateTime.now().millisecondsSinceEpoch ~/ 1000}; 
     sort first_release_date asc;
-    limit 100;
+    limit 10;
   ''';
     return fetchGames(query);
   }
 
-  static Future<List<Map<String, dynamic>>?> fetchGamesByName(String searchQuery) async {
-    final query = '''
-  fields id, name, cover.url;
-  where name ~ *"$searchQuery"*;
-  sort popularity desc;
-  limit 30;
-  ''';
-    print("Generated Query: $query"); // Debugging log
-    return fetchGames(query);
-  }
 
 }

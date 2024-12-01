@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:gamerverse/services/gameApiService.dart';
+import 'package:gamerverse/services/game_api_service.dart';
 
 class SpecificGameList extends StatefulWidget {
   final List<dynamic> list;
@@ -15,12 +15,12 @@ class SpecificGameList extends StatefulWidget {
   });
 
   @override
-  _SpecificGameList createState() => _SpecificGameList();
+  SpecificGameListState createState() => SpecificGameListState();
 }
 
-class _SpecificGameList extends State<SpecificGameList> {
+class SpecificGameListState extends State<SpecificGameList> {
   List<Map<String, dynamic>>? details;
-  String? release_date;
+  String? releaseDate;
   bool isLoading = true;
 
   @override
@@ -160,20 +160,27 @@ class _SpecificGameList extends State<SpecificGameList> {
     String formattedDate = "${date.day} $monthName ${date.year}";
     if (unixTimestamp == 0) {
       setState(() {
-        release_date = null;
+        releaseDate = null;
         isLoading = false;
       });
       return;
     }
     setState(() {
-      release_date = formattedDate;
+      releaseDate = formattedDate;
       isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) return const Center(child: CircularProgressIndicator());
+    if (isLoading) {
+      return const Center(
+        child: Opacity(
+          opacity: 0,
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     if (!isLoading &&
         (widget.title == 'First Release Date' ||
             (details != null && details!.isNotEmpty))) {
@@ -201,7 +208,9 @@ class _SpecificGameList extends State<SpecificGameList> {
                   //Platforms
                   if (widget.title == 'Platforms' && details != null)
                     ...details!.map((elem) => TextSpan(
-                          text: '${elem['abbreviation']}    ',
+                          text: elem['abbreviation'] != null
+                              ? '${elem['abbreviation']}    '
+                              : '${elem['name']}    ',
                         )),
 
                   //Developers
@@ -213,7 +222,10 @@ class _SpecificGameList extends State<SpecificGameList> {
                               Navigator.pushNamed(
                                 context,
                                 '/series',
-                                arguments: elem['developed'],
+                                arguments: {
+                                  'gameIds': elem['published'],
+                                  'title': 'Developed Games',
+                                },
                               );
                             },
                           style: const TextStyle(
@@ -230,7 +242,10 @@ class _SpecificGameList extends State<SpecificGameList> {
                               Navigator.pushNamed(
                                 context,
                                 '/series',
-                                arguments: elem['published'],
+                                arguments: {
+                                  'gameIds': elem['published'],
+                                  'title': 'Published Games',
+                                },
                               );
                             },
                           style: const TextStyle(
@@ -247,7 +262,7 @@ class _SpecificGameList extends State<SpecificGameList> {
                   //First Release Date
                   if (widget.title == 'First Release Date')
                     TextSpan(
-                      text: release_date != null ? '$release_date    ' : 'n.d.',
+                      text: releaseDate != null ? '$releaseDate    ' : 'TBD',
                     ),
                 ],
               ),

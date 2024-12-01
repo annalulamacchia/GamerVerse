@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/userReview.dart';
-import 'package:gamerverse/services/statusGameService.dart';
+import 'package:gamerverse/services/specific_game/status_game_service.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class PlayedButtonToList extends StatefulWidget {
@@ -11,18 +11,24 @@ class PlayedButtonToList extends StatefulWidget {
       {super.key, required this.gameId, required this.playedCountNotifier});
 
   @override
-  _PlayedButtonToListState createState() => _PlayedButtonToListState();
+  PlayedButtonToListState createState() => PlayedButtonToListState();
 }
 
-class _PlayedButtonToListState extends State<PlayedButtonToList> {
+class PlayedButtonToListState extends State<PlayedButtonToList> {
   List<UserReview>? users;
   bool isLoading = true;
   int oldCount = 0;
+  bool _isLoadingUsers = false;
 
   @override
   void initState() {
     super.initState();
+    //listener to sync the counter of users that are playing or have completed the current game
     widget.playedCountNotifier.addListener(_loadUsersByStatusGame);
+    setState(() {
+      isLoading = true;
+      oldCount = widget.playedCountNotifier.value;
+    });
     _loadUsersByStatusGame();
   }
 
@@ -34,17 +40,24 @@ class _PlayedButtonToListState extends State<PlayedButtonToList> {
 
   //load all the users that have that game in the wishlist
   Future<void> _loadUsersByStatusGame() async {
-    setState(() {
-      isLoading = true;
-      oldCount = widget.playedCountNotifier.value;
-    });
+    if (_isLoadingUsers) return;
+    _isLoadingUsers = true;
+
+    if (!mounted) {
+      _isLoadingUsers = false;
+      return;
+    }
+
     final us = await StatusGameService.getUsersByStatusGame(widget.gameId);
     setState(() {
       users = us;
+      if (us != null && widget.playedCountNotifier.value != us.length) {
+        widget.playedCountNotifier.value = us.length;
+      }
       isLoading = false;
     });
 
-    widget.playedCountNotifier.value = us!.length;
+    _isLoadingUsers = false;
   }
 
   @override
@@ -73,7 +86,7 @@ class _PlayedButtonToListState extends State<PlayedButtonToList> {
                   ],
                 ),
                 Text(
-                  'Liked',
+                  'Played',
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ],

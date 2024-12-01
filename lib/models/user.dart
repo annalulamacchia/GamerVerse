@@ -9,6 +9,7 @@ class User {
     required this.username,
   });
 
+  //create the User model from a JSON result
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
         userId: json['userId'],

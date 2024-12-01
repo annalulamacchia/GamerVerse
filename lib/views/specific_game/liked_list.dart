@@ -9,10 +9,10 @@ class LikedList extends StatefulWidget {
   const LikedList({super.key, required this.users});
 
   @override
-  _LikedListState createState() => _LikedListState();
+  LikedListState createState() => LikedListState();
 }
 
-class _LikedListState extends State<LikedList> {
+class LikedListState extends State<LikedList> {
   int itemCount = 0;
 
   @override
@@ -35,6 +35,7 @@ class _LikedListState extends State<LikedList> {
         ),
         title: const Text('Game Name', style: TextStyle(color: Colors.white)),
       ),
+      //list of all the users that liked a specific game
       body: ListView.builder(
         itemCount: itemCount,
         itemBuilder: (context, index) {
@@ -52,12 +53,5 @@ class _LikedListState extends State<LikedList> {
         currentIndex: 1,
       ),
     );
-  }
-
-  // Puoi aggiungere metodi per aggiornare lo stato
-  void updateItemCount(int newCount) {
-    setState(() {
-      itemCount = newCount;
-    });
   }
 }

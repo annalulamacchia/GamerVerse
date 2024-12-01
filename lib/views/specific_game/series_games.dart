@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/services/gameApiService.dart';
+import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 
 class SeriesGame extends StatefulWidget {
   final List<dynamic> gameIds;
+  final String title;
 
-  const SeriesGame({super.key, required this.gameIds});
+  const SeriesGame({super.key, required this.gameIds, required this.title});
 
   @override
-  _SeriesGameState createState() => _SeriesGameState();
+  SeriesGameState createState() => SeriesGameState();
 }
 
-class _SeriesGameState extends State<SeriesGame> {
+class SeriesGameState extends State<SeriesGame> {
   bool isLoading = true;
   List<Map<String, dynamic>>? coverGames;
 
@@ -23,6 +24,7 @@ class _SeriesGameState extends State<SeriesGame> {
     }
   }
 
+  //load the cover of some games
   Future<void> _loadCovers(List<dynamic> games) async {
     if (games.isEmpty) {
       setState(() {
@@ -44,7 +46,7 @@ class _SeriesGameState extends State<SeriesGame> {
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
-        title: const Text('Series Game', style: TextStyle(color: Colors.white)),
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -69,7 +71,6 @@ class _SeriesGameState extends State<SeriesGame> {
                   int gameId = widget.gameIds[index];
                   if (gameId == coverGames?[index]['game']) {
                     final coverGame = coverGames?[index];
-
                     return Container(
                       width: 180,
                       margin: const EdgeInsets.symmetric(horizontal: 1),
