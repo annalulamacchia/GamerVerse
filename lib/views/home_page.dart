@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/home/category_section.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/services/gameApiService.dart';
+import 'package:gamerverse/utils/colors.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,10 +31,10 @@ class _HomePageState extends State<HomePage> {
       final upcoming = await GameApiService.fetchUpcomingGames();
 
       setState(() {
-        allGames = all?.take(4).toList();
-        popularGames = popular?.take(4).toList();
-        releasedThisMonthGames = releasedThisMonth?.take(4).toList();
-        upcomingGames = upcoming?.take(4).toList();
+        allGames = all?.take(10).toList();
+        popularGames = popular?.take(10).toList();
+        releasedThisMonthGames = releasedThisMonth?.take(10).toList();
+        upcomingGames = upcoming?.take(10).toList();
       });
     } catch (e) {
       print('Error fetching games: $e');
