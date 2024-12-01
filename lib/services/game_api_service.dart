@@ -494,5 +494,16 @@ class GameApiService {
     return fetchGames(query);
   }
 
+  static Future<List<Map<String, dynamic>>?> fetchGamesByName(String searchQuery) async {
+    final query = '''
+  fields id, name, cover.url;
+  where name ~ *"$searchQuery"*;
+  sort popularity desc;
+  limit 30;
+  ''';
+    print("Generated Query: $query"); // Debugging log
+    return fetchGames(query);
+  }
+
 
 }
