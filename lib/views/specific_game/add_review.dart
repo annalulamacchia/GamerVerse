@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/services/specific_game/review_service.dart';
+import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class AddReview extends StatefulWidget {
-  final VoidCallback onSubmit;
+  final String? userId;
+  final String gameId;
+  final VoidCallback onReviewAdded;
 
-  const AddReview({super.key, required this.onSubmit});
+  const AddReview(
+      {super.key,
+      required this.userId,
+      required this.gameId,
+      required this.onReviewAdded});
 
   @override
   State<AddReview> createState() => _AddReviewState();
@@ -13,12 +21,70 @@ class AddReview extends StatefulWidget {
 class _AddReviewState extends State<AddReview> {
   int _rating = 1;
   final TextEditingController _reviewController = TextEditingController();
+  bool _isLoading = false;
+  bool _isLoadingExistingReview = true;
+  Map<String, dynamic>? review;
 
-  //function to set the rating near the clicked ghosts
+  @override
+  void initState() {
+    super.initState();
+    _loadExistingReview();
+  }
+
   void _setRating(int rating) {
     setState(() {
       _rating = rating;
     });
+  }
+
+  // Funzione per caricare la recensione esistente
+  Future<void> _loadExistingReview() async {
+    review = await ReviewService.getReview(
+      writerId: widget.userId,
+      gameId: widget.gameId,
+    );
+
+    if (review != null) {
+      setState(() {
+        _rating = review?['rating'];
+        _reviewController.text = review?['description'];
+      });
+    }
+    setState(() {
+      _isLoadingExistingReview = false;
+    });
+  }
+
+  Future<void> _submitReview() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    bool success = await ReviewService.addReview(
+        reviewId: review?['review_id'] ?? '',
+        userId: widget.userId,
+        gameId: widget.gameId,
+        description: _reviewController.text,
+        rating: _rating,
+        timestamp: DateTime.now().toUtc().toIso8601String());
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (success) {
+      Navigator.of(context).pop();
+      if (review != null) {
+        DialogHelper.showSuccessDialog(
+            context, "Review modified successfully!");
+      } else {
+        DialogHelper.showSuccessDialog(context, "Review added successfully!");
+      }
+      widget.onReviewAdded();
+    } else {
+      DialogHelper.showErrorDialog(context,
+          "You are not playing or you don't have completed this game. Please try again.");
+    }
   }
 
   @override
@@ -29,75 +95,91 @@ class _AddReviewState extends State<AddReview> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              //5 ghosts Rating
-              ...List.generate(5, (index) {
-                return IconButton(
-                  icon: HugeIcon(
-                    icon: HugeIcons.strokeRoundedPacman02,
-                    color: index < _rating ? Colors.amber : Colors.grey,
-                    size: 35.0,
+          _isLoadingExistingReview
+              ? Center(
+                  child: Opacity(
+                    opacity: 0,
+                    child: CircularProgressIndicator(),
                   ),
-                  onPressed: () => _setRating(index + 1),
-                );
-              }),
-              const SizedBox(width: 15),
-              Text(
-                _rating.toString(),
-                style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ],
-          ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // 5 ghosts Rating
+                    ...List.generate(5, (index) {
+                      return IconButton(
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedPacman02,
+                          color: index < _rating ? Colors.amber : Colors.grey,
+                          size: 35.0,
+                        ),
+                        onPressed: () => _setRating(index + 1),
+                      );
+                    }),
+                    const SizedBox(width: 15),
+                    Text(
+                      _rating.toString(),
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
           const SizedBox(height: 16),
-          Theme(
-            data: Theme.of(context).copyWith(
-              textSelectionTheme: const TextSelectionThemeData(
-                selectionHandleColor: Color(0xff3e6259),
-              ),
-            ),
-            child: TextField(
-              controller: _reviewController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Write your review here...',
-                hintStyle: TextStyle(color: Colors.white70),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70),
+          _isLoadingExistingReview
+              ? Center(
+                  child: Opacity(
+                    opacity: 0,
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : Theme(
+                  data: Theme.of(context).copyWith(
+                    textSelectionTheme: const TextSelectionThemeData(
+                      selectionHandleColor: Color(0xff3e6259),
+                    ),
+                  ),
+                  child: TextField(
+                    controller: _reviewController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Write your review here...',
+                      hintStyle: TextStyle(color: Colors.white70),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white70),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xff3e6259)),
+                      ),
+                    ),
+                    maxLines: 4,
+                    style: const TextStyle(color: Colors.white70),
+                    cursorColor: Colors.white70,
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xff3e6259)),
-                ),
-              ),
-              maxLines: 4,
-              style: const TextStyle(color: Colors.white70),
-              cursorColor: Colors.white70,
-            ),
-          ),
           const SizedBox(height: 16),
 
-          //Post Button
+          // Post Button
           Center(
             child: ElevatedButton(
-              onPressed: () {
-                widget.onSubmit();
-                _reviewController.clear();
-              },
+              onPressed: _isLoading ? null : _submitReview,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xff3e6259),
               ),
-              child: const Text(
-                'Post',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              child: _isLoading
+                  ? const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    )
+                  : const Text(
+                      'Post',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
             ),
           ),
         ],

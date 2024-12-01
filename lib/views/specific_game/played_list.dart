@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/specific_game/single_review.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 
 class PlayedList extends StatelessWidget {
@@ -22,14 +21,11 @@ class PlayedList extends StatelessWidget {
       body: ListView.builder(
         itemCount: 10,
         itemBuilder: (context, index) {
-          return const SingleReview(
-              username: "Giocatore1",
-              rating: 4.5,
-              comment: "",
-              avatarUrl:
-                  "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
-              likes: 11,
-              dislikes: 11);
+          return null;
+        
+          //return const SingleReview(
+          //review
+          //: );
         },
       ),
       bottomNavigationBar: const CustomBottomNavBar(

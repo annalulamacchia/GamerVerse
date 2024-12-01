@@ -85,14 +85,7 @@ class PlayingTimeService {
         }
 
         final data = json.decode(response.body);
-        if (data != null) {
-          return data;
-        } else {
-          if (kDebugMode) {
-            print('Response does not contain a valid "playingTime".');
-          }
-          return null;
-        }
+        return data['playing_time'].toDouble();
       } else {
         if (kDebugMode) {
           print(

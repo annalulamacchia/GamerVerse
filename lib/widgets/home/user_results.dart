@@ -4,7 +4,7 @@ import 'package:gamerverse/services/searchUsername_service.dart';
 class UserResults extends StatefulWidget {
   final String searchQuery;
 
-  const UserResults({Key? key, required this.searchQuery}) : super(key: key);
+  const UserResults({super.key, required this.searchQuery});
 
   @override
   _UserResultsState createState() => _UserResultsState();

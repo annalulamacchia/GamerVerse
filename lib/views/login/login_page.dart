@@ -36,6 +36,16 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff051f20),
+      appBar: AppBar(
+        backgroundColor: const Color(0xff163832),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Container(
         // Gradient background for an elegant look
         decoration: const BoxDecoration(
@@ -82,7 +92,8 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 15),
                 ElevatedButton(
-                  onPressed: () => _handleGoogleLogin(context), // Call the handler
+                  onPressed: () => _handleGoogleLogin(context),
+                  // Call the handler
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red.shade700,
                     foregroundColor: Colors.white,

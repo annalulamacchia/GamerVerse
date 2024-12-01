@@ -4,7 +4,7 @@ import 'package:gamerverse/services/game_api_service.dart';
 class VideoGameResults extends StatefulWidget {
   final String searchQuery;
 
-  const VideoGameResults({Key? key, required this.searchQuery}) : super(key: key);
+  const VideoGameResults({super.key, required this.searchQuery});
 
   @override
   _VideoGameResultsState createState() => _VideoGameResultsState();
@@ -146,7 +146,7 @@ class _VideoGameResultsState extends State<VideoGameResults> {
 class AnimatedCard extends StatelessWidget {
   final Map<String, dynamic> game;
 
-  const AnimatedCard({Key? key, required this.game}) : super(key: key);
+  const AnimatedCard({super.key, required this.game});
 
   @override
   Widget build(BuildContext context) {

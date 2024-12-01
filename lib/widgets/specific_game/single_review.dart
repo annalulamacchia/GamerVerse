@@ -1,25 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/review.dart';
 import 'package:gamerverse/widgets/common_sections/report_user.dart';
 import 'package:gamerverse/widgets/specific_game/like_dislike_button.dart';
 import 'package:gamerverse/widgets/common_sections/report.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class SingleReview extends StatelessWidget {
-  final String username;
-  final double rating;
-  final String comment;
-  final String avatarUrl;
-  final int likes;
-  final int dislikes;
+  final Review? review;
 
-  const SingleReview(
-      {super.key,
-      required this.username,
-      required this.rating,
-      required this.comment,
-      required this.avatarUrl,
-      required this.likes,
-      required this.dislikes});
+  const SingleReview({
+    super.key,
+    required this.review,
+  });
 
   //function to show bottom pop up for report review
   void _showReport(BuildContext context) {
@@ -64,8 +56,14 @@ class SingleReview extends StatelessWidget {
             children: [
               // Avatar
               CircleAvatar(
-                backgroundImage: NetworkImage(avatarUrl),
+                backgroundColor: Colors.grey[200],
+                backgroundImage: review?.writerPicture != ''
+                    ? NetworkImage(review!.writerPicture)
+                    : null,
                 radius: 20,
+                child: review?.writerPicture != ''
+                    ? null
+                    : Icon(Icons.person, color: Colors.grey[700], size: 30),
               ),
               const SizedBox(width: 15),
 
@@ -78,7 +76,7 @@ class SingleReview extends StatelessWidget {
                       Navigator.pushNamed(context, '/userProfile');
                     },
                     child: Text(
-                      username,
+                      review!.writerUsername,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -94,7 +92,7 @@ class SingleReview extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        rating.toString(),
+                        review!.rating.toString(),
                         style: const TextStyle(fontSize: 20),
                       ),
                     ],
@@ -102,8 +100,8 @@ class SingleReview extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              const Text(
-                'Playing', // Display timestamp
+              Text(
+                review!.status, // Display timestamp
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.black54,
@@ -137,12 +135,15 @@ class SingleReview extends StatelessWidget {
 
           // Review
           Text(
-            comment,
+            review!.description,
             style: const TextStyle(fontSize: 14, color: Colors.black87),
           ),
 
           // Like and Dislike buttons
-          const LikeDislikeWidget(timestamp: '10'),
+          LikeDislikeWidget(
+              timestamp: review!.timestamp,
+              likes: review!.likes,
+              dislikes: review!.dislikes),
         ],
       ),
     );

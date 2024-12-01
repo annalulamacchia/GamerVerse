@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/services/specific_game/playing_time_service.dart';
+import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class GameTimeWidget extends StatefulWidget {
@@ -65,8 +66,8 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
       game: widget.game,
     );
     setState(() {
-      if (playingTime != null) {
-        _timeController.text = playingTime.toString();
+      if (playingTime != null && playingTime != 0) {
+        _timeController.text = playingTime.toStringAsFixed(0);
       } else {
         _timeController.text = '';
       }
@@ -88,18 +89,21 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
         await _getAveragePlayingTime();
         if (hours == 0) {
           //success modal for removing the playing time
-          _showSuccessDialog("Playing time removed successfully!");
+          DialogHelper.showSuccessDialog(
+              context, "Playing time removed successfully!");
         } else {
           //success modal for adding the playing time
-          _showSuccessDialog("Playing time added successfully!");
+          DialogHelper.showSuccessDialog(
+              context, "Playing time added successfully!");
         }
       } else {
         //error modal if the game is not in a playing or completed status
-        _showErrorDialog(
+        DialogHelper.showErrorDialog(context,
             "You are not playing or you don't have completed this game. Please try again.");
       }
     } catch (e) {
-      _showErrorDialog("An unexpected error occurred: ${e.toString()}");
+      DialogHelper.showErrorDialog(
+          context, "An unexpected error occurred: ${e.toString()}");
     }
   }
 
@@ -176,43 +180,6 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
           ),
         );
       },
-    );
-  }
-
-  //success dialog
-  void _showSuccessDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Success'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  //error dialog
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text(
-          'Error',
-          style: TextStyle(color: Colors.red),
-        ),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
     );
   }
 

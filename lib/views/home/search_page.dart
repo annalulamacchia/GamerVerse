@@ -5,7 +5,7 @@ import 'package:gamerverse/widgets/home/user_results.dart';
 import 'package:gamerverse/utils/colors.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  const SearchPage({super.key});
 
   @override
   _SearchPageState createState() => _SearchPageState();

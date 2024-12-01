@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
+import 'package:gamerverse/models/review.dart';
 import 'package:gamerverse/services/game_api_service.dart';
+import 'package:gamerverse/services/specific_game/review_service.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 import 'package:gamerverse/widgets/specific_game/game_time.dart';
@@ -37,6 +39,20 @@ class SpecificGameState extends State<SpecificGame> {
   ValueNotifier<int> likedCountNotifier = ValueNotifier<int>(0);
   ValueNotifier<int> playedCountNotifier = ValueNotifier<int>(0);
   ValueNotifier<double> averageTimeNotifier = ValueNotifier<double>(0);
+  double userRating = 0;
+  Review? latestReview;
+  bool isLoadingReview = true;
+  ValueNotifier<double> averageUserReviewNotifier = ValueNotifier<double>(0);
+  bool _isLoadingUserRating = false;
+  ValueNotifier<Review> latestReviewNotifier = ValueNotifier<Review>(Review(
+      description: '',
+      rating: 0,
+      writerUsername: '',
+      timestamp: '',
+      likes: 0,
+      dislikes: 0,
+      writerPicture: '',
+      status: ''));
 
   @override
   void initState() {
@@ -82,6 +98,19 @@ class SpecificGameState extends State<SpecificGame> {
         gameData?['similar_games'].length != 0) {
       _loadCoverSimilarGames(gameData?['similar_games']);
     }
+    if (gameData != null && gameData?['id'] != null) {
+      averageUserReviewNotifier.addListener(_loadAverageUserRating);
+      _loadAverageUserRating();
+      latestReviewNotifier.addListener(_loadLatestReview);
+      _loadLatestReview();
+    }
+  }
+
+  @override
+  void dispose() {
+    averageUserReviewNotifier.removeListener(_loadAverageUserRating);
+    latestReviewNotifier.removeListener(_loadLatestReview);
+    super.dispose();
   }
 
   //load the cover of the game
@@ -126,6 +155,39 @@ class SpecificGameState extends State<SpecificGame> {
     final covers = await GameApiService.fetchCoverByGames(gameIds);
     setState(() {
       coverSimilarGames = covers;
+    });
+  }
+
+  Future<void> _loadAverageUserRating() async {
+    if (_isLoadingUserRating) return;
+    _isLoadingUserRating = true;
+
+    if (!mounted) {
+      _isLoadingUserRating = false;
+      return;
+    }
+    final rating =
+        await ReviewService.getAverageUserRating(gameId: gameData?['id']);
+    setState(() {
+      if (rating != null) {
+        averageUserReviewNotifier.value = rating;
+      } else {
+        averageUserReviewNotifier.value = 0;
+      }
+    });
+
+    _isLoadingUserRating = false;
+  }
+
+  Future<void> _loadLatestReview() async {
+    final review = await ReviewService.getLatestReview(gameId: gameData!['id'].toString());
+    setState(() {
+      if (review != null) {
+        latestReview = review;
+      } else {
+        latestReview = null;
+      }
+      isLoadingReview = false;
     });
   }
 
@@ -210,9 +272,14 @@ class SpecificGameState extends State<SpecificGame> {
                   //Users Rating
                   InkWell(
                     onTap: () {
-                      Navigator.pushNamed(context, '/allReviews');
+                      Navigator.pushNamed(context, '/allReviews', arguments: {
+                        'userId': userId,
+                        'game': game,
+                        'onLoadAverageRating': _loadAverageUserRating,
+                        'averageUserReviewNotifier': averageUserReviewNotifier
+                      });
                     },
-                    child: const Column(
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(
@@ -223,13 +290,19 @@ class SpecificGameState extends State<SpecificGame> {
                               size: 24.0,
                             ),
                             SizedBox(width: 4),
-                            Text(
-                              '4.5',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
+                            ValueListenableBuilder<double>(
+                                valueListenable: averageUserReviewNotifier,
+                                builder: (context, averageUserReview, child) {
+                                  return Text(
+                                    averageUserReview != 0
+                                        ? averageUserReview.toString()
+                                        : 'N/A',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  );
+                                })
                           ],
                         ),
                         SizedBox(height: 4),
@@ -337,15 +410,51 @@ class SpecificGameState extends State<SpecificGame> {
             if (gameData?['first_release_date'] != null &&
                 gameData?['first_release_date'] * 1000 <
                     DateTime.now().millisecondsSinceEpoch)
-              //Last Review
-              const SingleReview(
-                  username: "Giocatore1",
-                  rating: 4.5,
-                  comment: "Questo gioco è fantastico, mi piace molto!",
-                  avatarUrl:
-                      "https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg",
-                  likes: 11,
-                  dislikes: 11),
+              if (latestReview != null && isLoadingReview == false)
+                //Last Review
+                SingleReview(review: latestReview),
+            if (latestReview == null && isLoadingReview == true)
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+            if (latestReview == null && isLoadingReview == false)
+              Container(
+                  padding: const EdgeInsets.all(12),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 7.5, horizontal: 15),
+                  decoration: BoxDecoration(
+                    color: const Color(0xfff0f9f1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.reviews_outlined,
+                          color: Colors.black,
+                          size: 50,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No reviews available.',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Be the first to share your thoughts!',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
             if (gameData?['first_release_date'] != null &&
                 gameData?['first_release_date'] * 1000 <
                     DateTime.now().millisecondsSinceEpoch)
@@ -362,13 +471,24 @@ class SpecificGameState extends State<SpecificGame> {
                       backgroundColor: const Color(0xff3e6259),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/allReviews');
+                      Navigator.pushNamed(context, '/allReviews', arguments: {
+                        'userId': userId,
+                        'game': game,
+                        'onLoadAverageRating': _loadAverageUserRating,
+                        'averageUserReviewNotifier': averageUserReviewNotifier,
+                        'latestReviewNotifier': latestReviewNotifier,
+                        'onLoadLatestReview': _loadLatestReview,
+                      });
                     },
-                    child: const Text('All Reviews',
-                        style: TextStyle(color: Colors.white))),
+                    child: latestReview != null
+                        ? const Text('All Reviews',
+                            style: TextStyle(color: Colors.white))
+                        : const Text('Add Review',
+                            style: TextStyle(color: Colors.white))),
               ),
-            if (gameData?['first_release_date'] != null && gameData?['first_release_date'] * 1000 <
-                DateTime.now().millisecondsSinceEpoch)
+            if (gameData?['first_release_date'] != null &&
+                gameData?['first_release_date'] * 1000 <
+                    DateTime.now().millisecondsSinceEpoch)
               const SizedBox(height: 20),
 
             //Playing Time
@@ -383,8 +503,9 @@ class SpecificGameState extends State<SpecificGame> {
                 gameData?['first_release_date'] * 1000 <
                     DateTime.now().millisecondsSinceEpoch)
               const Divider(height: 35),
-            if (gameData?['first_release_date'] != null && gameData?['first_release_date'] * 1000 >
-                DateTime.now().millisecondsSinceEpoch)
+            if (gameData?['first_release_date'] != null &&
+                gameData?['first_release_date'] * 1000 >
+                    DateTime.now().millisecondsSinceEpoch)
               const Divider(height: 25),
 
             //Developers

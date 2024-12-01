@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 
 class LikeDislikeWidget extends StatefulWidget {
   final String timestamp;
+  final int likes;
+  final int dislikes;
 
-  const LikeDislikeWidget({super.key, required this.timestamp});
+  const LikeDislikeWidget(
+      {super.key,
+      required this.timestamp,
+      required this.likes,
+      required this.dislikes});
 
   @override
   LikeDislikeWidgetState createState() => LikeDislikeWidgetState();
@@ -54,7 +60,7 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
       children: [
         //Timestamp
         Text(
-          '${widget.timestamp} hours ago', // Display timestamp
+          widget.timestamp, // Display timestamp
           style: const TextStyle(
             fontSize: 12,
             color: Colors.black54,
@@ -71,7 +77,7 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
           ),
           onPressed: _toggleLike,
         ),
-        Text(likes.toString()),
+        Text(widget.likes.toString()),
         const SizedBox(width: 10),
 
         //Dislike Button
@@ -82,7 +88,7 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
           ),
           onPressed: _toggleDislike,
         ),
-        Text(dislikes.toString()),
+        Text(widget.dislikes.toString()),
       ],
     );
   }

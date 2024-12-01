@@ -98,7 +98,23 @@ class RouteGenerator {
       case '/admin':
         return MaterialPageRoute(builder: (context) => const AdminReportPage());
       case '/allReviews':
-        return MaterialPageRoute(builder: (context) => const ReviewPage());
+        if (args is Map<String, dynamic> &&
+            args.containsKey('userId') &&
+            args.containsKey('game') &&
+            args.containsKey('onLoadAverageRating') &&
+            args.containsKey('averageUserReviewNotifier') &&
+            args.containsKey('latestReviewNotifier') &&
+            args.containsKey('onLoadLatestReview')) {
+          return MaterialPageRoute(
+              builder: (context) => ReviewPage(
+                  userId: args['userId'],
+                  game: args['game'],
+                  onLoadAverageRating: args['onLoadAverageRating'],
+                  averageUserReviewNotifier: args['averageUserReviewNotifier'],
+                  latestReviewNotifier: args['latestReviewNotifier'],
+                  onLoadLatestReview: args['onLoadLatestReview']));
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case '/likedList':
         if (args is List<User>) {
           return MaterialPageRoute(
@@ -110,9 +126,12 @@ class RouteGenerator {
       case '/newPassword':
         return MaterialPageRoute(builder: (context) => NewPasswordPage());
       case '/series':
-        if (args is Map<String, dynamic> && args.containsKey('gameIds') && args.containsKey('title')) {
+        if (args is Map<String, dynamic> &&
+            args.containsKey('gameIds') &&
+            args.containsKey('title')) {
           return MaterialPageRoute(
-              builder: (context) => SeriesGame(gameIds: args['gameIds'], title: args['title']));
+              builder: (context) =>
+                  SeriesGame(gameIds: args['gameIds'], title: args['title']));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       default:
