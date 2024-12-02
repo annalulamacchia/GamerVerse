@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class GameService{
   static const String _baseUrl = "https://gamerversemobile.pythonanywhere.com";
@@ -10,14 +9,6 @@ class GameService{
   static Future<Map<String, dynamic>> getGamebyId(String gameId) async {
     try {
 
-      if (gameId == null) {
-        return {
-          'success': false,
-          'message': 'No authentication token or user ID found. Please log in again.',
-        };
-      }
-
-      // Costruisci l'URL per la richiesta
       final url = Uri.parse("$_baseUrl/game-get-info");
       final body = jsonEncode({'gameId': gameId});
 

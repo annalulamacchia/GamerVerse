@@ -1,8 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/game.dart';
+import 'package:gamerverse/models/review.dart';
+import 'package:gamerverse/services/specific_game/review_service.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
+import 'package:gamerverse/widgets/specific_game/single_review.dart';
 
-class PlayedList extends StatelessWidget {
-  const PlayedList({super.key});
+class PlayedList extends StatefulWidget {
+  final Game game;
+  final String? userId;
+
+  const PlayedList({super.key, required this.game, this.userId});
+
+  @override
+  PlayedListState createState() => PlayedListState();
+}
+
+class PlayedListState extends State<PlayedList> {
+  late Future<List<Review>> _reviewsFuture;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReviews();
+  }
+
+  void _loadReviews() {
+    setState(() {
+      _reviewsFuture =
+          ReviewService.fetchReviewsByStatus(gameId: widget.game.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,16 +45,40 @@ class PlayedList extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: const Text('Game Name', style: TextStyle(color: Colors.white)),
+        title: Text(widget.game.name, style: TextStyle(color: Colors.white)),
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return null;
-        
-          //return const SingleReview(
-          //review
-          //: );
+      body: FutureBuilder<List<Review>?>(
+        future: _reviewsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return NoDataList(
+              textColor: Colors.grey[400],
+              icon: Icons.reviews_outlined,
+              message: 'No reviews available.',
+              subMessage: 'Be the first to share your thoughts!',
+              color: Colors.grey[500]!,
+            );
+          }
+
+          List<Review> reviews = snapshot.data!;
+
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: reviews.length,
+            itemBuilder: (context, index) {
+              Review review = reviews[index];
+              return SingleReview(userId: widget.userId, review: review);
+            },
+          );
         },
       ),
       bottomNavigationBar: const CustomBottomNavBar(

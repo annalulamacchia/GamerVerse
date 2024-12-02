@@ -1,35 +1,42 @@
-import 'package:timeago/timeago.dart' as timeago;
-
 class Review {
+  final String? reviewId;
+  final String? writerId;
   final double rating;
   final String description;
   final String timestamp;
   final String writerUsername;
   final String writerPicture;
   final String status;
-  final int likes;
-  final int dislikes;
+  final Map<String, dynamic> likes;
+  final Map<String, dynamic> dislikes;
+  final String gameId;
 
   Review(
-      {required this.likes,
+      {required this.reviewId,
+      required this.writerId,
+      required this.likes,
       required this.dislikes,
       required this.rating,
       required this.description,
       required this.timestamp,
       required this.writerUsername,
       required this.writerPicture,
-      required this.status});
+      required this.status,
+      required this.gameId});
 
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
+      gameId: json['game_id'],
+      reviewId: json['review_id'],
+      writerId: json['writer_id'],
       rating: json['rating']?.toDouble() ?? 0.0,
       description: json['description'] ?? '',
-      timestamp: timeago.format(DateTime.parse(json['timestamp'])),
+      timestamp: json['timestamp'] ?? '',
       writerUsername: json['writer_username'] ?? '',
       writerPicture: json['writer_picture'] ?? '',
       status: json['status'] ?? 'Not in wishlist',
-      likes: json['likes'] ?? 0,
-      dislikes: json['dislikes'] ?? 0,
+      likes: json['likes'] ?? {},
+      dislikes: json['dislikes'] ?? {},
     );
   }
 }

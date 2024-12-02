@@ -5,9 +5,11 @@ import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/services/specific_game/review_service.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
+import 'package:gamerverse/widgets/specific_game/coming_soon_card.dart';
 import 'package:gamerverse/widgets/specific_game/game_time.dart';
 import 'package:gamerverse/widgets/specific_game/liked_button_to_list.dart';
 import 'package:gamerverse/widgets/specific_game/media_game.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 import 'package:gamerverse/widgets/specific_game/play_completed_buttons.dart';
 import 'package:gamerverse/widgets/specific_game/played_button_to_list.dart';
 import 'package:gamerverse/widgets/specific_game/specific_game_list.dart';
@@ -16,6 +18,7 @@ import 'package:gamerverse/widgets/specific_game/single_review.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:gamerverse/widgets/specific_game/favourite_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class SpecificGame extends StatefulWidget {
   final int gameId;
@@ -44,15 +47,19 @@ class SpecificGameState extends State<SpecificGame> {
   bool isLoadingReview = true;
   ValueNotifier<double> averageUserReviewNotifier = ValueNotifier<double>(0);
   bool _isLoadingUserRating = false;
+  bool _isLoadingLatestReview = false;
   ValueNotifier<Review> latestReviewNotifier = ValueNotifier<Review>(Review(
+      reviewId: null,
+      writerId: null,
       description: '',
       rating: 0,
       writerUsername: '',
       timestamp: '',
-      likes: 0,
-      dislikes: 0,
+      likes: {},
+      dislikes: {},
       writerPicture: '',
-      status: ''));
+      status: '',
+      gameId: ''));
 
   @override
   void initState() {
@@ -69,10 +76,8 @@ class SpecificGameState extends State<SpecificGame> {
     final int? tokenExpirationTime = prefs.getInt('token_expiration_time');
     final currentTime = DateTime.now().millisecondsSinceEpoch;
     setState(() {
-      if (authToken == null ||
-          uid == null ||
-          tokenExpirationTime == null ||
-          (currentTime > tokenExpirationTime)) {
+      if ((authToken == null || uid == null || tokenExpirationTime == null) ||
+          currentTime > tokenExpirationTime) {
         userId = null;
       } else {
         userId = uid;
@@ -180,7 +185,16 @@ class SpecificGameState extends State<SpecificGame> {
   }
 
   Future<void> _loadLatestReview() async {
-    final review = await ReviewService.getLatestReview(gameId: gameData!['id'].toString());
+    if (_isLoadingLatestReview) return;
+    _isLoadingLatestReview = true;
+
+    if (!mounted) {
+      _isLoadingLatestReview = false;
+      return;
+    }
+
+    final review =
+        await ReviewService.getLatestReview(gameId: gameData!['id'].toString());
     setState(() {
       if (review != null) {
         latestReview = review;
@@ -189,6 +203,8 @@ class SpecificGameState extends State<SpecificGame> {
       }
       isLoadingReview = false;
     });
+
+    _isLoadingLatestReview = false;
   }
 
   @override
@@ -271,14 +287,22 @@ class SpecificGameState extends State<SpecificGame> {
 
                   //Users Rating
                   InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/allReviews', arguments: {
-                        'userId': userId,
-                        'game': game,
-                        'onLoadAverageRating': _loadAverageUserRating,
-                        'averageUserReviewNotifier': averageUserReviewNotifier
-                      });
-                    },
+                    onTap: (gameData?['first_release_date'] != null &&
+                            gameData?['first_release_date'] * 1000 <
+                                DateTime.now().millisecondsSinceEpoch)
+                        ? () {
+                            Navigator.pushNamed(context, '/allReviews',
+                                arguments: {
+                                  'userId': userId,
+                                  'game': game,
+                                  'onLoadAverageRating': _loadAverageUserRating,
+                                  'averageUserReviewNotifier':
+                                      averageUserReviewNotifier,
+                                  'latestReviewNotifier': latestReviewNotifier,
+                                  'onLoadLatestReview': _loadLatestReview,
+                                });
+                          }
+                        : null,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -327,6 +351,17 @@ class SpecificGameState extends State<SpecificGame> {
                   userId: userId,
                   game: game,
                   playedCountNotifier: playedCountNotifier),
+            if ((gameData?['first_release_date'] != null &&
+                    gameData?['first_release_date'] * 1000 >
+                        DateTime.now().millisecondsSinceEpoch) ||
+                gameData?['first_release_date'] == null)
+              ComingSoonCard(
+                  relaseDate: gameData?['first_release_date'] != null
+                      ? DateFormat('d MMMM yyyy').format(
+                          DateTime.fromMillisecondsSinceEpoch(
+                              gameData?['first_release_date'] * 1000,
+                              isUtc: true))
+                      : 'TBD'),
             const SizedBox(height: 12),
 
             //Critics Rating, Liked and Played
@@ -366,8 +401,10 @@ class SpecificGameState extends State<SpecificGame> {
 
                 //Played List
                 PlayedButtonToList(
-                    gameId: gameData!['id'].toString(),
-                    playedCountNotifier: playedCountNotifier)
+                    game: game!,
+                    playedCountNotifier: playedCountNotifier,
+                    releaseDate: gameData?['first_release_date'],
+                    userId: userId),
               ],
             ),
             const Divider(height: 30),
@@ -412,49 +449,23 @@ class SpecificGameState extends State<SpecificGame> {
                     DateTime.now().millisecondsSinceEpoch)
               if (latestReview != null && isLoadingReview == false)
                 //Last Review
-                SingleReview(review: latestReview),
+                SingleReview(userId: userId, review: latestReview),
             if (latestReview == null && isLoadingReview == true)
               const Center(
                 child: CircularProgressIndicator(),
               ),
-            if (latestReview == null && isLoadingReview == false)
-              Container(
-                  padding: const EdgeInsets.all(12),
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 7.5, horizontal: 15),
-                  decoration: BoxDecoration(
-                    color: const Color(0xfff0f9f1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.reviews_outlined,
-                          color: Colors.black,
-                          size: 50,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No reviews available.',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Be the first to share your thoughts!',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )),
+            if (gameData?['first_release_date'] != null &&
+                gameData?['first_release_date'] * 1000 <
+                    DateTime.now().millisecondsSinceEpoch &&
+                latestReview == null &&
+                isLoadingReview == false)
+              NoDataList(
+                  icon: Icons.reviews_outlined,
+                  message: 'No reviews available.',
+                  subMessage: 'Be the first to share your thoughts!',
+                  textColor: Colors.black,
+                  color: Colors.black,
+                  containerColor: Color(0xfff0f9f1)),
             if (gameData?['first_release_date'] != null &&
                 gameData?['first_release_date'] * 1000 <
                     DateTime.now().millisecondsSinceEpoch)
@@ -544,11 +555,12 @@ class SpecificGameState extends State<SpecificGame> {
                         : 0),
 
             //Suggested Games
-            const Text('Suggested Games',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold)),
+            if (gameData?['similar_games'] != null)
+              const Text('Suggested Games',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold)),
             const SizedBox(height: 7.5),
             Padding(
               padding: const EdgeInsets.all(1),

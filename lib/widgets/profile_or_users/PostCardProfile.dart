@@ -43,15 +43,15 @@ class _PostCardState extends State<PostCard> {
   Future<Map> fetchPostDetails() async {
     Map<String, dynamic>? userData;
     Map<String, dynamic>? gameData;
-    final Response_user = await UserProfileService.getUserByUid(); // Recupera informazioni utente
-    final Response_game = await GameService.getGamebyId(widget.gameId); // Recupera informazioni gioco
+    final responseUser = await UserProfileService.getUserByUid(); // Recupera informazioni utente
+    final responseGame = await GameService.getGamebyId(widget.gameId); // Recupera informazioni gioco
 
-    if (Response_user['success']) {
-      userData = Response_user['data'];
+    if (responseUser['success']) {
+      userData = responseUser['data'];
       // Popola i controller con i dati dell'utente
     }
-    if (Response_game['success']) {
-      gameData = Response_game['data'];
+    if (responseGame['success']) {
+      gameData = responseGame['data'];
       // Popola i controller con i dati dell'utente
     }
     return {

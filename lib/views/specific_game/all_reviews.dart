@@ -3,6 +3,7 @@ import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/models/review.dart';
 import 'package:gamerverse/services/specific_game/review_service.dart';
 import 'package:gamerverse/views/specific_game/add_review.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 import 'package:gamerverse/widgets/specific_game/single_review.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
@@ -182,34 +183,12 @@ class _ReviewPageState extends State<ReviewPage> {
                 }
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.reviews_outlined,
-                          color: Colors.grey[400],
-                          size: 50,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No reviews available.',
-                          style: TextStyle(
-                            color: Colors.grey[400],
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Be the first to share your thoughts!',
-                          style: TextStyle(
-                            color: Colors.grey[500],
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
+                  return NoDataList(
+                    textColor: Colors.grey[400],
+                    icon: Icons.reviews_outlined,
+                    message: 'No reviews available.',
+                    subMessage: 'Be the first to share your thoughts!',
+                    color: Colors.grey[500]!,
                   );
                 }
 
@@ -221,9 +200,7 @@ class _ReviewPageState extends State<ReviewPage> {
                   itemCount: reviews.length,
                   itemBuilder: (context, index) {
                     Review review = reviews[index];
-                    return SingleReview(
-                        review:
-                            review); // Usa il widget che mostrerà la recensione
+                    return SingleReview(userId: widget.userId, review: review);
                   },
                 );
               },

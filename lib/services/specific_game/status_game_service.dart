@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:gamerverse/models/game.dart';
-import 'package:gamerverse/models/userReview.dart';
+import 'package:gamerverse/models/user.dart';
 import 'package:http/http.dart' as http;
 
 class StatusGameService {
@@ -152,7 +152,7 @@ class StatusGameService {
   }
 
   //function to get all the users that are currently playing or have completed a specific game
-  static Future<List<UserReview>?> getUsersByStatusGame(String gameId) async {
+  static Future<List<User>?> getUsersByStatusGame(String gameId) async {
     final String url =
         'https://gamerversemobile.pythonanywhere.com/get_users_by_status_game';
     try {
@@ -172,7 +172,7 @@ class StatusGameService {
             print('Success to load users with status game');
           }
           return (data['users'] as List).map((userJson) {
-            return UserReview.fromJson(userJson);
+            return User.fromJson(userJson);
           }).toList();
         } else {
           if (kDebugMode) {
