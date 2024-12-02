@@ -30,10 +30,10 @@ class _HomePageState extends State<HomePage> {
       final upcoming = await GameApiService.fetchUpcomingGames();
 
       setState(() {
-        allGames = all?.take(4).toList();
-        popularGames = popular?.take(4).toList();
-        releasedThisMonthGames = releasedThisMonth?.take(4).toList();
-        upcomingGames = upcoming?.take(4).toList();
+        allGames = all?.take(10).toList();
+        popularGames = popular?.take(10).toList();
+        releasedThisMonthGames = releasedThisMonth?.take(10).toList();
+        upcomingGames = upcoming?.take(10).toList();
       });
     } catch (e) {
       print('Error fetching games: $e');

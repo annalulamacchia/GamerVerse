@@ -141,6 +141,21 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to the reset-password page
+                    Navigator.pushNamed(context, '/resetPassword');
+                  },
+                  child: const Text(
+                    "Forgot your password? Reset here",
+                    style: TextStyle(
+                      color: AppColors.lightestGreen,
+                      decoration: TextDecoration.underline,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

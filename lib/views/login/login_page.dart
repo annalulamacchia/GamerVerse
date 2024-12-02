@@ -104,6 +104,29 @@ class LoginPage extends StatelessWidget {
                   ),
                   child: const Text('Log-in with Google'),
                 ),
+                const SizedBox(height: 20), // Add some spacing
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Don't have an account? ",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Navigate to the signup page
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(
+                          color: AppColors.lightestGreen,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

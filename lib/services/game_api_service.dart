@@ -452,47 +452,55 @@ class GameApiService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>?> fetchGameDataList() async {
-    const query = '''
-      fields id, name, cover.url;
-      where cover != null; 
-      sort popularity desc;
-      limit 10;
-    ''';
-    return fetchGames(query);
-  }
-
-  static Future<List<Map<String, dynamic>>?> fetchPopularGames() async {
-    const query = '''
-      fields id, name, cover.url;
-      where cover != null; 
-      sort rating desc;
-      limit 10;
-    ''';
-    return fetchGames(query);
-  }
-
-  static Future<List<Map<String, dynamic>>?> fetchReleasedThisMonthGames() async {
-    // Remove the `const` from the query string so that DateTime.now() can be used.
+  static Future<List<Map<String, dynamic>>?> fetchGameDataList({int offset = 0}) async {
     final query = '''
     fields id, name, cover.url;
-    where cover != null & first_release_date > ${DateTime.now().subtract(Duration(days: 30)).millisecondsSinceEpoch ~/ 1000}; 
+    where cover != null; 
+    sort popularity desc;
+    limit 100;
+    offset $offset;
+  ''';
+    return fetchGames(query);
+  }
+
+
+  static Future<List<Map<String, dynamic>>?> fetchPopularGames({int offset = 0}) async {
+    final query = '''
+    fields id, name, cover.url;
+    where cover != null; 
+    sort rating desc;
+    limit 100;
+    offset $offset;
+  ''';
+    return fetchGames(query);
+  }
+
+
+  static Future<List<Map<String, dynamic>>?> fetchReleasedThisMonthGames({int offset = 0}) async {
+    final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30)).millisecondsSinceEpoch ~/ 1000;
+    final query = '''
+    fields id, name, cover.url, first_release_date;
+    where cover != null & first_release_date > $thirtyDaysAgo; 
     sort first_release_date desc;
-    limit 10;
+    limit 100;
+    offset $offset;
   ''';
-    return fetchGames(query);
+    return fetchGames(query); // Your existing method to make API calls
   }
 
-  static Future<List<Map<String, dynamic>>?> fetchUpcomingGames() async {
-    // Remove the `const` from the query string so that DateTime.now() can be used.
+
+  static Future<List<Map<String, dynamic>>?> fetchUpcomingGames({int offset = 0}) async {
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final query = '''
-    fields id, name, cover.url;
-    where cover != null & first_release_date > ${DateTime.now().millisecondsSinceEpoch ~/ 1000}; 
+    fields id, name, cover.url, first_release_date;
+    where cover != null & first_release_date > $now; 
     sort first_release_date asc;
-    limit 10;
+    limit 100;
+    offset $offset;
   ''';
-    return fetchGames(query);
+    return fetchGames(query); // Your existing method to make API calls
   }
+
 
   static Future<List<Map<String, dynamic>>?> fetchGamesByName(String searchQuery) async {
     final query = '''

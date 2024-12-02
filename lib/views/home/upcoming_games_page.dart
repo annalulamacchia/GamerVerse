@@ -11,35 +11,66 @@ class UpcomingGamesPage extends StatefulWidget {
 }
 
 class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
-  List<Map<String, dynamic>>? _games;
-  bool _isLoading = true;
+  List<Map<String, dynamic>> _games = []; // Store all upcoming games
+  bool _isLoading = true; // For initial loading
+  bool _isLoadingMore = false; // For lazy loading
   String? _errorMessage;
+  int _offset = 0; // Start offset for pagination
+  final ScrollController _scrollController = ScrollController(); // Controller for lazy loading
 
   @override
   void initState() {
     super.initState();
     _fetchGames();
+    _scrollController.addListener(_onScroll); // Attach scroll listener
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // Clean up the controller
+    super.dispose();
   }
 
   Future<void> _fetchGames() async {
     try {
-      final gamesResponse = await GameApiService.fetchUpcomingGames(); // Assuming this is your method for fetching upcoming games
-      if (gamesResponse != null) {
+      setState(() {
+        if (_offset == 0) {
+          _isLoading = true;
+        } else {
+          _isLoadingMore = true;
+        }
+      });
+
+      final gamesResponse = await GameApiService.fetchUpcomingGames(offset: _offset);
+      if (gamesResponse != null && gamesResponse.isNotEmpty) {
         setState(() {
-          _games = gamesResponse;
+          _games.addAll(gamesResponse); // Append new games to the list
           _isLoading = false;
+          _isLoadingMore = false;
+          _offset += 100; // Increase offset for the next batch
         });
       } else {
+        // No more games to fetch
         setState(() {
-          _errorMessage = "Failed to fetch games.";
           _isLoading = false;
+          _isLoadingMore = false;
         });
       }
     } catch (e) {
       setState(() {
         _errorMessage = "An error occurred: $e";
         _isLoading = false;
+        _isLoadingMore = false;
       });
+    }
+  }
+
+  void _onScroll() {
+    // Trigger more loading when close to the bottom
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100 &&
+        !_isLoadingMore) {
+      _fetchGames();
     }
   }
 
@@ -55,23 +86,38 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
           ? Center(child: Text(_errorMessage!))
-          : GridView.builder(
-        padding: const EdgeInsets.all(10.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 0.8,
-        ),
-        itemCount: _games?.length ?? 0,
-        itemBuilder: (context, index) {
-          final game = _games![index];
-          final coverUrl = game['coverUrl'] ?? 'https://via.placeholder.com/400x200?text=No+Image'; // Fallback image
-          return ImageCardWidget(
-            imageUrl: coverUrl,
-            gameId: game['id'],
-          );
-        },
+          : Stack(
+        children: [
+          GridView.builder(
+            controller: _scrollController, // Attach controller
+            padding: const EdgeInsets.all(10.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 0.8,
+            ),
+            itemCount: _games.length,
+            itemBuilder: (context, index) {
+              final game = _games[index];
+              final coverUrl = game['coverUrl'] ??
+                  'https://via.placeholder.com/400x200?text=No+Image';
+              return ImageCardWidget(
+                imageUrl: coverUrl,
+                gameId: game['id'],
+              );
+            },
+          ),
+          if (_isLoadingMore)
+            Positioned(
+              bottom: 10,
+              left: 0,
+              right: 0,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
       bottomNavigationBar: const CustomBottomNavBar(currentIndex: 2), // Set the correct currentIndex (2 for Upcoming Games)
     );

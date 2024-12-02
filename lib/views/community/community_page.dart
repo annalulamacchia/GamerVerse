@@ -6,7 +6,7 @@ import 'package:gamerverse/widgets/common_sections/report_user.dart';
 import 'package:gamerverse/widgets/common_sections/report.dart';
 import 'package:gamerverse/widgets/community/PostCardCommunity.dart';
 import 'package:gamerverse/services/specific_game/wishlist_service.dart';
-import 'package:gamerverse/services/community/post_service.dart';// Importa il servizio Wishlist
+import 'package:gamerverse/services/Community/post_service.dart';// Importa il servizio Wishlist
 import 'package:gamerverse/models/game.dart'; // Assicurati di avere il modello Game importato
 import 'package:gamerverse/models/post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
