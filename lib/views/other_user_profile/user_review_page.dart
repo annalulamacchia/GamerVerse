@@ -83,14 +83,14 @@ class UserReviewPage extends StatelessWidget {
               itemCount: reviews.length,
               itemBuilder: (context, index) {
                 final review = reviews[index];
-                return GameReviewCard(
+                /*return GameReviewCard(
                   gameName: review["gameName"],
                   rating: review["rating"],
                   comment: review["comment"],
                   gameUrl: review["gameUrl"],
                   likes: review["likes"],
                   dislikes: review["dislikes"],
-                );
+                );*/
               },
             ),
           ),

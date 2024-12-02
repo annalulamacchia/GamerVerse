@@ -3,6 +3,7 @@ import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/models/review.dart';
 import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/services/specific_game/review_service.dart';
+import 'package:gamerverse/utils/firebase_auth_helper.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 import 'package:gamerverse/widgets/specific_game/coming_soon_card.dart';
@@ -72,15 +73,12 @@ class SpecificGameState extends State<SpecificGame> {
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final String? uid = prefs.getString('user_uid');
-    final String? authToken = prefs.getString('auth_token');
-    final int? tokenExpirationTime = prefs.getInt('token_expiration_time');
-    final currentTime = DateTime.now().millisecondsSinceEpoch;
+    final valid = await FirebaseAuthHelper.checkTokenValidity();
     setState(() {
-      if ((authToken == null || uid == null || tokenExpirationTime == null) ||
-          currentTime > tokenExpirationTime) {
-        userId = null;
-      } else {
+      if (valid) {
         userId = uid;
+      } else {
+        userId = null;
       }
     });
   }
@@ -209,6 +207,7 @@ class SpecificGameState extends State<SpecificGame> {
 
   @override
   Widget build(BuildContext context) {
+    final parentContext = context;
     if (isLoading) {
       return Scaffold(
         backgroundColor: const Color(0xff051f20),
@@ -449,7 +448,13 @@ class SpecificGameState extends State<SpecificGame> {
                     DateTime.now().millisecondsSinceEpoch)
               if (latestReview != null && isLoadingReview == false)
                 //Last Review
-                SingleReview(userId: userId, review: latestReview),
+                SingleReview(
+                    userId: userId,
+                    review: latestReview,
+                    gameContext: parentContext,
+                    onReviewRemoved: () {
+                      _loadLatestReview();
+                    }),
             if (latestReview == null && isLoadingReview == true)
               const Center(
                 child: CircularProgressIndicator(),

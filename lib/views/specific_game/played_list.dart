@@ -35,6 +35,7 @@ class PlayedListState extends State<PlayedList> {
 
   @override
   Widget build(BuildContext context) {
+    final parentContext = context;
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
@@ -76,7 +77,13 @@ class PlayedListState extends State<PlayedList> {
             itemCount: reviews.length,
             itemBuilder: (context, index) {
               Review review = reviews[index];
-              return SingleReview(userId: widget.userId, review: review);
+              return SingleReview(
+                  userId: widget.userId,
+                  review: review,
+                  gameContext: parentContext,
+                  onReviewRemoved: () {
+                    _loadReviews();
+                  });
             },
           );
         },

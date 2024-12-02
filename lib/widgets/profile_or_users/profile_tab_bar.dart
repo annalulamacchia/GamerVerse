@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/firebase_auth_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TabBarSection extends StatefulWidget {
   final int mode; // Aggiunto parametro `mode` per decidere quale modalità usare
@@ -11,6 +13,28 @@ class TabBarSection extends StatefulWidget {
 }
 
 class _TabBarSectionState extends State<TabBarSection> {
+  late String? userId = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  //load the user_id
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? uid = prefs.getString('user_uid');
+    final valid = await FirebaseAuthHelper.checkTokenValidity();
+    setState(() {
+      if (valid) {
+        userId = uid;
+      } else {
+        userId = null;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Determina quale indice usare a seconda della modalità
@@ -81,7 +105,7 @@ class _TabBarSectionState extends State<TabBarSection> {
       if (index == 0) {
         Navigator.pushNamed(context, '/profile');
       } else if (index == 1) {
-        Navigator.pushNamed(context, '/profileReviews');
+        Navigator.pushNamed(context, '/profileReviews', arguments: userId);
       } else if (index == 2) {
         Navigator.pushNamed(context, '/profilePosts');
       }
@@ -91,7 +115,7 @@ class _TabBarSectionState extends State<TabBarSection> {
         Navigator.pushNamed(context, '/userProfile');
       } else if (index == 1) {
         // Navigazione alla pagina dei commenti/recensioni
-        Navigator.pushNamed(context, '/profileReviews');
+        Navigator.pushNamed(context, '/profileReviews', arguments: userId);
       } else if (index == 2) {
         Navigator.pushNamed(context, '/userPosts');
       }

@@ -80,6 +80,7 @@ class _ReviewPageState extends State<ReviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final parentContext = context;
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
@@ -200,7 +201,14 @@ class _ReviewPageState extends State<ReviewPage> {
                   itemCount: reviews.length,
                   itemBuilder: (context, index) {
                     Review review = reviews[index];
-                    return SingleReview(userId: widget.userId, review: review);
+                    return SingleReview(
+                      userId: widget.userId,
+                      review: review,
+                      gameContext: parentContext,
+                      onReviewRemoved: () {
+                        _loadReviews();
+                      },
+                    );
                   },
                 );
               },

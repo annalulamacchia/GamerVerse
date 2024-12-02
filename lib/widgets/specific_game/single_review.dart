@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/review.dart';
+import 'package:gamerverse/services/specific_game/review_service.dart';
+import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:gamerverse/widgets/common_sections/report_user.dart';
 import 'package:gamerverse/widgets/specific_game/like_dislike_button.dart';
 import 'package:gamerverse/widgets/common_sections/report.dart';
@@ -8,11 +10,15 @@ import 'package:hugeicons/hugeicons.dart';
 class SingleReview extends StatelessWidget {
   final Review? review;
   final String? userId;
+  final BuildContext gameContext;
+  final VoidCallback onReviewRemoved;
 
   const SingleReview({
     super.key,
     required this.review,
     required this.userId,
+    required this.gameContext,
+    required this.onReviewRemoved,
   });
 
   //function to show bottom pop up for report review
@@ -39,6 +45,55 @@ class SingleReview extends StatelessWidget {
         return const ReportUserWidget();
       },
     );
+  }
+
+  void _showDeleteConfirmation(
+      BuildContext context, String? reviewId, String? writerId) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Review'),
+          content: const Text(
+              'Are you sure you want to delete this review? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (reviewId != null) {
+                  _removeReview(reviewId, writerId, gameContext);
+                }
+              },
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _removeReview(
+      String reviewId, String? gameId, BuildContext context) async {
+    print(gameId);
+    final success =
+        await ReviewService.removeReview(reviewId: reviewId, gameId: gameId);
+
+    if (success) {
+      DialogHelper.showSuccessDialog(context, 'Review removed succesfully!');
+      onReviewRemoved();
+    } else {
+      DialogHelper.showErrorDialog(
+          context, 'Error in removing the review. Please try again.');
+    }
   }
 
   @override
@@ -103,34 +158,46 @@ class SingleReview extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                review!.status, // Display timestamp
+                review!.status,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 13,
                   color: Colors.black54,
                 ),
               ),
 
               // Toggle menu
-              PopupMenuButton<String>(
-                onSelected: (value) {
-                  if (value == 'Report_Review') {
-                    _showReport(context);
-                  } else if (value == 'Report_User') {
-                    _showReportUser(context);
-                  }
-                },
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'Report_Review',
-                    child: Text('Report Review'),
-                  ),
-                  const PopupMenuItem(
-                    value: 'Report_User',
-                    child: Text('Report User'),
-                  ),
-                ],
-                icon: const Icon(Icons.more_vert, color: Colors.grey),
-              ),
+              if (userId != null && userId != review?.writerId)
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    if (value == 'Report_Review') {
+                      _showReport(context);
+                    } else if (value == 'Report_User') {
+                      _showReportUser(context);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'Report_Review',
+                      child: Text('Report Review'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'Report_User',
+                      child: Text('Report User'),
+                    ),
+                  ],
+                  icon: const Icon(Icons.more_vert, color: Colors.grey),
+                ),
+              //remove review
+              if (userId != null && userId == review?.writerId && review?.reviewId != null)
+                IconButton(
+                  icon: Icon(Icons.close, color: Colors.grey),
+                  onPressed: () => _showDeleteConfirmation(
+                      gameContext, review?.reviewId, review?.gameId),
+                ),
+              if (userId == null || review?.reviewId == null)
+                SizedBox(
+                  width: 20,
+                )
             ],
           ),
           const SizedBox(height: 10),
@@ -148,7 +215,8 @@ class SingleReview extends StatelessWidget {
               initialDislikes: review!.dislikes,
               reviewId: review?.reviewId ?? '',
               gameId: review!.gameId,
-              userId: userId),
+              userId: userId,
+              writerId: review?.writerId),
         ],
       ),
     );

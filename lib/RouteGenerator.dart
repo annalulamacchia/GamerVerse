@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/models/user.dart';
 import 'package:gamerverse/views/admin_report_page.dart';
 import 'package:gamerverse/views/home/all_games_page.dart';
@@ -78,8 +77,11 @@ class RouteGenerator {
       case '/userProfile':
         return MaterialPageRoute(builder: (context) => const UserProfilePage());
       case '/profileReviews':
-        return MaterialPageRoute(
-            builder: (context) => const ProfileReviewsPage());
+        if (args is String) {
+          return MaterialPageRoute(
+              builder: (context) => ProfileReviewsPage(userId: args));
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case '/profilePosts':
         return MaterialPageRoute(builder: (context) => const ProfilePostPage());
       case '/userPosts':

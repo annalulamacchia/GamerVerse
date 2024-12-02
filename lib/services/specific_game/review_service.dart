@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:gamerverse/models/game_review.dart';
 import 'package:gamerverse/models/review.dart';
 import 'package:http/http.dart' as http;
 
@@ -153,9 +154,6 @@ class ReviewService {
         body: json.encode({'gameId': gameId}),
         headers: {'Content-Type': 'application/json'},
       );
-      if (kDebugMode) {
-        print(response.body);
-      }
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -234,7 +232,8 @@ class ReviewService {
       {required String? userId,
       required String gameId,
       required String reviewId,
-      required String action}) async {
+      required String action,
+      required String? writerId}) async {
     final url = Uri.parse(
         'https://gamerversemobile.pythonanywhere.com/update_like_dislike');
     try {
@@ -244,11 +243,9 @@ class ReviewService {
             'gameId': gameId,
             'reviewId': reviewId,
             'action': action,
+            'writerId': writerId
           }),
           headers: {'Content-Type': 'application/json'});
-      if (kDebugMode) {
-        print(response.body);
-      }
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -262,6 +259,90 @@ class ReviewService {
       if (kDebugMode) {
         print('Error updating like/dislike: $error');
       }
+    }
+  }
+
+  static Future<bool> removeReview(
+      {required String? reviewId, required String? gameId}) async {
+    final url =
+        Uri.parse('https://gamerversemobile.pythonanywhere.com/remove_review');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'reviewId': reviewId,
+          'gameId': gameId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        if (kDebugMode) {
+          print('Failed to remove review: ${response.body}');
+        }
+        return false;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error while removing review: $e');
+      }
+      return false;
+    }
+  }
+
+  static Future<List<GameReview>> getReviewsByUserId(
+      {required String userId}) async {
+    final Uri url = Uri.parse(
+        'https://gamerversemobile.pythonanywhere.com/get_reviews_by_user');
+
+    final Map<String, dynamic> body = {
+      'userId': userId,
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+      if (kDebugMode) {
+        print(response.body);
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        if (responseData['reviews'] != null) {
+          List<dynamic> reviewsList = responseData['reviews'];
+
+          return reviewsList.map<GameReview>((dynamic reviewEntry) {
+            final reviewMap = reviewEntry.values.first;
+            return GameReview.fromJson(reviewMap);
+          }).toList();
+        } else {
+          if (kDebugMode) {
+            print('No reviews found');
+          }
+          return [];
+        }
+      } else {
+        if (kDebugMode) {
+          print('Failed to load reviews: ${response.statusCode}');
+        }
+        return [];
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error during fetchReviewsByStatus: $e');
+      }
+      return [];
     }
   }
 }

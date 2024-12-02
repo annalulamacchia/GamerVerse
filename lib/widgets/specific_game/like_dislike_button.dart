@@ -9,16 +9,17 @@ class LikeDislikeWidget extends StatefulWidget {
   final Map<String, dynamic> initialLikes;
   final Map<String, dynamic> initialDislikes;
   final String? userId;
+  final String? writerId;
 
-  const LikeDislikeWidget({
-    super.key,
-    required this.reviewId,
-    required this.gameId,
-    required this.timestamp,
-    required this.initialLikes,
-    required this.initialDislikes,
-    required this.userId,
-  });
+  const LikeDislikeWidget(
+      {super.key,
+      required this.reviewId,
+      required this.gameId,
+      required this.timestamp,
+      required this.initialLikes,
+      required this.initialDislikes,
+      required this.userId,
+      required this.writerId});
 
   @override
   LikeDislikeWidgetState createState() => LikeDislikeWidgetState();
@@ -63,14 +64,16 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
             gameId: widget.gameId,
             reviewId: widget.reviewId,
             action: 'like',
-            userId: widget.userId);
+            userId: widget.userId,
+            writerId: widget.writerId);
       } else {
         likes -= 1;
         ReviewService.updateLikeDislike(
             gameId: widget.gameId,
             reviewId: widget.reviewId,
             action: 'remove_like',
-            userId: widget.userId);
+            userId: widget.userId,
+            writerId: widget.writerId);
       }
       isLiked = !isLiked;
     });
@@ -89,14 +92,16 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
             gameId: widget.gameId,
             reviewId: widget.reviewId,
             action: 'dislike',
-            userId: widget.userId);
+            userId: widget.userId,
+            writerId: widget.writerId);
       } else {
         dislikes -= 1;
         ReviewService.updateLikeDislike(
             gameId: widget.gameId,
             reviewId: widget.reviewId,
             action: 'remove_dislike',
-            userId: widget.userId);
+            userId: widget.userId,
+            writerId: widget.writerId);
       }
       isDisliked = !isDisliked;
     });
@@ -109,7 +114,9 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
       children: [
         // Timestamp
         Text(
-          timeago.format(DateTime.parse(widget.timestamp)),
+          widget.timestamp != ""
+              ? timeago.format(DateTime.parse(widget.timestamp))
+              : "",
           style: const TextStyle(
             fontSize: 12,
             color: Colors.black54,
