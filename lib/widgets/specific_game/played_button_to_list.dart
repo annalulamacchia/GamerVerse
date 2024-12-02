@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/models/userReview.dart';
+import 'package:gamerverse/models/game.dart';
+import 'package:gamerverse/models/user.dart';
 import 'package:gamerverse/services/specific_game/status_game_service.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class PlayedButtonToList extends StatefulWidget {
-  final String gameId;
+  final Game game;
   final ValueNotifier<int> playedCountNotifier;
+  final int? releaseDate;
+  final String? userId;
 
   const PlayedButtonToList(
-      {super.key, required this.gameId, required this.playedCountNotifier});
+      {super.key,
+      required this.game,
+      required this.playedCountNotifier,
+      required this.releaseDate,
+      this.userId});
 
   @override
   PlayedButtonToListState createState() => PlayedButtonToListState();
 }
 
 class PlayedButtonToListState extends State<PlayedButtonToList> {
-  List<UserReview>? users;
+  List<User>? users;
   bool isLoading = true;
   int oldCount = 0;
   bool _isLoadingUsers = false;
@@ -48,7 +55,7 @@ class PlayedButtonToListState extends State<PlayedButtonToList> {
       return;
     }
 
-    final us = await StatusGameService.getUsersByStatusGame(widget.gameId);
+    final us = await StatusGameService.getUsersByStatusGame(widget.game.id);
     setState(() {
       users = us;
       if (us != null && widget.playedCountNotifier.value != us.length) {
@@ -65,9 +72,16 @@ class PlayedButtonToListState extends State<PlayedButtonToList> {
     return isLoading
         ? Center(
             child: InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, '/playedList', arguments: users);
-            },
+            onTap: (widget.releaseDate != null &&
+                    widget.releaseDate! * 1000 <
+                        DateTime.now().millisecondsSinceEpoch)
+                ? () {
+                    Navigator.pushNamed(context, '/playedList', arguments: {
+                      'game': widget.game,
+                      'userId': widget.userId
+                    });
+                  }
+                : null,
             child: Column(
               children: [
                 Row(
@@ -80,7 +94,12 @@ class PlayedButtonToListState extends State<PlayedButtonToList> {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      oldCount.toString(),
+                      (widget.releaseDate != null &&
+                                  widget.releaseDate! * 1000 <
+                                      DateTime.now().millisecondsSinceEpoch) ||
+                              widget.releaseDate == null
+                          ? oldCount.toString()
+                          : 'N/A',
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ],
@@ -96,9 +115,16 @@ class PlayedButtonToListState extends State<PlayedButtonToList> {
             valueListenable: widget.playedCountNotifier,
             builder: (context, playedCount, child) {
               return InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/playedList');
-                },
+                onTap: (widget.releaseDate != null &&
+                        widget.releaseDate! * 1000 <
+                            DateTime.now().millisecondsSinceEpoch)
+                    ? () {
+                        Navigator.pushNamed(context, '/playedList', arguments: {
+                          'game': widget.game,
+                          'userId': widget.userId
+                        });
+                      }
+                    : null,
                 child: Column(
                   children: [
                     Row(
@@ -111,7 +137,13 @@ class PlayedButtonToListState extends State<PlayedButtonToList> {
                         ),
                         SizedBox(width: 4),
                         Text(
-                          playedCount.toString(),
+                          (widget.releaseDate != null &&
+                                      widget.releaseDate! * 1000 <
+                                          DateTime.now()
+                                              .millisecondsSinceEpoch) ||
+                                  widget.releaseDate == null
+                              ? playedCount.toString()
+                              : 'N/A',
                           style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       ],

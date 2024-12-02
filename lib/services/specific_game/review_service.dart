@@ -189,4 +189,79 @@ class ReviewService {
       return null;
     }
   }
+
+  static Future<List<Review>> fetchReviewsByStatus(
+      {required String gameId}) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            'https://gamerversemobile.pythonanywhere.com/get_reviews_status'),
+        body: json.encode({'gameId': gameId}),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        if (responseData['reviews'] != null) {
+          List<dynamic> reviewsList = responseData['reviews'];
+
+          return reviewsList.map<Review>((dynamic reviewEntry) {
+            final reviewMap = reviewEntry.values.first;
+            return Review.fromJson(reviewMap);
+          }).toList();
+        } else {
+          if (kDebugMode) {
+            print('No reviews found');
+          }
+          return [];
+        }
+      } else {
+        if (kDebugMode) {
+          print('Failed to load reviews: ${response.statusCode}');
+        }
+        return [];
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error during fetchReviewsByStatus: $e');
+      }
+      return [];
+    }
+  }
+
+  static Future<void> updateLikeDislike(
+      {required String? userId,
+      required String gameId,
+      required String reviewId,
+      required String action}) async {
+    final url = Uri.parse(
+        'https://gamerversemobile.pythonanywhere.com/update_like_dislike');
+    try {
+      final response = await http.post(url,
+          body: json.encode({
+            'userId': userId,
+            'gameId': gameId,
+            'reviewId': reviewId,
+            'action': action,
+          }),
+          headers: {'Content-Type': 'application/json'});
+      if (kDebugMode) {
+        print(response.body);
+      }
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        if (kDebugMode) {
+          print('Response: ${responseData['message']}');
+        }
+      } else {
+        throw Exception('Failed to update like/dislike');
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print('Error updating like/dislike: $error');
+      }
+    }
+  }
 }

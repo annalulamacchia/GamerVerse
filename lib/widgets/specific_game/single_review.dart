@@ -7,10 +7,12 @@ import 'package:hugeicons/hugeicons.dart';
 
 class SingleReview extends StatelessWidget {
   final Review? review;
+  final String? userId;
 
   const SingleReview({
     super.key,
     required this.review,
+    required this.userId,
   });
 
   //function to show bottom pop up for report review
@@ -142,8 +144,11 @@ class SingleReview extends StatelessWidget {
           // Like and Dislike buttons
           LikeDislikeWidget(
               timestamp: review!.timestamp,
-              likes: review!.likes,
-              dislikes: review!.dislikes),
+              initialLikes: review!.likes,
+              initialDislikes: review!.dislikes,
+              reviewId: review?.reviewId ?? '',
+              gameId: review!.gameId,
+              userId: userId),
         ],
       ),
     );

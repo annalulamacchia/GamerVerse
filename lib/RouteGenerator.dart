@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/models/user.dart';
 import 'package:gamerverse/views/admin_report_page.dart';
 import 'package:gamerverse/views/home/all_games_page.dart';
@@ -122,7 +123,14 @@ class RouteGenerator {
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/playedList':
-        return MaterialPageRoute(builder: (context) => const PlayedList());
+        if (args is Map<String, dynamic> &&
+            args.containsKey('game') &&
+            args.containsKey('userId')) {
+          return MaterialPageRoute(
+              builder: (context) =>
+                  PlayedList(game: args['game'], userId: args['userId']));
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case '/newPassword':
         return MaterialPageRoute(builder: (context) => NewPasswordPage());
       case '/series':

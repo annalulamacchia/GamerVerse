@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
+import 'package:intl/intl.dart';
 
 class SpecificGameList extends StatefulWidget {
   final List<dynamic> list;
@@ -138,26 +139,6 @@ class SpecificGameListState extends State<SpecificGameList> {
 
   //covert release date of the game
   Future<void> _convertReleaseDate(int unixTimestamp) async {
-    var date =
-        DateTime.fromMillisecondsSinceEpoch(unixTimestamp * 1000, isUtc: true);
-
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    ];
-
-    String monthName = months[date.month - 1];
-    String formattedDate = "${date.day} $monthName ${date.year}";
     if (unixTimestamp == 0) {
       setState(() {
         releaseDate = null;
@@ -166,7 +147,9 @@ class SpecificGameListState extends State<SpecificGameList> {
       return;
     }
     setState(() {
-      releaseDate = formattedDate;
+      releaseDate = DateFormat('d MMMM yyyy').format(
+          DateTime.fromMillisecondsSinceEpoch(unixTimestamp * 1000,
+              isUtc: true));
       isLoading = false;
     });
   }

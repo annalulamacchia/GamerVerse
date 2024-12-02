@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/services/specific_game/review_service.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class LikeDislikeWidget extends StatefulWidget {
+  final String reviewId;
+  final String gameId;
   final String timestamp;
-  final int likes;
-  final int dislikes;
+  final Map<String, dynamic> initialLikes;
+  final Map<String, dynamic> initialDislikes;
+  final String? userId;
 
-  const LikeDislikeWidget(
-      {super.key,
-      required this.timestamp,
-      required this.likes,
-      required this.dislikes});
+  const LikeDislikeWidget({
+    super.key,
+    required this.reviewId,
+    required this.gameId,
+    required this.timestamp,
+    required this.initialLikes,
+    required this.initialDislikes,
+    required this.userId,
+  });
 
   @override
   LikeDislikeWidgetState createState() => LikeDislikeWidgetState();
@@ -20,8 +29,28 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
   bool isDisliked = false;
   int likes = 0;
   int dislikes = 0;
+  bool isLoading = true;
 
-  //function to alternate like and dislike
+  @override
+  void initState() {
+    super.initState();
+    likes = widget.initialLikes.length;
+    dislikes = widget.initialDislikes.length;
+    if (widget.initialLikes.containsKey(widget.userId)) {
+      isLiked = true;
+    }
+    if (widget.initialDislikes.containsKey(widget.userId)) {
+      isDisliked = true;
+    }
+    isLoading = false;
+  }
+
+  void _toLoginForLikeDislike() {
+    Navigator.pushNamed(context, '/login');
+    isLoading = false;
+  }
+
+  // Funzione per alternare like
   void _toggleLike() {
     setState(() {
       if (!isLiked) {
@@ -30,14 +59,24 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
           dislikes -= 1;
           isDisliked = false;
         }
+        ReviewService.updateLikeDislike(
+            gameId: widget.gameId,
+            reviewId: widget.reviewId,
+            action: 'like',
+            userId: widget.userId);
       } else {
         likes -= 1;
+        ReviewService.updateLikeDislike(
+            gameId: widget.gameId,
+            reviewId: widget.reviewId,
+            action: 'remove_like',
+            userId: widget.userId);
       }
       isLiked = !isLiked;
     });
   }
 
-  //function to alternate dislike and like
+  // Funzione per alternare dislike
   void _toggleDislike() {
     setState(() {
       if (!isDisliked) {
@@ -46,8 +85,18 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
           likes -= 1;
           isLiked = false;
         }
+        ReviewService.updateLikeDislike(
+            gameId: widget.gameId,
+            reviewId: widget.reviewId,
+            action: 'dislike',
+            userId: widget.userId);
       } else {
         dislikes -= 1;
+        ReviewService.updateLikeDislike(
+            gameId: widget.gameId,
+            reviewId: widget.reviewId,
+            action: 'remove_dislike',
+            userId: widget.userId);
       }
       isDisliked = !isDisliked;
     });
@@ -58,9 +107,9 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        //Timestamp
+        // Timestamp
         Text(
-          widget.timestamp, // Display timestamp
+          timeago.format(DateTime.parse(widget.timestamp)),
           style: const TextStyle(
             fontSize: 12,
             color: Colors.black54,
@@ -68,27 +117,28 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
         ),
         const Spacer(),
 
-        //Like Button
-        const SizedBox(height: 10),
+        // Like Button
         IconButton(
           icon: Icon(
             isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
             color: isLiked ? Colors.black : Colors.black54,
           ),
-          onPressed: _toggleLike,
+          onPressed:
+              widget.userId != null ? _toggleLike : _toLoginForLikeDislike,
         ),
-        Text(widget.likes.toString()),
+        Text(likes.toString()),
         const SizedBox(width: 10),
 
-        //Dislike Button
+        // Dislike Button
         IconButton(
           icon: Icon(
             isDisliked ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
             color: isDisliked ? Colors.black : Colors.black54,
           ),
-          onPressed: _toggleDislike,
+          onPressed:
+              widget.userId != null ? _toggleDislike : _toLoginForLikeDislike,
         ),
-        Text(widget.dislikes.toString()),
+        Text(dislikes.toString()),
       ],
     );
   }

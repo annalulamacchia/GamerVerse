@@ -149,7 +149,7 @@ class GameReviewCard extends StatelessWidget {
           ),
 
           // Like and Dislike buttons
-          const LikeDislikeWidget(timestamp: '10', likes: 0, dislikes: 0),
+          //const LikeDislikeWidget(timestamp: '10', likes: 0, dislikes: 0),
         ],
       ),
     );
