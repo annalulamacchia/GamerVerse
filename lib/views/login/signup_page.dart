@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:gamerverse/services/signup_service.dart';  // Import the new service for HTTP requests
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Import the navbar
+import 'package:gamerverse/services/signup_service.dart';
 import 'dart:io';
 import '../../utils/colors.dart';
 
@@ -25,10 +26,8 @@ class _SignupPageState extends State<SignupPage> {
 
   String? _selectedQuestion;
 
-  // Initialize the signup service (HTTP request to Flask API)
   final SignupService _signupService = SignupService();
 
-  // Method to handle image picking from the camera
   Future<void> _pickImageFromCamera() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
@@ -38,7 +37,6 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-  // Method to handle signup
   Future<void> _handleSignup() async {
     final email = _emailController.text;
     final username = _usernameController.text;
@@ -57,14 +55,11 @@ class _SignupPageState extends State<SignupPage> {
       return;
     }
 
-    String? profilePictureUrl = ""; // Default to empty if no image
+    String? profilePictureUrl = "";
     if (_selectedImage != null) {
-      // Handle profile picture upload if necessary (to Firebase or other storage)
-      // You can upload the image to your server or cloud storage here.
       profilePictureUrl = "your-storage-url-path";
     }
 
-    // Call the SignupService to perform the signup by sending the HTTP request
     final result = await _signupService.registerUser(
       email: email,
       username: username,
@@ -76,14 +71,12 @@ class _SignupPageState extends State<SignupPage> {
     );
 
     if (result != null) {
-      _showError(result); // Show error if signup failed
+      _showError(result);
     } else {
-      // Navigate to login or home page on success
       Navigator.pushNamed(context, '/home');
     }
   }
 
-  // Show error message
   void _showError(String message) {
     showDialog(
       context: context,
@@ -157,10 +150,8 @@ class _SignupPageState extends State<SignupPage> {
                 ],
               ),
               const SizedBox(height: 20),
-
-              // CircleAvatar with camera functionality
               GestureDetector(
-                onTap: _pickImageFromCamera, // Open camera on tap
+                onTap: _pickImageFromCamera,
                 child: CircleAvatar(
                   radius: 40,
                   backgroundColor: AppColors.lightestGreen,
@@ -176,7 +167,6 @@ class _SignupPageState extends State<SignupPage> {
                       : null,
                 ),
               ),
-
               const SizedBox(height: 20),
               _buildTextField('E-mail', _emailController, false),
               const SizedBox(height: 10),
@@ -221,8 +211,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              _buildTextField(
-                  'Reset Password Answer', _resetAnswerController, false),
+              _buildTextField('Reset Password Answer', _resetAnswerController, false),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _handleSignup,
@@ -240,6 +229,7 @@ class _SignupPageState extends State<SignupPage> {
           ),
         ),
       ),
+      bottomNavigationBar: CustomBottomNavBar(currentIndex: 1), // Pass currentIndex here
     );
   }
 

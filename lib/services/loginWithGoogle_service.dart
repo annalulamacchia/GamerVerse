@@ -66,20 +66,10 @@ class LoginWithGoogleService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success']) {
-          // Save data to SharedPreferences
-          final prefs = await SharedPreferences.getInstance();
 
           final String? idToken = await FirebaseAuthHelper.exchangeCustomTokenForIdToken(data['token']);
 
-          await prefs.setString('auth_token', idToken!);
-          await prefs.setString('uid', data['uid']);
-
-          final currentTime = DateTime.now().millisecondsSinceEpoch;
-
-          // Set an expiration duration (e.g., 1 hour = 3600000 milliseconds)
-          final expirationDuration = Duration(hours: 1); // Change to your desired duration
-          final expirationTime = currentTime + expirationDuration.inMilliseconds;
-          await prefs.setInt('token_expiration_time', expirationTime);
+          FirebaseAuthHelper.saveTokenAndUid(idToken!,data['uid']);
 
           return {'success': true, 'message': 'Login successful!', 'data': data};
         } else {

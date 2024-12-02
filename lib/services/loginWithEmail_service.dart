@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gamerverse/utils/firebase_auth_helper.dart';
 
 class LoginWithEmailService {
   static const String _baseUrl = "https://gamerversemobile.pythonanywhere.com";
@@ -22,7 +21,7 @@ class LoginWithEmailService {
         final customToken = data['token'];
         final uid = data['uid'];
 
-        final String? idToken = await _exchangeCustomTokenForIdToken(customToken);
+        final String? idToken = await FirebaseAuthHelper.exchangeCustomTokenForIdToken(customToken);
 
         if (idToken == null) {
           return {
@@ -31,7 +30,7 @@ class LoginWithEmailService {
           };
         }
 
-        await _saveTokenAndUid(idToken, uid);
+        await FirebaseAuthHelper.saveTokenAndUid(idToken, uid);
 
         return {
           'success': true,
@@ -53,29 +52,5 @@ class LoginWithEmailService {
       };
     }
   }
-
-  // Make this method static
-  static Future<String?> _exchangeCustomTokenForIdToken(String customToken) async {
-    try {
-      UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithCustomToken(customToken);
-
-      String? idToken = await userCredential.user?.getIdToken();
-      return idToken;
-    } catch (e) {
-      print('Error exchanging custom token: $e');
-      return null;
-    }
-  }
-
-  static Future<void> _saveTokenAndUid(String token, String uid) async {
-    final prefs = await SharedPreferences.getInstance();
-    final expirationTime = DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch;
-
-    await prefs.setString('auth_token', token);
-    await prefs.setString('user_uid', uid);
-    await prefs.setInt('token_expiration_time', expirationTime);
-  }
-
 
 }
