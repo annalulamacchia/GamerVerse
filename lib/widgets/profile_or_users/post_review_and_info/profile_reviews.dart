@@ -7,16 +7,16 @@ import 'package:gamerverse/widgets/profile_or_users/profile_tab_bar.dart';
 import 'package:gamerverse/widgets/profile_or_users/game_review_card.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart'; // Import the GameReviewCard widget
 
-class ProfileReviewsPage extends StatefulWidget {
-  final String userId;
+class ProfileReviews extends StatefulWidget {
+  final String userId; // Accept userId in constructor
 
-  const ProfileReviewsPage({super.key, required this.userId});
+  const ProfileReviews({super.key, required this.userId}); // Constructor now takes userId
 
   @override
-  State<ProfileReviewsPage> createState() => _ProfileReviewsPageState();
+  State<ProfileReviews> createState() => _ProfileReviewsPageState();
 }
 
-class _ProfileReviewsPageState extends State<ProfileReviewsPage> {
+class _ProfileReviewsPageState extends State<ProfileReviews> {
   late Future<List<GameReview>> _reviewsFuture;
 
   @override
@@ -36,36 +36,14 @@ class _ProfileReviewsPageState extends State<ProfileReviewsPage> {
     final parentContext = context;
     return Scaffold(
       backgroundColor: const Color(0xff051f20), // Dark background for the page
-      appBar: AppBar(
-        title: const Text(
-          'Username', // Replace with dynamic username if needed
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: const Color(0xff163832), // Dark green for the app bar
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings), // Settings icon
-            onPressed: () {
-              // Navigate to settings page
-              Navigator.pushNamed(context, '/profileSettings');
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: [
-          const ProfileInfoCard(), // User profile information card
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: TabBarSection(mode: 0, selected: 1), // Profile tab bar
-          ),
-          // Reviews Section
-          Expanded(
-            child: FutureBuilder<List<GameReview>?>(
+         Expanded(
+            child: FutureBuilder<List<GameReview>?>( // Fetch user reviews
               future: _reviewsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (snapshot.hasError) {
@@ -78,7 +56,7 @@ class _ProfileReviewsPageState extends State<ProfileReviewsPage> {
                     icon: Icons.reviews_outlined,
                     message: 'You haven\'t written any reviews yet.',
                     subMessage:
-                        'Start sharing your thoughts about games you love!',
+                    'Start sharing your thoughts about games you love!',
                     color: Colors.grey[500]!,
                   );
                 }
@@ -93,7 +71,7 @@ class _ProfileReviewsPageState extends State<ProfileReviewsPage> {
                     GameReview review = reviews[index];
                     return GameReviewCard(
                       gameReview: review,
-                      userId: widget.userId,
+                      userId: widget.userId, // Pass userId to GameReviewCard
                       gameContext: parentContext,
                       onReviewRemoved: () {
                         _loadReviews();
@@ -105,9 +83,6 @@ class _ProfileReviewsPageState extends State<ProfileReviewsPage> {
             ),
           )
         ],
-      ),
-      bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 2, // Set the current tab index for navigation
       ),
     );
   }

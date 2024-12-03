@@ -6,41 +6,17 @@ import 'package:gamerverse/widgets/profile_or_users/user_info_card.dart';
 import 'package:gamerverse/widgets/profile_or_users/profile_tab_bar.dart';
 import 'package:gamerverse/widgets/profile_or_users/PostCardUser.dart';
 
-class UserPostPage extends StatelessWidget {
-  const UserPostPage({super.key});
+class UserPosts extends StatelessWidget {
+  final String userId; // Aggiunto userId come parametro obbligatorio
+
+  const UserPosts({super.key, required this.userId}); // Il costruttore ora richiede userId
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xff051f20), // Sfondo scuro della pagina
-      appBar: AppBar(
-        title: const Text('Username', style: TextStyle(color: Colors.white)),
-        // Sostituisci con il nome utente dinamico, se necessario
-        backgroundColor: const Color(0xff163832),
-        // Verde scuro per l'app bar
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'report') {
-                // Naviga alla pagina di report
-              } else if (value == 'block') {
-                // Naviga alla pagina di blocco
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: 'report', child: Text('Report User')),
-              const PopupMenuItem(value: 'block', child: Text('Block User')),
-            ],
-          ),
-        ],
-      ),
       body: Column(
         children: [
-          const UserInfoCard(), // Scheda informazioni utente
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: TabBarSection(mode: 1, selected: 2), // Sezione Tab
-          ),
           Expanded(
             child: ListView.builder(
               itemCount: 3, // Numero dei post
@@ -62,14 +38,8 @@ class UserPostPage extends StatelessWidget {
               },
             ),
           ),
-
         ],
-      ),
-      bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1, // Seleziona 'Home' per questa pagina
       ),
     );
   }
-
-// Funzione per mostrare il Modal Bottom Sheet per creare un nuovo post
 }

@@ -10,12 +10,9 @@ import 'package:gamerverse/views/home_page.dart';
 import 'package:gamerverse/views/login/loginEmail_page.dart';
 import 'package:gamerverse/views/login/login_page.dart';
 import 'package:gamerverse/views/login/newPassword_page.dart';
-import 'package:gamerverse/views/other_user_profile/user_post_page.dart';
 import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
 import 'package:gamerverse/views/home/popular_games_page.dart';
 import 'package:gamerverse/views/profile/profile_page.dart';
-import 'package:gamerverse/views/profile/profile_post_page.dart';
-import 'package:gamerverse/views/profile/profile_reviews_page.dart';
 import 'package:gamerverse/views/profile/profile_settings_page.dart';
 import 'package:gamerverse/views/home/released_this_month_page.dart';
 import 'package:gamerverse/views/login/resetPassword_page.dart';
@@ -39,7 +36,9 @@ class RouteGenerator {
       case '/community':
         return MaterialPageRoute(builder: (context) => const CommunityPage());
       case '/profile':
-        return MaterialPageRoute(builder: (context) => const ProfilePage());
+        return MaterialPageRoute(
+          builder: (context) => ProfilePage(),
+        );
       case '/game':
         if (args is int) {
           return MaterialPageRoute(
@@ -75,17 +74,13 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) => const AdvisedUsersPage());
       case '/userProfile':
-        return MaterialPageRoute(builder: (context) => const UserProfilePage());
-      case '/profileReviews':
         if (args is String) {
           return MaterialPageRoute(
-              builder: (context) => ProfileReviewsPage(userId: args));
+          builder: (context) => UserProfilePage(userId: args),
+          );
         }
+
         return MaterialPageRoute(builder: (context) => const HomePage());
-      case '/profilePosts':
-        return MaterialPageRoute(builder: (context) => const ProfilePostPage());
-      case '/userPosts':
-        return MaterialPageRoute(builder: (context) => const UserPostPage());
       case '/profileSettings':
         return MaterialPageRoute(
             builder: (context) => const AccountSettingsPage());

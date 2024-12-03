@@ -6,12 +6,14 @@ class UserProfileService {
   static const String _baseUrl = "https://gamerversemobile.pythonanywhere.com";
 
   /// Fetch user profile information by user ID.
-  /// Accepts an optional parameter for user ID, if not provided it fetches from SharedPreferences.
-  static Future<Map<String, dynamic>> getUserByUid({String? userId}) async {
+  /// If no user ID is provided, it will fetch the user ID from SharedPreferences.
+  static Future<Map<String, dynamic>> getUserByUid([String? userId]) async {
     try {
       // Recupera il token di autenticazione
       final prefs = await SharedPreferences.getInstance();
       final String? authToken = prefs.getString('auth_token');
+
+      // Recupera userId da SharedPreferences se non viene passato
       userId ??= prefs.getString('user_uid');
 
       if (authToken == null || userId == null) {
@@ -74,9 +76,9 @@ class UserProfileService {
             'account_disabled': accountDisabled,
             'counter_reports': counterReports,
             'position': position,
-            'followers':followers,
-            'followed':followed,
-            'games':games,
+            'followers': followers,
+            'followed': followed,
+            'games': games,
           },
         };
       } else {
@@ -95,3 +97,4 @@ class UserProfileService {
     }
   }
 }
+

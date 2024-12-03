@@ -44,17 +44,19 @@ class GameListSection extends StatelessWidget {
             ],
           ),
         ),
+        // Rimuovi Expanded e lascia che il ListView occupi lo spazio all'interno del SizedBox
         SizedBox(
-          height: 150,
+          height: 150,  // Imposta l'altezza fissa per la sezione
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: imageUrls.length,
             itemBuilder: (context, index) {
               return InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/game');
-                  },
-                  child: buildGameCard(imageUrls[index]));
+                onTap: () {
+                  Navigator.pushNamed(context, '/game');
+                },
+                child: buildGameCard(imageUrls[index]),
+              );
             },
           ),
         ),

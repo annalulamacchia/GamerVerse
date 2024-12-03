@@ -130,12 +130,18 @@ class SingleReview extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/userProfile');
+                      Navigator.pushNamed(
+                        context,
+                        '/userProfile',
+                        arguments: review?.writerId, // Assumendo che `writerId` contenga l'userId
+                      );
                     },
                     child: Text(
                       review!.writerUsername,
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
 
