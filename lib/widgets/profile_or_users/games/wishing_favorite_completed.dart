@@ -2,6 +2,8 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_profile.dart';
 import 'package:gamerverse/services/specific_game/wishlist_service.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class GameListSection extends StatefulWidget {
   final String userId;
@@ -50,6 +52,15 @@ class GameListSectionState extends State<GameListSection> {
         ? const Center(child: CircularProgressIndicator())
         : ListView(
             children: [
+              if (liked.isEmpty && playing.isEmpty && completed.isEmpty)
+                NoDataList(
+                  textColor: Colors.white,
+                  icon: HugeIcons.strokeRoundedAircraftGame,
+                  message: 'No games added yet',
+                  subMessage:
+                      'Start adding games to your list to keep track of your progress.',
+                  color: Colors.grey[500]!,
+                ),
               if (liked.isNotEmpty)
                 _buildGameSection(context, 'Wishlist', liked),
               if (playing.isNotEmpty)

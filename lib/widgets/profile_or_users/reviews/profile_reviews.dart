@@ -51,9 +51,8 @@ class _ProfileReviewsPageState extends State<ProfileReviews> {
                 return NoDataList(
                   textColor: Colors.grey[400],
                   icon: Icons.reviews_outlined,
-                  message: 'You haven\'t written any reviews yet.',
-                  subMessage:
-                      'Start sharing your thoughts about games you love!',
+                  message: 'No reviews have been written yet.',
+                  subMessage: 'Start sharing thoughts about games you enjoy!',
                   color: Colors.grey[500]!,
                 );
               }
