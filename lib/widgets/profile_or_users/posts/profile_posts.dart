@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/profile_or_users/NewPostBottomSheet.dart'; // Per creare nuovi post
-import 'package:gamerverse/widgets/profile_or_users/PostCardProfile.dart'; // Per mostrare i post
-import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Navbar
+import 'package:gamerverse/models/game_profile.dart';
+import 'package:gamerverse/widgets/profile_or_users/posts/NewPostBottomSheet.dart'; // Per creare nuovi post
+import 'package:gamerverse/widgets/profile_or_users/posts/PostCardProfile.dart'; // Per mostrare i post
+// Navbar
 import 'package:gamerverse/services/specific_game/wishlist_service.dart'; // Per la wishlist
 import 'package:gamerverse/services/Community/post_service.dart'; // Per i post
-import 'package:gamerverse/models/game.dart'; // Modello Game
 import 'package:gamerverse/models/post.dart'; // Modello Post
-import 'package:shared_preferences/shared_preferences.dart'; // Per leggere l'ID utente
+// Per leggere l'ID utente
 
 class ProfilePosts extends StatefulWidget {
   final String userId; // ID dell'utente
 
-  const ProfilePosts({super.key, required this.userId}); // Richiediamo userId nel costruttore
+  const ProfilePosts(
+      {super.key, required this.userId}); // Richiediamo userId nel costruttore
 
   @override
   _ProfilePostPageState createState() => _ProfilePostPageState();
 }
 
 class _ProfilePostPageState extends State<ProfilePosts> {
-  WishlistService wishlistService = WishlistService(); // Servizio per la wishlist
-  List<Game> wishlistGames = []; // Lista dei giochi nella wishlist
+  WishlistService wishlistService =
+      WishlistService(); // Servizio per la wishlist
+  List<GameProfile> wishlistGames = []; // Lista dei giochi nella wishlist
   List<Post> userPosts = []; // Lista dei post dell'utente
 
   @override
@@ -37,7 +39,8 @@ class _ProfilePostPageState extends State<ProfilePosts> {
   // Recupero wishlist dell'utente
   Future<void> _getUserWishlist() async {
     try {
-      List<Game> games = await WishlistService.getWishlist(widget.userId);
+      List<GameProfile> games =
+          await WishlistService.getWishlist(widget.userId);
       setState(() {
         wishlistGames = games; // Aggiorniamo la wishlist
       });
@@ -53,7 +56,8 @@ class _ProfilePostPageState extends State<ProfilePosts> {
       if (result["success"] == true) {
         List<Post> postsList = (result["posts"] as List)
             .map((postJson) => Post.fromJson(postJson))
-            .where((post) => post.writerId == widget.userId) // Filtra per userId
+            .where(
+                (post) => post.writerId == widget.userId) // Filtra per userId
             .toList();
 
         setState(() {
@@ -76,34 +80,39 @@ class _ProfilePostPageState extends State<ProfilePosts> {
         children: [
           Expanded(
             child: userPosts.isEmpty
-                ? Center(
-            )
+                ? Center()
                 : ListView.builder(
-              itemCount: userPosts.length,
-              itemBuilder: (context, index) {
-                final post = userPosts[index];
-                return PostCard(
-                  userId: post.writerId, // Autore
-                  gameId: post.gameId, // ID gioco
-                  description: post.description, // Contenuto
-                  likeCount: post.likes, // Like
-                  commentCount: 5, // Commenti (placeholder)
-                  timestamp: post.timestamp, // Data
-                  onCommentPressed: () {
-                    // Logica per i commenti
-                    Navigator.pushNamed(
-                      context,
-                      '/comments',
-                      arguments: post.id,
-                    );
-                  },
-                  onDeletePressed: () {
-                    // Logica per eliminare il post
-                    print('Post eliminato: ${post.id}');
-                  },
-                );
-              },
-            ),
+                    itemCount: userPosts.length,
+                    itemBuilder: (context, index) {
+                      final post = userPosts[index];
+                      return PostCard(
+                        userId: post.writerId,
+                        // Autore
+                        gameId: post.gameId,
+                        // ID gioco
+                        description: post.description,
+                        // Contenuto
+                        likeCount: post.likes,
+                        // Like
+                        commentCount: 5,
+                        // Commenti (placeholder)
+                        timestamp: post.timestamp,
+                        // Data
+                        onCommentPressed: () {
+                          // Logica per i commenti
+                          Navigator.pushNamed(
+                            context,
+                            '/comments',
+                            arguments: post.id,
+                          );
+                        },
+                        onDeletePressed: () {
+                          // Logica per eliminare il post
+                          print('Post eliminato: ${post.id}');
+                        },
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -117,7 +126,6 @@ class _ProfilePostPageState extends State<ProfilePosts> {
       ),
     );
   }
-
 
   // Funzione per mostrare il Bottom Sheet per creare un post
   void _showNewPostBottomSheet(BuildContext context) {
@@ -140,10 +148,11 @@ class _ProfilePostPageState extends State<ProfilePosts> {
   }
 
   // Funzione per creare un post
-  Future<void> _createPost(BuildContext context, String description, String gameId) async {
+  Future<void> _createPost(
+      BuildContext context, String description, String gameId) async {
     try {
       Map<String, dynamic> result =
-      await PostService.sendPost(description, gameId);
+          await PostService.sendPost(description, gameId);
       if (result["success"] == true) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Post creato con successo')),

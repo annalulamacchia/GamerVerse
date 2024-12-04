@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/services/loginWithGoogle_service.dart'; // Ensure this matches your service location
+import 'package:gamerverse/services/login/loginWithGoogle_service.dart'; // Ensure this matches your service location
 import 'package:gamerverse/utils/colors.dart';
 import 'package:fluttertoast/fluttertoast.dart'; // For displaying messages
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Ensure this is the correct import for your BottomNavBar

@@ -26,6 +26,7 @@ class PlayedListState extends State<PlayedList> {
     _loadReviews();
   }
 
+  //load all the reviews without description or all the users that are playing, have completed a game, but not reviewed yet
   void _loadReviews() {
     setState(() {
       _reviewsFuture =

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart'; // to read token from local storage
+// to read token from local storage
 import 'package:gamerverse/utils/firebase_auth_helper.dart';
 
 class CustomBottomNavBar extends StatefulWidget {

@@ -37,7 +37,7 @@ class _AddReviewState extends State<AddReview> {
     });
   }
 
-  // Funzione per caricare la recensione esistente
+  //load an existing review
   Future<void> _loadExistingReview() async {
     review = await ReviewService.getReview(
       writerId: widget.userId,
@@ -55,6 +55,7 @@ class _AddReviewState extends State<AddReview> {
     });
   }
 
+  //add the review
   Future<void> _submitReview() async {
     setState(() {
       _isLoading = true;
@@ -74,14 +75,17 @@ class _AddReviewState extends State<AddReview> {
 
     if (success) {
       Navigator.of(context).pop();
+      //if the review is modified, shows a success modal
       if (review != null) {
         DialogHelper.showSuccessDialog(
             context, "Review modified successfully!");
       } else {
+        //if the review is added, shows a success modal
         DialogHelper.showSuccessDialog(context, "Review added successfully!");
       }
       widget.onReviewAdded();
     } else {
+      //if the user have not played the game, shows an error modal
       DialogHelper.showErrorDialog(context,
           "You are not playing or you don't have completed this game. Please try again.");
     }
@@ -105,7 +109,7 @@ class _AddReviewState extends State<AddReview> {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // 5 ghosts Rating
+                    //5 ghosts Rating
                     ...List.generate(5, (index) {
                       return IconButton(
                         icon: HugeIcon(
@@ -117,6 +121,7 @@ class _AddReviewState extends State<AddReview> {
                       );
                     }),
                     const SizedBox(width: 15),
+                    //Text rating
                     Text(
                       _rating.toString(),
                       style: const TextStyle(
@@ -141,6 +146,7 @@ class _AddReviewState extends State<AddReview> {
                       selectionHandleColor: Color(0xff3e6259),
                     ),
                   ),
+                  //Text Area
                   child: TextField(
                     controller: _reviewController,
                     decoration: const InputDecoration(
@@ -161,7 +167,7 @@ class _AddReviewState extends State<AddReview> {
                 ),
           const SizedBox(height: 16),
 
-          // Post Button
+          //Post Button
           Center(
             child: ElevatedButton(
               onPressed: _isLoading ? null : _submitReview,

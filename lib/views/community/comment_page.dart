@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Importa il widget CustomBottomNavBar
 import 'package:gamerverse/widgets/common_sections/report.dart';
-import 'package:gamerverse/widgets/profile_or_users/comments.dart';
+import 'package:gamerverse/widgets/profile_or_users/posts/comments.dart';
 class CommentsPage extends StatelessWidget {
   // Lista dei commenti per il debug
   final List<Map<String, String>> comments = [

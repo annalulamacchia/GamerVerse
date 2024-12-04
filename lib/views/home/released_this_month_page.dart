@@ -11,7 +11,7 @@ class ReleasedThisMonthPage extends StatefulWidget {
 }
 
 class _ReleasedThisMonthPageState extends State<ReleasedThisMonthPage> {
-  List<Map<String, dynamic>> _games = []; // Store all games released this month
+  final List<Map<String, dynamic>> _games = []; // Store all games released this month
   bool _isLoading = true; // For initial loading
   bool _isLoadingMore = false; // For lazy loading
   String? _errorMessage;

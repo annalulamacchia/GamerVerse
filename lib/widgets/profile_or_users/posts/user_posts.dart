@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Importa i widget personalizzati dalla cartella widgets
-import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
-import 'package:gamerverse/widgets/profile_or_users/user_info_card.dart';
-import 'package:gamerverse/widgets/profile_or_users/profile_tab_bar.dart';
-import 'package:gamerverse/widgets/profile_or_users/PostCardUser.dart';
+import 'package:gamerverse/widgets/profile_or_users/posts/PostCardUser.dart';
 
 class UserPosts extends StatelessWidget {
   final String userId; // Aggiunto userId come parametro obbligatorio

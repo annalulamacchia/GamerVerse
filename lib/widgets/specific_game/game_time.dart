@@ -155,7 +155,7 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
                 },
               ),
               const SizedBox(height: 16),
-              //send button
+              //Send button
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);

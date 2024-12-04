@@ -161,6 +161,7 @@ class SpecificGameState extends State<SpecificGame> {
     });
   }
 
+  //load the average user rating
   Future<void> _loadAverageUserRating() async {
     if (_isLoadingUserRating) return;
     _isLoadingUserRating = true;
@@ -182,6 +183,7 @@ class SpecificGameState extends State<SpecificGame> {
     _isLoadingUserRating = false;
   }
 
+  //load the latest review
   Future<void> _loadLatestReview() async {
     if (_isLoadingLatestReview) return;
     _isLoadingLatestReview = true;

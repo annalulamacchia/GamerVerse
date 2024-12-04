@@ -4,9 +4,9 @@ import 'dart:core';
 
 class GameApiService {
   static const String clientId =
-      '59now2vf9ty36w63um7grxsio0jivn'; // Sostituisci con il tuo Client ID
+      '59now2vf9ty36w63um7grxsio0jivn';
   static const String accessToken =
-      'of7hm9lpfashde892p0d7zurciwugx'; // Sostituisci con il tuo Access Token
+      'of7hm9lpfashde892p0d7zurciwugx';
 
   static Future<Map<String, dynamic>?> fetchGameData(int gameId) async {
     final url = Uri.parse('https://api.igdb.com/v4/games');

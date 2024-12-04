@@ -46,12 +46,13 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
     isLoading = false;
   }
 
+  //function that redirect to login if the user is not logged in
   void _toLoginForLikeDislike() {
     Navigator.pushNamed(context, '/login');
     isLoading = false;
   }
 
-  // Funzione per alternare like
+  //function to like the review
   void _toggleLike() {
     setState(() {
       if (!isLiked) {
@@ -79,7 +80,7 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
     });
   }
 
-  // Funzione per alternare dislike
+  //function to dislike the review
   void _toggleDislike() {
     setState(() {
       if (!isDisliked) {

@@ -24,6 +24,7 @@ class Review {
       required this.status,
       required this.gameId});
 
+  //create the Review model from a JSON result
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
       gameId: json['game_id'],

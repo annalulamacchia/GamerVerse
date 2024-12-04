@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/views/common_sections/followers_or_following_page.dart';
-import 'package:gamerverse/services/Get_user_info.dart';
+import 'package:gamerverse/views/profile/followers_or_following_page.dart';
+import 'package:gamerverse/services/user/Get_user_info.dart';
 
 class ProfileInfoCard extends StatefulWidget {
   const ProfileInfoCard({super.key});
@@ -68,7 +68,7 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(5.0),
       child: Column(
         children: [
           // The existing Profile Card UI

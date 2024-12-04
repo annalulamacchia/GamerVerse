@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/services/Get_user_info.dart';
+import 'package:gamerverse/services/user/Get_user_info.dart';
 import 'package:gamerverse/services/specific_game/get_game_service.dart';
 import 'package:hugeicons/hugeicons.dart';
 

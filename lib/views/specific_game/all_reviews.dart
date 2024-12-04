@@ -39,6 +39,7 @@ class _ReviewPageState extends State<ReviewPage> {
     _loadReviews();
   }
 
+  //load all the reviews of a specific game
   void _loadReviews() {
     setState(() {
       _reviewsFuture = ReviewService.fetchReviewsByGame(gameId: widget.game.id);
@@ -91,6 +92,7 @@ class _ReviewPageState extends State<ReviewPage> {
             Navigator.pop(context);
           },
         ),
+        //Game Name
         title: Text(widget.game.name, style: TextStyle(color: Colors.white)),
       ),
       body: SingleChildScrollView(
@@ -106,15 +108,15 @@ class _ReviewPageState extends State<ReviewPage> {
             ),
             const SizedBox(height: 10.0),
 
-            //Game Image and Users Rating
+            //Critics Rating and Users Rating
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  //Game Name
                   Column(
                     children: [
+                      //Critics rating
                       Row(
                         children: [
                           Icon(Icons.star, color: Colors.white, size: 20.0),
@@ -159,7 +161,7 @@ class _ReviewPageState extends State<ReviewPage> {
                               ],
                             ),
                             Text(
-                              'Users Review',
+                              'Users Rating',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),

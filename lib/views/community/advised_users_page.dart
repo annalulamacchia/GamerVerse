@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/profile_or_users/user_follower_card.dart'; // Importa il widget UserCard
+import 'package:gamerverse/widgets/profile_or_users/info/user_follower_card.dart'; // Importa il widget UserCard
 
 class AdvisedUsersPage extends StatefulWidget {
   const AdvisedUsersPage({super.key});

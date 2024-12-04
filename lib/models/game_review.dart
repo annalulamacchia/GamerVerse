@@ -24,7 +24,7 @@ class GameReview {
       required this.cover,
       required this.status});
 
-  // Factory constructor per creare un oggetto GameReview da un JSON
+  //create the GameReview model from a JSON result
   factory GameReview.fromJson(Map<String, dynamic> json) {
     return GameReview(
         reviewId: json['review_id'],

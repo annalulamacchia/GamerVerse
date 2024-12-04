@@ -11,7 +11,7 @@ class AllGamesPage extends StatefulWidget {
 }
 
 class _AllGamesPageState extends State<AllGamesPage> {
-  List<Map<String, dynamic>> _games = []; // Store all games
+  final List<Map<String, dynamic>> _games = []; // Store all games
   bool _isLoading = true; // For initial loading
   bool _isLoadingMore = false; // For lazy loading
   String? _errorMessage;

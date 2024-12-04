@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/profile_or_users/user_info_card.dart';
-import 'package:gamerverse/widgets/profile_or_users/profile_tab_bar.dart';
+import 'package:gamerverse/widgets/profile_or_users/info/user_info_card.dart';
+import 'package:gamerverse/widgets/profile_or_users/info/profile_tab_bar.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 
 class UserProfilePage extends StatefulWidget {

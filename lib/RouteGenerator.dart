@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/game_profile.dart';
 import 'package:gamerverse/models/user.dart';
 import 'package:gamerverse/views/admin_report_page.dart';
 import 'package:gamerverse/views/home/all_games_page.dart';
-import 'package:gamerverse/views/common_sections/comment_page.dart';
+import 'package:gamerverse/views/community/comment_page.dart';
 import 'package:gamerverse/views/community/advised_users_page.dart';
 import 'package:gamerverse/views/community/community_page.dart';
-import 'package:gamerverse/views/complete_list_of_games_page.dart';
+import 'package:gamerverse/views/profile/complete_list_of_games_page.dart';
 import 'package:gamerverse/views/home_page.dart';
 import 'package:gamerverse/views/login/loginEmail_page.dart';
 import 'package:gamerverse/views/login/login_page.dart';
 import 'package:gamerverse/views/login/newPassword_page.dart';
-import 'package:gamerverse/views/other_user_profile/user_profile_page.dart';
+import 'package:gamerverse/views/profile/user_profile_page.dart';
 import 'package:gamerverse/views/home/popular_games_page.dart';
 import 'package:gamerverse/views/profile/profile_page.dart';
 import 'package:gamerverse/views/profile/profile_settings_page.dart';
@@ -23,7 +24,7 @@ import 'package:gamerverse/views/specific_game/liked_list.dart';
 import 'package:gamerverse/views/specific_game/played_list.dart';
 import 'package:gamerverse/views/specific_game/series_games.dart';
 import 'package:gamerverse/views/specific_game/specific_game.dart';
-import 'package:gamerverse/views/specific_user_game.dart';
+import 'package:gamerverse/views/profile/specific_user_game.dart';
 import 'package:gamerverse/views/home/upcoming_games_page.dart';
 
 class RouteGenerator {
@@ -76,23 +77,25 @@ class RouteGenerator {
       case '/userProfile':
         if (args is String) {
           return MaterialPageRoute(
-          builder: (context) => UserProfilePage(userId: args),
+            builder: (context) => UserProfilePage(userId: args),
           );
         }
-
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/profileSettings':
         return MaterialPageRoute(
             builder: (context) => const AccountSettingsPage());
       case '/userAllGames':
-        if (args is List<String>) {
+        if (args is List<GameProfile>) {
           return MaterialPageRoute(
-              builder: (context) => AllgamesPage(imageUrls: args));
+              builder: (context) => AllGamesUserPage(games: args));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/userGame':
-        return MaterialPageRoute(
-            builder: (context) => const SpecificUserGame());
+        if (args is GameProfile) {
+          return MaterialPageRoute(
+              builder: (context) => SpecificUserGame(game: args));
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case '/admin':
         return MaterialPageRoute(builder: (context) => const AdminReportPage());
       case '/allReviews':

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/profile_or_users/profile_info_card.dart';
-import 'package:gamerverse/widgets/profile_or_users/profile_tab_bar.dart';
+import 'package:gamerverse/models/game_profile.dart';
+import 'package:gamerverse/widgets/profile_or_users/info/profile_info_card.dart';
+import 'package:gamerverse/widgets/profile_or_users/info/profile_tab_bar.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,11 +9,14 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  ProfilePageState createState() => ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class ProfilePageState extends State<ProfilePage> {
   late Future<String> userIdFuture;
+  List<GameProfile> wishlist = [];
+  int gamesCounter = 0;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -41,7 +45,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-
       body: FutureBuilder<String>(
         future: userIdFuture,
         builder: (context, snapshot) {
@@ -59,7 +62,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: ProfileInfoCard(),
                 ),
-                const SizedBox(height: 5),
                 // Usa Expanded per evitare overflow con il ListView
                 Expanded(
                   child: TabBarSection(

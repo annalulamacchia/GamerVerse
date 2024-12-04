@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/utils/colors.dart';
-import 'package:gamerverse/services/loginWithEmail_service.dart';
+import 'package:gamerverse/services/login/loginWithEmail_service.dart';
 
 class LoginEmailPage extends StatefulWidget {
   const LoginEmailPage({super.key});

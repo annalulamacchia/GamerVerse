@@ -41,6 +41,7 @@ class ReviewService {
     }
   }
 
+  //function to get the review of a user for a specific game
   static Future<Map<String, dynamic>?> getReview({
     required String? writerId,
     required String gameId,
@@ -74,7 +75,7 @@ class ReviewService {
     }
   }
 
-  // Funzione per calcolare la valutazione media degli utenti
+  //function to calculate the average user rating
   static Future<double?> getAverageUserRating({required int gameId}) async {
     final url = Uri.parse(
         'https://gamerversemobile.pythonanywhere.com/get_average_user_rating');
@@ -106,6 +107,7 @@ class ReviewService {
     }
   }
 
+  //function to get all the reviews of a specific game
   static Future<List<Review>> fetchReviewsByGame(
       {required String gameId}) async {
     try {
@@ -146,6 +148,7 @@ class ReviewService {
     }
   }
 
+  //function to get the latest review of a specific game
   static Future<Review?> getLatestReview({required String gameId}) async {
     try {
       final response = await http.post(
@@ -188,6 +191,7 @@ class ReviewService {
     }
   }
 
+  //function to get all the reviews for a specific game without description
   static Future<List<Review>> fetchReviewsByStatus(
       {required String gameId}) async {
     try {
@@ -228,6 +232,7 @@ class ReviewService {
     }
   }
 
+  //function to update like and dislike of a review
   static Future<void> updateLikeDislike(
       {required String? userId,
       required String gameId,
@@ -262,6 +267,7 @@ class ReviewService {
     }
   }
 
+  //function to remove a review
   static Future<bool> removeReview(
       {required String? reviewId, required String? gameId}) async {
     final url =
@@ -295,6 +301,7 @@ class ReviewService {
     }
   }
 
+  //function to get all the reviews of a user
   static Future<List<GameReview>> getReviewsByUserId(
       {required String userId}) async {
     final Uri url = Uri.parse(
@@ -312,9 +319,6 @@ class ReviewService {
         },
         body: jsonEncode(body),
       );
-      if (kDebugMode) {
-        print(response.body);
-      }
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/user.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
-import 'package:gamerverse/widgets/profile_or_users/user_follower_card.dart';
+import 'package:gamerverse/widgets/profile_or_users/info/user_follower_card.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 
 class LikedList extends StatefulWidget {
@@ -36,6 +36,7 @@ class LikedListState extends State<LikedList> {
         ),
         title: const Text('Game Name', style: TextStyle(color: Colors.white)),
       ),
+
       //list of all the users that liked a specific game
       body: itemCount == 0
           ? NoDataList(

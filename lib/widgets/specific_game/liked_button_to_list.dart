@@ -100,6 +100,7 @@ class LikedButtonToListState extends State<LikedButtonToList> {
                       children: [
                         Icon(Icons.favorite, color: Colors.white, size: 20),
                         SizedBox(width: 4),
+                        //Number of users that liked the game
                         Text(
                           likedCount.toString(),
                           style: TextStyle(fontSize: 18, color: Colors.white),

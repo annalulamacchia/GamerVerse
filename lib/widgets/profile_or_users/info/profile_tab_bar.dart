@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/profile_or_users/user_info_card.dart';
-import 'package:gamerverse/widgets/profile_or_users/post_review_and_info/profile_reviews.dart';
-import 'package:gamerverse/widgets/profile_or_users/post_review_and_info/profile_posts.dart';
-import 'package:gamerverse/widgets/profile_or_users/post_review_and_info/profile_games.dart';
-import 'package:gamerverse/widgets/profile_or_users/post_review_and_info/user_games.dart';
-import 'package:gamerverse/widgets/profile_or_users/post_review_and_info/user_reviews.dart';
-import 'package:gamerverse/widgets/profile_or_users/post_review_and_info/user_posts.dart';
+import 'package:gamerverse/widgets/profile_or_users/reviews/profile_reviews.dart';
+import 'package:gamerverse/widgets/profile_or_users/posts/profile_posts.dart';
+import 'package:gamerverse/widgets/profile_or_users/games/profile_games.dart';
+import 'package:gamerverse/widgets/profile_or_users/posts/user_posts.dart';
 
 class TabBarSection extends StatefulWidget {
   final int mode;
@@ -20,10 +17,10 @@ class TabBarSection extends StatefulWidget {
   });
 
   @override
-  _TabBarSectionState createState() => _TabBarSectionState();
+  TabBarSectionState createState() => TabBarSectionState();
 }
 
-class _TabBarSectionState extends State<TabBarSection> {
+class TabBarSectionState extends State<TabBarSection> {
   late int _currentTabIndex;
 
   @override
@@ -38,16 +35,18 @@ class _TabBarSectionState extends State<TabBarSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 16.0,right:16.0,top:10,bottom:16),
+          padding: const EdgeInsets.only(
+              left: 16.0, right: 16.0, top: 2.5, bottom: 7.5),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Expanded(  // Usa Expanded per distribuire equamente i tab
+              Expanded(
+                // Usa Expanded per distribuire equamente i tab
                 child: _buildTabButton(
                   context,
                   'Games',
                   _currentTabIndex == 0 ? Colors.green : Colors.black,
-                      () => _onTabSelected(0),
+                  () => _onTabSelected(0),
                 ),
               ),
               Expanded(
@@ -55,7 +54,7 @@ class _TabBarSectionState extends State<TabBarSection> {
                   context,
                   'Reviews',
                   _currentTabIndex == 1 ? Colors.green : Colors.black,
-                      () => _onTabSelected(1),
+                  () => _onTabSelected(1),
                 ),
               ),
               Expanded(
@@ -63,7 +62,7 @@ class _TabBarSectionState extends State<TabBarSection> {
                   context,
                   'Post',
                   _currentTabIndex == 2 ? Colors.green : Colors.black,
-                      () => _onTabSelected(2),
+                  () => _onTabSelected(2),
                 ),
               ),
             ],
@@ -71,7 +70,8 @@ class _TabBarSectionState extends State<TabBarSection> {
         ),
         const SizedBox(height: 16.0),
         // Usa SingleChildScrollView per permettere lo scorrimento del contenuto
-        Expanded(child: _buildTabContent()),  // Assicura che il contenuto delle tab occupi lo spazio rimanente
+        Expanded(child: _buildTabContent()),
+        // Assicura che il contenuto delle tab occupi lo spazio rimanente
       ],
     );
   }
@@ -83,35 +83,27 @@ class _TabBarSectionState extends State<TabBarSection> {
   }
 
   Widget _buildTabContent() {
-    if (widget.mode == 0) {
-      // Se mode è 0, usa i widget per il profilo
-      if (_currentTabIndex == 0) {
-        return _buildProfileGamesWidget();
-      } else if (_currentTabIndex == 1) {
-        return _buildProfileReviewsWidget();
-      } else {
-        return _buildProfilePostsWidget();
-      }
-    } else if (widget.mode == 1) {
-      // Se mode è 1, usa i widget per un altro utente
-      if (_currentTabIndex == 0) {
-        return _buildUserGamesWidget();
-      } else if (_currentTabIndex == 1) {
-        return _buildUserReviewsWidget();
-      } else {
-        return _buildUserPostsWidget();
-      }
+    if (_currentTabIndex == 0) {
+      return _buildProfileGamesWidget();
+    }
+    if (_currentTabIndex == 1) {
+      return _buildProfileReviewsWidget();
+    }
+    if (widget.mode == 0 && _currentTabIndex == 2) {
+      return _buildProfilePostsWidget();
+    } else if (widget.mode == 1 && _currentTabIndex == 2) {
+      return _buildUserPostsWidget();
     } else {
       return const Center(child: Text('Invalid mode'));
     }
   }
 
   Widget _buildTabButton(
-      BuildContext context,
-      String text,
-      Color color,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String text,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -160,18 +152,7 @@ class _TabBarSectionState extends State<TabBarSection> {
     return ProfilePosts(userId: widget.userId!);
   }
 
-  // Widget per i giochi, recensioni e post di un altro utente (mode == 1)
-  Widget _buildUserGamesWidget() {
-    return UserGames(userId: widget.userId!); // Passa userId per un altro utente
-  }
-
-  Widget _buildUserReviewsWidget() {
-    return UserReviews(userId: widget.userId!); // Passa userId
-  }
-
   Widget _buildUserPostsWidget() {
     return UserPosts(userId: widget.userId!); // Passa userId
   }
 }
-
-

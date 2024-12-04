@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
-import 'package:gamerverse/services/logout.dart'; // Servizio logout
-import 'package:gamerverse/services/Get_user_info.dart'; // Servizio per ottenere dati utente
-import 'package:gamerverse/services/update_user_service.dart'; // Servizio per aggiornare dati utente
-import 'package:gamerverse/services/delete_user_service.dart';
+import 'package:gamerverse/services/user/logout.dart'; // Servizio logout
+import 'package:gamerverse/services/user/Get_user_info.dart'; // Servizio per ottenere dati utente
+import 'package:gamerverse/services/user/update_user_service.dart'; // Servizio per aggiornare dati utente
+import 'package:gamerverse/services/user/delete_user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountSettingsPage extends StatefulWidget {

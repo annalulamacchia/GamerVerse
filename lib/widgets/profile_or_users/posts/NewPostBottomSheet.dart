@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/models/game.dart';
+import 'package:gamerverse/models/game_profile.dart';
 import 'package:gamerverse/services/Community/post_service.dart'; // Importa il servizio
 
 class NewPostBottomSheet extends StatefulWidget {
   final Function(String description, String gameId) onPostCreated;
-  final List<Game> wishlistGames;
+  final List<GameProfile> wishlistGames;
 
   const NewPostBottomSheet({
     super.key,
@@ -38,11 +38,11 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
           // Dropdown menu
           DropdownButtonFormField<String>(
             value: selectedGameId,
-            items: widget.wishlistGames.map((Game game) {
+            items: widget.wishlistGames.map((GameProfile game) {
               return DropdownMenuItem<String>(
-                value: game.id,
+                value: game.gameId,
                 child: Text(
-                  game.name,
+                  game.gameName,
                   style: TextStyle(color: Colors.grey[800]),
                 ),
               );
