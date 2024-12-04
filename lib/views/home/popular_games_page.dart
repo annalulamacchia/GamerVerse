@@ -11,17 +11,27 @@ class PopularGamesPage extends StatefulWidget {
 }
 
 class _PopularGamesPageState extends State<PopularGamesPage> {
-  final List<Map<String, dynamic>> _games = []; // Store all popular games
+  List<Map<String, dynamic>> _games = []; // Store popular games
   bool _isLoading = true; // For initial loading
   bool _isLoadingMore = false; // For lazy loading
   String? _errorMessage;
-  int _offset = 0; // Start offset for pagination
+  int _offset = 0; // Start offset
   final ScrollController _scrollController = ScrollController(); // Controller for lazy loading
+
+  // Preselect Popularity
+  String? _selectedOrderBy = 'Popularity'; // Default sorting: Popularity
+  String? _selectedPlatform;
+  String? _selectedGenre;
+
+  // Filter options lists
+  final List<String> _orderByOptions = ['Popularity', 'Released This Month', 'Upcoming Games', 'Alphabetical', 'Rating'];
+  final List<String> _platformOptions = ['PS4', 'Xbox One', 'PC'];
+  final List<String> _genreOptions = ['Action', 'Adventure', 'RPG', 'Shooter'];
 
   @override
   void initState() {
     super.initState();
-    _fetchGames();
+    _fetchGames(); // Fetch games on page load with default sorting
     _scrollController.addListener(_onScroll); // Attach scroll listener
   }
 
@@ -41,7 +51,14 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
         }
       });
 
-      final gamesResponse = await GameApiService.fetchPopularGames(offset: _offset);
+      final gamesResponse = await GameApiService.fetchFilteredGames(
+        orderBy: _selectedOrderBy, // Use the preselected order: Popularity
+        platform: _selectedPlatform,
+        genre: _selectedGenre,
+        limit: 100,
+        offset: _offset,
+      );
+
       if (gamesResponse != null && gamesResponse.isNotEmpty) {
         setState(() {
           _games.addAll(gamesResponse); // Append new games to the list
@@ -74,6 +91,180 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
     }
   }
 
+  Future<void> _fetchFilteredGames() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _games = []; // Clear current games list
+      });
+
+      // Fetch games from the API using selected filters
+      final filteredGames = await GameApiService.fetchFilteredGames(
+        orderBy: _selectedOrderBy,
+        platform: _selectedPlatform,
+        genre: _selectedGenre,
+      );
+
+      setState(() {
+        _games = filteredGames; // Update games list
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = "An error occurred: $e";
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _showFilterPopup() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // To allow full-screen height flexibility
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return FractionallySizedBox(
+              heightFactor: 0.5, // Covers half the screen
+              child: Column(
+                children: [
+                  // Popup header
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: const Text(
+                      'Filters',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+
+                  const Divider(),
+
+                  // Scrollable content to prevent overflow
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Order By section
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: const Text(
+                              'Order By',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+
+                          Wrap(
+                            spacing: 8.0,
+                            children: _orderByOptions.map((option) {
+                              return ChoiceChip(
+                                label: Text(option),
+                                selected: _selectedOrderBy == option,
+                                selectedColor: Colors.green,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    _selectedOrderBy = selected ? option : null;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 16.0),
+
+                          // Platform section
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: const Text(
+                              'Platform',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+
+                          Wrap(
+                            spacing: 8.0,
+                            children: _platformOptions.map((option) {
+                              return ChoiceChip(
+                                label: Text(option),
+                                selected: _selectedPlatform == option,
+                                selectedColor: Colors.green,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    _selectedPlatform = selected ? option : null;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 16.0),
+
+                          // Genre section
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: const Text(
+                              'Genre',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+
+                          Wrap(
+                            spacing: 8.0,
+                            children: _genreOptions.map((option) {
+                              return ChoiceChip(
+                                label: Text(option),
+                                selected: _selectedGenre == option,
+                                selectedColor: Colors.green,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    _selectedGenre = selected ? option : null;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Apply Button
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context); // Close the popup
+                        _fetchFilteredGames(); // Trigger API request
+                      },
+                      child: const Text('Apply'),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +275,7 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.black),
-            onPressed: () {}, // Filter functionality here
+            onPressed: _showFilterPopup, // Open the filter popup
           ),
         ],
       ),
@@ -107,10 +298,10 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
             itemBuilder: (context, index) {
               final game = _games[index];
               final coverUrl = game['coverUrl'] ??
-                  'https://via.placeholder.com/400x200?text=No+Image';
+                  'https://via.placeholder.com/400x200?text=No+Image'; // Fallback image
               return ImageCardWidget(
-                imageUrl: coverUrl,
-                gameId: game['id'],
+                imageUrl: coverUrl, // Pass the cover URL to the widget
+                gameId: game['id'], // Pass the game ID to the widget
               );
             },
           ),
@@ -125,7 +316,7 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
             ),
         ],
       ),
-      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 2), // Adjusted index for Popular games
+      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 0),
     );
   }
 }
