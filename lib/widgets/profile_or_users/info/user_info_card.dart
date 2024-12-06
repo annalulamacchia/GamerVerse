@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/user/Get_user_info.dart';
+import 'package:gamerverse/services/Friends/friend_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInfoCard extends StatefulWidget {
-  final String userId; // Passa userId tramite il costruttore
+  final String userId;
 
   const UserInfoCard({super.key, required this.userId});
 
@@ -14,7 +16,8 @@ class _UserInfoCardState extends State<UserInfoCard> {
   Map<String, dynamic>? userData;
   bool isLoading = true;
   String errorMessage = '';
-  bool isFollowing = false; // Aggiunto per gestire il follow/unfollow
+  bool isFollowing = false;
+  bool isButtonDisabled = false; // Per gestire il pulsante
 
   @override
   void initState() {
@@ -24,12 +27,18 @@ class _UserInfoCardState extends State<UserInfoCard> {
 
   Future<void> fetchUserData() async {
     try {
+      // Chiama il servizio per ottenere i dati dell'utente
       final response = await UserProfileService.getUserByUid(widget.userId);
+      final prefs = await SharedPreferences.getInstance();
       if (response['success']) {
         setState(() {
+          //print(response['data']);
           userData = response['data'];
           isLoading = false;
-          isFollowing = userData!['isFollowing'] ?? false; // Impostato il follow iniziale
+
+          final String? loggedInUserId = prefs.getString('user_uid');
+          List<dynamic> followers = userData!['followers'] ?? [];
+          isFollowing = followers.contains(loggedInUserId);
         });
       } else {
         setState(() {
@@ -45,33 +54,43 @@ class _UserInfoCardState extends State<UserInfoCard> {
     }
   }
 
-  // Funzione per gestire Follow/Unfollow
+
   Future<void> toggleFollow() async {
     setState(() {
-      isLoading = true;
+      isButtonDisabled = true; // Disabilita il pulsante
     });
 
-    /*try {
-      // Simulazione di follow/unfollow. Puoi sostituire questo con il metodo API per il follow/unfollow
-      //final response = await UserProfileService.toggleFollow(widget.userId);
-      if (response['success']) {
-        setState(() {
-          isFollowing = !isFollowing;
-          isLoading = false;
-        });
+    try {
+      if (isFollowing) {
+        // Placeholder per "unfollow"
+        print('Unfollow service called for userId: ${widget.userId}');
+        await Future.delayed(Duration(seconds: 1)); // Simula una chiamata API
       } else {
-        setState(() {
-          errorMessage = response['message'] ?? 'Error toggling follow state';
-          isLoading = false;
-        });
+        // Chiama il servizio per aggiungere un amico
+        final response = await FriendService.addFriend(userId: widget.userId);
+        if (response['success']) {
+          print('Friend added successfully');
+        } else {
+          print('Failed to add friend: ${response['message']}');
+          throw Exception(response['message']);
+        }
       }
-    } catch (e) {
+
       setState(() {
-        errorMessage = 'An unexpected error occurred: $e';
-        isLoading = false;
+        isFollowing = !isFollowing; // Aggiorna lo stato
       });
-    }*/
+    } catch (e) {
+      print('Error toggling follow state: $e');
+      setState(() {
+        errorMessage = 'An error occurred: $e';
+      });
+    } finally {
+      setState(() {
+        isButtonDisabled = false; // Riabilita il pulsante
+      });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -108,9 +127,9 @@ class _UserInfoCardState extends State<UserInfoCard> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildAvatar(userData!['profile_picture']),
-                _buildStatColumn('${userData!['games']}', 'Games'),
-                _buildStatColumn('${userData!['followed']}', 'Followed'),
-                _buildStatColumn('${userData!['followers']}', 'Followers'),
+                _buildStatColumn('11', 'Games'),
+                _buildStatColumn('11', 'Followed'),
+                _buildStatColumn('1', 'Followers'),
               ],
             ),
             Row(
@@ -118,13 +137,13 @@ class _UserInfoCardState extends State<UserInfoCard> {
               children: [
                 _buildName(userData!['name'], userData!['surname']),
                 ElevatedButton(
-                  onPressed: toggleFollow,
+                  onPressed: isButtonDisabled ? null : toggleFollow,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isFollowing ? Colors.red : Colors.green, // Cambia colore in base allo stato
+                    backgroundColor: isFollowing ? Colors.red : Colors.green,
                   ),
                   child: Text(
                     isFollowing ? 'Unfollow' : 'Follow',
-                    style: const TextStyle(color: Colors.white), // Colore del testo bianco
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ],
@@ -158,7 +177,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
     return Column(
       children: [
         Text(
-          count ?? '0', // Usa '0' se count è null
+          count ?? '0',
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),

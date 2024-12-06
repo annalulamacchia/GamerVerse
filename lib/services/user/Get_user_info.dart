@@ -57,10 +57,12 @@ class UserProfileService {
         final bool isAdmin = profileData['isAdmin'] ?? false;
         final bool accountDisabled = profileData['account_disabled'] ?? false;
         final int counterReports = profileData['counter_reports'] ?? 0;
-        final int followers = profileData['followers'] ?? 0;
-        final int followed = profileData['followed'] ?? 0;
-        final int games = profileData['games'] ?? 0;
         final String position = profileData['position'] ?? 'No position provided';
+
+        // Gestione followers e followed come liste di ID
+        final List<dynamic> followers = profileData['followers'] ?? [];
+        final List<dynamic> followed = profileData['followed'] ?? [];
+        final int games = profileData['games'] ?? 0;
 
         return {
           'success': true,
@@ -76,8 +78,8 @@ class UserProfileService {
             'account_disabled': accountDisabled,
             'counter_reports': counterReports,
             'position': position,
-            'followers': followers,
-            'followed': followed,
+            'followers': followers, // Lista di follower (ID utenti)
+            'followed': followed,   // Lista di followings (ID utenti)
             'games': games,
           },
         };
@@ -97,4 +99,3 @@ class UserProfileService {
     }
   }
 }
-
