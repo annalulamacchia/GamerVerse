@@ -42,6 +42,12 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
       setState(() {
         userData = response;
         isLoading = false;
+        List<dynamic> followers = userData!['data']['followers'] ?? [];
+        List<dynamic> followed = userData!['data']['followed'] ?? [];
+        print(followed);
+        // Aggiungiamo i conteggi al dizionario userData
+        userData!['data']['followers_count'] = followers.length;
+        userData!['data']['followed_count'] = followed.length;
         print('Data: $userData');
       });
     } else {
@@ -92,9 +98,9 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
                   children: [
                     _buildAvatar(userData!['data']!['profile_picture']),
                     _buildStatColumn(userData!['Games'], 'Games'),
-                    _buildClickableStatColumn(context, '${userData!['data']!['followed']}', 'Followed', const FollowersPage()),
-                    _buildClickableStatColumn(context, '${userData!['data']!['followers']}', 'Followers', const FollowersPage()),
-                  ],
+                    _buildClickableStatColumn(context,userData!['data']['followed_count']?.toString() ?? '0', 'Followed',const FollowersPage()),
+                    _buildClickableStatColumn(context,userData!['data']['followers_count']?.toString() ?? '0', 'Followers',const FollowersPage()),
+                   ],
                 ),
                 _buildName(userData!['data']!['name'],userData!['data']!['surname'] ), // userData!['surname']
               ],
