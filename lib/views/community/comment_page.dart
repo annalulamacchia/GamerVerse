@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Importa il widget CustomBottomNavBar
-import 'package:gamerverse/widgets/common_sections/report.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/posts/comments.dart';
+
 class CommentsPage extends StatelessWidget {
   // Lista dei commenti per il debug
   final List<Map<String, String>> comments = [
@@ -16,17 +16,17 @@ class CommentsPage extends StatelessWidget {
     // Puoi aggiungere altri commenti qui
   ];
 
-  void _showReport(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (BuildContext context) {
-        return const ReportWidget();
-      },
-    );
-  }
+  //void _showReport(BuildContext context) {
+  //showModalBottomSheet(
+  //context: context,
+  //shape: const RoundedRectangleBorder(
+  // borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  //),
+  // builder: (BuildContext context) {
+  //   return const ReportWidget();
+  //   },
+  // );
+  //}
 
   CommentsPage({super.key});
 
@@ -44,7 +44,8 @@ class CommentsPage extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.only(left: 16.0, right: 16, top: 32, bottom: 0),
+              padding: const EdgeInsets.only(
+                  left: 16.0, right: 16, top: 32, bottom: 0),
               itemCount: comments.length,
               itemBuilder: (context, index) {
                 final comment = comments[index];
@@ -53,7 +54,7 @@ class CommentsPage extends StatelessWidget {
                   comment: comment['comment']!,
                   onReportPressed: () {
                     // Logica per il report
-                    _showReport(context);
+                    // _showReport(context);
                   },
                   onDeletePressed: () {
                     // Logica per eliminare il commento
@@ -62,7 +63,6 @@ class CommentsPage extends StatelessWidget {
               },
             ),
           ),
-
           _buildCommentInputField(context),
         ],
       ),
@@ -73,7 +73,6 @@ class CommentsPage extends StatelessWidget {
   }
 
   // Funzione per costruire i singoli commenti con altezza minima e layout personalizzato
-
 
   // Funzione per costruire il campo di input per i nuovi commenti
   Widget _buildCommentInputField(BuildContext context) {

@@ -4,8 +4,10 @@ import 'package:gamerverse/widgets/profile_or_users/games/user_card_game.dart';
 
 class AllGamesUserPage extends StatelessWidget {
   final List<GameProfile> games;
+  final String currentUser;
 
-  const AllGamesUserPage({super.key, required this.games});
+  const AllGamesUserPage(
+      {super.key, required this.games, required this.currentUser});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,8 @@ class AllGamesUserPage extends StatelessWidget {
             return Container(
               width: 180,
               margin: const EdgeInsets.symmetric(horizontal: 1),
-              child: ImageCardProfileWidget(game: games[index]),
+              child: ImageCardProfileWidget(
+                  game: games[index], currentUser: currentUser),
             );
           },
         ),

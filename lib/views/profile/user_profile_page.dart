@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/firebase_auth_helper.dart';
 import 'package:gamerverse/widgets/profile_or_users/info/user_info_card.dart';
 import 'package:gamerverse/widgets/profile_or_users/info/profile_tab_bar.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfilePage extends StatefulWidget {
-  final String userId; // ID dell'utente da passare
+  final String userId;
 
   const UserProfilePage({super.key, required this.userId});
 
@@ -14,11 +16,27 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   late Future<String> userIdFuture;
+  String? currentUser;
 
   @override
   void initState() {
     super.initState();
-    userIdFuture = Future.value(widget.userId); // Gestione dinamica di userId
+    userIdFuture = Future.value(widget.userId);
+    _loadUserData();
+  }
+
+  //load the current user_id
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? uid = prefs.getString('user_uid');
+    final valid = await FirebaseAuthHelper.checkTokenValidity();
+    setState(() {
+      if (valid) {
+        currentUser = uid;
+      } else {
+        currentUser = null;
+      }
+    });
   }
 
   @override
@@ -27,7 +45,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
         backgroundColor: const Color(0xff163832),
-        title: const Text('User Profile', style: TextStyle(color: Colors.white)),
+        title:
+            const Text('User Profile', style: TextStyle(color: Colors.white)),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
@@ -67,7 +86,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
-
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(16.0),
                         topRight: Radius.circular(16.0),
@@ -77,6 +95,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       mode: 1,
                       selected: 0,
                       userId: userId,
+                      currentUser: currentUser,
                     ),
                   ),
                 ),

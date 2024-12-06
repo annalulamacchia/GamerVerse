@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_profile.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/posts/NewPostBottomSheet.dart'; // Importa il nuovo widget NewPostBottomSheet
-import 'package:gamerverse/widgets/common_sections/report_user.dart';
-import 'package:gamerverse/widgets/common_sections/report.dart';
 import 'package:gamerverse/widgets/community/PostCardCommunity.dart';
 import 'package:gamerverse/services/specific_game/wishlist_service.dart';
 import 'package:gamerverse/services/Community/post_service.dart'; // Importa il servizio Wishlist
@@ -21,6 +19,7 @@ class _CommunityPageState extends State<CommunityPage> {
   WishlistService wishlistService = WishlistService();
   List<GameProfile> wishlistGames = []; // Lista di giochi nella wishlist
   List<Post> Posts = [];
+  String? currentUser;
 
   // Metodo per recuperare la wishlist
 
@@ -34,6 +33,7 @@ class _CommunityPageState extends State<CommunityPage> {
       if (userId != null) {
         // Recupera la lista dei giochi dalla wishlist usando il servizio
         List<GameProfile> games = await WishlistService.getWishlist(userId);
+        currentUser = userId;
         if (mounted) {
           // Controlla che il widget sia ancora montato
           setState(() {
@@ -41,6 +41,7 @@ class _CommunityPageState extends State<CommunityPage> {
           });
         }
       } else {
+        currentUser = null;
         print('User ID not found in SharedPreferences');
       }
     } catch (e) {
@@ -95,35 +96,19 @@ class _CommunityPageState extends State<CommunityPage> {
               itemBuilder: (context, index) {
                 final post = Posts[index];
                 return PostCard(
+                  postId: post.id,
                   gameId: post.gameId,
-                  // Assicurati che GameName sia correttamente mappato
                   userId: post.writerId,
-                  // Mostra lo writerId come autore
                   content: post.description,
-                  // Passa la descrizione del post
                   imageUrl: '',
-                  // Aggiungi un URL immagine appropriato
                   timestamp: post.timestamp,
-                  // Puoi calcolare un timestamp dinamico
                   likeCount: post.likes,
                   commentCount: 5,
-                  // Puoi aggiungere la logica per contare i commenti
                   onLikePressed: () {
                     // Logica per il like
                     print('Liked Post: ${post.id}');
                   },
-                  onCommentPressed: () {
-                    // Logica per il commento
-                    print('Commented Post: ${post.id}');
-                  },
-                  onReportUserPressed: () {
-                    // Logica per report dell'utente
-                    print('Reported User: ${post.writerId}');
-                  },
-                  onReportPostPressed: () {
-                    // Logica per report del post
-                    print('Reported Post: ${post.id}');
-                  },
+                  currentUser: currentUser,
                 );
               },
             ),
@@ -171,25 +156,5 @@ class _CommunityPageState extends State<CommunityPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Post creato con successo')),
     );
-  }
-
-  // Funzione per mostrare un dialog di report dell'utente
-  void _showReportUserDialog(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (BuildContext context) {
-          return const ReportUserWidget();
-        });
-  }
-
-  // Funzione per mostrare un dialog di report del post
-  void _showReportPostDialog(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (BuildContext context) {
-          return const ReportWidget();
-        });
   }
 }

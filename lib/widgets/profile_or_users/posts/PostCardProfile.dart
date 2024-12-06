@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/user/Get_user_info.dart';
 import 'package:gamerverse/services/specific_game/get_game_service.dart';
+import 'package:gamerverse/widgets/common_sections/report_menu.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class PostCard extends StatefulWidget {
+  final String? currentUser;
   final String gameId;
   final String description;
   final int likeCount;
@@ -12,6 +14,7 @@ class PostCard extends StatefulWidget {
   final String userId; // Aggiunto per l'autore
   final VoidCallback onCommentPressed;
   final VoidCallback onDeletePressed;
+  final String postId;
 
   const PostCard({
     super.key,
@@ -23,6 +26,8 @@ class PostCard extends StatefulWidget {
     required this.onDeletePressed,
     required this.timestamp,
     required this.userId,
+    required this.currentUser,
+    required this.postId,
   });
 
   @override
@@ -31,6 +36,7 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   late int _likeCount;
+  bool _isExpanded = false;
 
   @override
   void initState() {
@@ -43,8 +49,10 @@ class _PostCardState extends State<PostCard> {
   Future<Map> fetchPostDetails() async {
     Map<String, dynamic>? userData;
     Map<String, dynamic>? gameData;
-    final responseUser = await UserProfileService.getUserByUid(); // Recupera informazioni utente
-    final responseGame = await GameService.getGamebyId(widget.gameId); // Recupera informazioni gioco
+    final responseUser =
+        await UserProfileService.getUserByUid(); // Recupera informazioni utente
+    final responseGame = await GameService.getGamebyId(
+        widget.gameId); // Recupera informazioni gioco
 
     if (responseUser['success']) {
       userData = responseUser['data'];
@@ -61,13 +69,11 @@ class _PostCardState extends State<PostCard> {
     };
   }
 
-
   @override
   Widget build(BuildContext context) {
     final description = normalize<String>(widget.description, "");
     final timestamp = normalize<String>(widget.timestamp, "");
     final commentCount = normalize<int>(widget.commentCount, 0);
-
 
     return FutureBuilder<Map>(
       future: fetchPostDetails(),
@@ -87,7 +93,8 @@ class _PostCardState extends State<PostCard> {
             children: [
               Card(
                 color: const Color(0xfff0f9f1),
-                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -111,8 +118,9 @@ class _PostCardState extends State<PostCard> {
                               image: DecorationImage(
                                 image: cover.isNotEmpty
                                     ? NetworkImage(cover)
-                                    : const AssetImage('assets/images/broken_image.png')
-                                as ImageProvider,
+                                    : const AssetImage(
+                                            'assets/images/broken_image.png')
+                                        as ImageProvider,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -123,42 +131,67 @@ class _PostCardState extends State<PostCard> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  gameName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 22,
-                                    color: Colors.black87,
+                                Container(
+                                  width: 200,
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    gameName,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22,
+                                      color: Colors.black87,
+                                    ),
+                                    maxLines: null,
+                                    softWrap: true,
                                   ),
                                 ),
                                 const SizedBox(height: 5),
-                                Text(
-                                  "Author: $author",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
+                                Container(
+                                  width: 175,
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    "Author: $author",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                    ),
+                                    maxLines: null,
+                                    softWrap: true,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          // Pulsante elimina (cestino) nell'angolo in alto a destra
-                          HugeIcon(
-                            icon: HugeIcons.strokeRoundedDelete02,
-                            color: Color(0xFF0D5328),
-                            size: 28.0,
-                          )
                         ],
                       ),
                       const SizedBox(height: 10),
                       // DESCRIZIONE
                       Text(
                         description,
+                        maxLines: _isExpanded ? description.length : 2,
                         style: TextStyle(
                           color: Colors.grey[700],
                           fontSize: 15,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
+
+                      // View More / View Less
+                      if (description.toUpperCase().length > 74)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isExpanded = !_isExpanded;
+                            });
+                          },
+                          child: Text(
+                            _isExpanded ? 'View Less' : 'View More',
+                            style: const TextStyle(
+                              color: Colors.teal,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 15),
                       // SEZIONE LIKE E COMMENTI
                       Row(
@@ -197,9 +230,34 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
               ),
+              Positioned(
+                top: 20,
+                right: 20,
+                child: Row(
+                  children: [
+                    //Toggle menu
+                    if (widget.currentUser != widget.userId)
+                      ReportMenu(
+                          userId: widget.currentUser,
+                          reportedId: widget.postId,
+                          parentContext: context,
+                          type: 'Post'),
+
+                    //remove review
+                    if (widget.currentUser == widget.userId)
+                      IconButton(
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedDelete02,
+                          color: Colors.black,
+                          size: 20.0,
+                        ),
+                        onPressed: () => {},
+                      ),
+                  ],
+                ),
+              ),
             ],
           );
-
         }
       },
     );

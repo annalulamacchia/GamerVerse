@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/models/game_profile.dart';
 import 'package:gamerverse/models/user.dart';
 import 'package:gamerverse/views/admin_report_page.dart';
 import 'package:gamerverse/views/home/all_games_page.dart';
@@ -85,15 +84,25 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) => const AccountSettingsPage());
       case '/userAllGames':
-        if (args is List<GameProfile>) {
+        if (args is Map<String, dynamic> &&
+            args.containsKey('games') &&
+            args.containsKey('currentUser')) {
           return MaterialPageRoute(
-              builder: (context) => AllGamesUserPage(games: args));
+              builder: (context) => AllGamesUserPage(
+                    games: args['games'],
+                    currentUser: args['currentUser'],
+                  ));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/userGame':
-        if (args is GameProfile) {
+        if (args is Map<String, dynamic> &&
+            args.containsKey('game') &&
+            args.containsKey('currentUser')) {
           return MaterialPageRoute(
-              builder: (context) => SpecificUserGame(game: args));
+              builder: (context) => SpecificUserGame(
+                    game: args['game'],
+                    currentUser: args['currentUser'],
+                  ));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/admin':

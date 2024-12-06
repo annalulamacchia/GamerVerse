@@ -5,6 +5,7 @@ import 'package:gamerverse/widgets/profile_or_users/games/profile_games.dart';
 import 'package:gamerverse/widgets/profile_or_users/posts/user_posts.dart';
 
 class TabBarSection extends StatefulWidget {
+  final String? currentUser;
   final int mode;
   final int selected;
   final String? userId;
@@ -14,6 +15,7 @@ class TabBarSection extends StatefulWidget {
     required this.mode,
     required this.selected,
     this.userId,
+    required this.currentUser,
   });
 
   @override
@@ -145,14 +147,20 @@ class TabBarSectionState extends State<TabBarSection> {
     if (widget.userId == null) {
       return const Center(child: Text('User not found'));
     }
-    return ProfileReviews(userId: widget.userId!);
+    return ProfileReviews(
+      userId: widget.userId!,
+      currentUser: widget.currentUser,
+    );
   }
 
   Widget _buildProfilePostsWidget() {
-    return ProfilePosts(userId: widget.userId!);
+    return ProfilePosts(
+        userId: widget.userId!, currentUser: widget.currentUser);
   }
 
   Widget _buildUserPostsWidget() {
-    return UserPosts(userId: widget.userId!); // Passa userId
+    return UserPosts(
+        userId: widget.userId!,
+        currentUser: widget.currentUser); // Passa userId
   }
 }

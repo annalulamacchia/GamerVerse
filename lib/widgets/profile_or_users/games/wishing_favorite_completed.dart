@@ -95,8 +95,10 @@ class GameListSectionState extends State<GameListSection> {
               IconButton(
                 icon: const Icon(Icons.keyboard_arrow_right, size: 40),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/userAllGames',
-                      arguments: games);
+                  Navigator.pushNamed(context, '/userAllGames', arguments: {
+                    'games': games,
+                    'currentUser': widget.userId
+                  });
                 },
               ),
             ],
@@ -111,8 +113,10 @@ class GameListSectionState extends State<GameListSection> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, '/userGame',
-                      arguments: games[index]);
+                  Navigator.pushNamed(context, '/userGame', arguments: {
+                    'game': games[index],
+                    'currentUser': widget.userId
+                  });
                 },
                 child: buildGameCard(games[index].cover),
               );
