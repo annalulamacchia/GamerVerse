@@ -38,6 +38,10 @@ class _UserInfoCardState extends State<UserInfoCard> {
 
           final String? loggedInUserId = prefs.getString('user_uid');
           List<dynamic> followers = userData!['followers'] ?? [];
+          List<dynamic> followed = userData!['followed'] ?? [];
+
+          userData!['followers_count'] = followers.length;
+          userData!['followed_count'] = followed.length;
           isFollowing = followers.contains(loggedInUserId);
         });
       } else {
@@ -62,13 +66,20 @@ class _UserInfoCardState extends State<UserInfoCard> {
 
     try {
       if (isFollowing) {
-        // Placeholder per "unfollow"
-        print('Unfollow service called for userId: ${widget.userId}');
-        await Future.delayed(Duration(seconds: 1)); // Simula una chiamata API
+        // Chiama il servizio per rimuovere un amico
+        final response = await FriendService.removeFriend(userId: widget.userId);
+        if (response['success']) {
+          userData!['followers_count'] = userData!['followers_count'] - 1;
+          print('Friend removed successfully');
+        } else {
+          print('Failed to remove friend: ${response['message']}');
+          throw Exception(response['message']);
+        }
       } else {
         // Chiama il servizio per aggiungere un amico
         final response = await FriendService.addFriend(userId: widget.userId);
         if (response['success']) {
+          userData!['followers_count'] = userData!['followers_count']+1;
           print('Friend added successfully');
         } else {
           print('Failed to add friend: ${response['message']}');
@@ -90,6 +101,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
       });
     }
   }
+
 
 
   @override
@@ -128,8 +140,8 @@ class _UserInfoCardState extends State<UserInfoCard> {
               children: [
                 _buildAvatar(userData!['profile_picture']),
                 _buildStatColumn('11', 'Games'),
-                _buildStatColumn('11', 'Followed'),
-                _buildStatColumn('1', 'Followers'),
+                _buildStatColumn(userData!['followed_count']?.toString() ?? '0', 'Followed'),
+                _buildStatColumn(userData!['followers_count']?.toString() ?? '0', 'Followers'),
               ],
             ),
             Row(
