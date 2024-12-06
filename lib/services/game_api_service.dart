@@ -514,12 +514,15 @@ class GameApiService {
     return fetchGames(query);
   }
 
+
+
   static Future<List<Map<String, dynamic>>> fetchFilteredGames({
     String? orderBy,
     String? platform,
     String? genre,
-    int limit = 100, // Default limit for each page
-    int offset = 0, // Default offset (for the first page)
+    int limit = 10,
+    int offset = 0,
+    String? page,
   }) async {
     const platformMap = {
       'PS4': '48',
@@ -537,45 +540,36 @@ class GameApiService {
     final platformId = platform != null ? platformMap[platform] : null;
     final genreId = genre != null ? genreMap[genre] : null;
 
-    // Handle the sorting logic
-    final sortClause = orderBy != null
+    // Handle sorting logic
+    var sortClause = orderBy != null
         ? {
       'Alphabetical': 'sort name asc;',
-      'Popularity': 'sort popularity asc;',
-      'Released This Month': 'sort first_release_date asc;',
-      'Upcoming Games':'sort first_release_date asc;',
+      'Popularity': 'sort popularity desc;', // Fixed order for Popularity
       'Rating': 'sort rating desc;',
     }[orderBy] ?? ''
         : '';
 
-    // Build the where clause conditionally
-    String whereClause = '';
-    if (platformId != null && genreId != null) {
-      whereClause = 'where platforms = $platformId & genres = $genreId';
-    } else if (platformId != null) {
-      whereClause = 'where platforms = $platformId';
-    } else if (genreId != null) {
-      whereClause = 'where genres = $genreId';
+    if (sortClause == '' && (page == 'UPCOMING' || page == 'RELEASED_THIS_MONTH')) {
+      sortClause += 'sort first_release_date asc;';
     }
-    if (orderBy == 'Released This Month'){
+
+    // Build the where clause conditionally
+    List<String> whereConditions = [];
+    if (platformId != null) whereConditions.add('platforms = $platformId');
+    if (genreId != null) whereConditions.add('genres = $genreId');
+
+    // Add date filtering for specific pages
+    if (page == 'RELEASED_THIS_MONTH') {
       final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30)).millisecondsSinceEpoch ~/ 1000;
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      if (whereClause != ''){
-        whereClause += '& first_release_date > $thirtyDaysAgo & first_release_date < $now;';
-      }else {
-        whereClause +=
-        'where first_release_date > $thirtyDaysAgo & first_release_date < $now;';
-      }
-    }else if (orderBy == 'Upcoming Games'){
+      whereConditions.add('first_release_date > $thirtyDaysAgo');
+      whereConditions.add('first_release_date < $now');
+    } else if (page == 'UPCOMING') {
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      if(whereClause != ''){
-        whereClause += '& first_release_date > $now;';
-      } else{
-        whereClause += 'where first_release_date > $now;';
-      }
-    }else {
-      whereClause += ';';
+      whereConditions.add('first_release_date > $now');
     }
+
+    final whereClause = whereConditions.isNotEmpty ? 'where ${whereConditions.join(' & ')};' : '';
 
     try {
       final String url = 'https://api.igdb.com/v4/games';
@@ -585,26 +579,19 @@ class GameApiService {
         'Accept': 'application/json',
       };
 
-      // Debugging the token and request headers
-      print('Access token: $accessToken');
-      print('Headers: $headers');
-
-      // Prepare the body with limit and offset for pagination
+      // Prepare the request body
       final String body = '''
-    fields name,cover.url,genres,platforms,rating;
-    $sortClause
-    $whereClause
-    limit $limit;
-    offset $offset;
+      fields id,name,cover.url,genres,platforms,rating;
+      $whereClause
+      $sortClause
+      limit $limit;
+      offset $offset;
     ''';
-
-      print('Query body: $body'); // Debugging the query
 
       final response = await http.post(Uri.parse(url), headers: headers, body: body);
 
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
-        // Filter the games that have a cover
         return data.where((game) {
           return game['cover'] != null && game['cover']['url'] != null;
         }).map((game) {
@@ -617,14 +604,14 @@ class GameApiService {
           };
         }).toList();
       } else {
-        print('Error: ${response.body}');
         throw Exception('Failed to fetch games: ${response.body}');
       }
     } catch (e) {
-      print('Error fetching filtered games: $e');
-      throw Exception('Failed to fetch filtered games');
+      throw Exception('Error fetching games: $e');
     }
   }
+
+
 
 
 

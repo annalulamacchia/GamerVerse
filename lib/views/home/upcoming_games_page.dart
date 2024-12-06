@@ -11,33 +11,32 @@ class UpcomingGamesPage extends StatefulWidget {
 }
 
 class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
-  List<Map<String, dynamic>> _games = []; // Store upcoming games
-  bool _isLoading = true; // For initial loading
-  bool _isLoadingMore = false; // For lazy loading
+  List<Map<String, dynamic>> _games = [];
+  bool _isLoading = true;
+  bool _isLoadingMore = false;
   String? _errorMessage;
-  int _offset = 0; // Start offset
-  final ScrollController _scrollController = ScrollController(); // Controller for lazy loading
+  int _offset = 0;
+  final ScrollController _scrollController = ScrollController();
 
-  // Preselect Upcoming Games
-  String? _selectedOrderBy = 'Upcoming Games'; // Default sorting: Upcoming Games
+  // Filter options
+  String? _selectedOrderBy = 'Upcoming';
   String? _selectedPlatform;
   String? _selectedGenre;
 
-  // Filter options lists
-  final List<String> _orderByOptions = ['Upcoming Games', 'Released This Month', 'Popularity', 'Alphabetical', 'Rating'];
+  final List<String> _orderByOptions = ['Popularity', 'Alphabetical', 'Rating'];
   final List<String> _platformOptions = ['PS4', 'Xbox One', 'PC'];
   final List<String> _genreOptions = ['Action', 'Adventure', 'RPG', 'Shooter'];
 
   @override
   void initState() {
     super.initState();
-    _fetchGames(); // Fetch games on page load with default sorting
-    _scrollController.addListener(_onScroll); // Attach scroll listener
+    _fetchGames();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose(); // Clean up the controller
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -52,30 +51,26 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
       });
 
       final gamesResponse = await GameApiService.fetchFilteredGames(
-        orderBy: _selectedOrderBy, // Use the preselected order: Upcoming Games
+        orderBy: _selectedOrderBy,
         platform: _selectedPlatform,
         genre: _selectedGenre,
         limit: 100,
         offset: _offset,
+        page: 'UPCOMING',
       );
 
       if (gamesResponse.isNotEmpty) {
         setState(() {
-          _games.addAll(gamesResponse); // Append new games to the list
-          _isLoading = false;
-          _isLoadingMore = false;
-          _offset += 100; // Increase offset for the next batch
-        });
-      } else {
-        // No more games to fetch
-        setState(() {
-          _isLoading = false;
-          _isLoadingMore = false;
+          _games.addAll(gamesResponse);
+          _offset += gamesResponse.length;
         });
       }
     } catch (e) {
       setState(() {
         _errorMessage = "An error occurred: $e";
+      });
+    } finally {
+      setState(() {
         _isLoading = false;
         _isLoadingMore = false;
       });
@@ -83,7 +78,6 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
   }
 
   void _onScroll() {
-    // Trigger more loading when close to the bottom
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 100 &&
         !_isLoadingMore) {
@@ -95,23 +89,29 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
     try {
       setState(() {
         _isLoading = true;
-        _games = []; // Clear current games list
+        _games = [];
+        _offset = 0;
       });
 
-      // Fetch games from the API using selected filters
       final filteredGames = await GameApiService.fetchFilteredGames(
         orderBy: _selectedOrderBy,
         platform: _selectedPlatform,
         genre: _selectedGenre,
+        limit: 100,
+        offset: _offset,
+        page: 'UPCOMING',
       );
 
       setState(() {
-        _games = filteredGames; // Update games list
-        _isLoading = false;
+        _games = filteredGames;
+        _offset = filteredGames.length;
       });
     } catch (e) {
       setState(() {
         _errorMessage = "An error occurred: $e";
+      });
+    } finally {
+      setState(() {
         _isLoading = false;
       });
     }
@@ -120,7 +120,7 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
   void _showFilterPopup() {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // To allow full-screen height flexibility
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -128,10 +128,9 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return FractionallySizedBox(
-              heightFactor: 0.5, // Covers half the screen
+              heightFactor: 0.5,
               child: Column(
                 children: [
-                  // Popup header
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: const Text(
@@ -143,16 +142,12 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
                       ),
                     ),
                   ),
-
                   const Divider(),
-
-                  // Scrollable content to prevent overflow
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Order By section
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: const Text(
@@ -164,7 +159,6 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
                               ),
                             ),
                           ),
-
                           Wrap(
                             spacing: 8.0,
                             children: _orderByOptions.map((option) {
@@ -182,7 +176,6 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
                           ),
                           const SizedBox(height: 16.0),
 
-                          // Platform section
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: const Text(
@@ -194,7 +187,6 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
                               ),
                             ),
                           ),
-
                           Wrap(
                             spacing: 8.0,
                             children: _platformOptions.map((option) {
@@ -212,7 +204,6 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
                           ),
                           const SizedBox(height: 16.0),
 
-                          // Genre section
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: const Text(
@@ -224,7 +215,6 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
                               ),
                             ),
                           ),
-
                           Wrap(
                             spacing: 8.0,
                             children: _genreOptions.map((option) {
@@ -244,14 +234,12 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
                       ),
                     ),
                   ),
-
-                  // Apply Button
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context); // Close the popup
-                        _fetchFilteredGames(); // Trigger API request
+                        Navigator.pop(context);
+                        _fetchFilteredGames();
                       },
                       child: const Text('Apply'),
                     ),
@@ -275,7 +263,7 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.black),
-            onPressed: _showFilterPopup, // Open the filter popup
+            onPressed: _showFilterPopup,
           ),
         ],
       ),
@@ -286,7 +274,7 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
           : Stack(
         children: [
           GridView.builder(
-            controller: _scrollController, // Attach controller
+            controller: _scrollController,
             padding: const EdgeInsets.all(10.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -298,10 +286,10 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
             itemBuilder: (context, index) {
               final game = _games[index];
               final coverUrl = game['coverUrl'] ??
-                  'https://via.placeholder.com/400x200?text=No+Image'; // Fallback image
+                  'https://via.placeholder.com/400x200?text=No+Image';
               return ImageCardWidget(
-                imageUrl: coverUrl, // Pass the cover URL to the widget
-                gameId: game['id'], // Pass the game ID to the widget
+                imageUrl: coverUrl,
+                gameId: game['id'],
               );
             },
           ),
@@ -316,7 +304,7 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
             ),
         ],
       ),
-      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 2), // Adjust index for the "Upcoming Games" tab
+      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 1),
     );
   }
 }

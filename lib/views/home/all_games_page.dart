@@ -17,18 +17,16 @@ class _AllGamesPageState extends State<AllGamesPage> {
   String? _errorMessage;
   int _offset = 0; // Start offset
   final ScrollController _scrollController =
-      ScrollController(); // Controller for lazy loading
+  ScrollController(); // Controller for lazy loading
 
-  // Filter options
-  String? _selectedOrderBy = 'Alphabetical'; // Default sorting: Alphabetical
+  // Preselect Alphabetical as the default sorting
+  String? _selectedOrderBy = 'Alphabetical';
   String? _selectedPlatform;
   String? _selectedGenre;
 
   // Filter options lists
   final List<String> _orderByOptions = [
     'Popularity',
-    'Released This Month',
-    'Upcoming Games',
     'Alphabetical',
     'Rating'
   ];
@@ -59,12 +57,12 @@ class _AllGamesPageState extends State<AllGamesPage> {
       });
 
       final gamesResponse = await GameApiService.fetchFilteredGames(
-        orderBy: _selectedOrderBy,
-        // Use the preselected order
-        platform: _selectedPlatform,
-        genre: _selectedGenre,
-        limit: 100,
-        offset: _offset,
+          orderBy: _selectedOrderBy,
+          platform: _selectedPlatform,
+          genre: _selectedGenre,
+          limit: 100,
+          offset: _offset,
+          page: 'ALL'
       );
 
       if (gamesResponse.isNotEmpty) {
@@ -93,7 +91,7 @@ class _AllGamesPageState extends State<AllGamesPage> {
   void _onScroll() {
     // Trigger more loading when close to the bottom
     if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 100 &&
+        _scrollController.position.maxScrollExtent - 100 &&
         !_isLoadingMore) {
       _fetchGames();
     }
@@ -142,9 +140,9 @@ class _AllGamesPageState extends State<AllGamesPage> {
                   // Popup header
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text(
+                    child: const Text(
                       'Filters',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -163,7 +161,7 @@ class _AllGamesPageState extends State<AllGamesPage> {
                           // Order By section
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            const EdgeInsets.symmetric(horizontal: 16.0),
                             child: const Text(
                               'Order By',
                               style: TextStyle(
@@ -194,7 +192,7 @@ class _AllGamesPageState extends State<AllGamesPage> {
                           // Platform section
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            const EdgeInsets.symmetric(horizontal: 16.0),
                             child: const Text(
                               'Platform',
                               style: TextStyle(
@@ -215,7 +213,7 @@ class _AllGamesPageState extends State<AllGamesPage> {
                                 onSelected: (selected) {
                                   setState(() {
                                     _selectedPlatform =
-                                        selected ? option : null;
+                                    selected ? option : null;
                                   });
                                 },
                               );
@@ -226,7 +224,7 @@ class _AllGamesPageState extends State<AllGamesPage> {
                           // Genre section
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            const EdgeInsets.symmetric(horizontal: 16.0),
                             child: const Text(
                               'Genre',
                               style: TextStyle(
@@ -294,43 +292,42 @@ class _AllGamesPageState extends State<AllGamesPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
-              ? Center(child: Text(_errorMessage!))
-              : Stack(
-                  children: [
-                    GridView.builder(
-                      controller: _scrollController,
-                      // Attach controller
-                      padding: const EdgeInsets.all(10.0),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 0.8,
-                      ),
-                      itemCount: _games.length,
-                      itemBuilder: (context, index) {
-                        final game = _games[index];
-                        final coverUrl = game['coverUrl'] ??
-                            'https://via.placeholder.com/400x200?text=No+Image'; // Fallback image
-                        return ImageCardWidget(
-                          imageUrl:
-                              coverUrl, // Pass the cover URL to the widget
-                          gameId: game['id'], // Pass the game ID to the widget
-                        );
-                      },
-                    ),
-                    if (_isLoadingMore)
-                      Positioned(
-                        bottom: 10,
-                        left: 0,
-                        right: 0,
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                  ],
-                ),
+          ? Center(child: Text(_errorMessage!))
+          : Stack(
+        children: [
+          GridView.builder(
+            controller: _scrollController,
+            padding: const EdgeInsets.all(10.0),
+            gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 0.8,
+            ),
+            itemCount: _games.length,
+            itemBuilder: (context, index) {
+              final game = _games[index];
+              final coverUrl = game['coverUrl'] ??
+                  'https://via.placeholder.com/400x200?text=No+Image'; // Fallback image
+              return ImageCardWidget(
+                imageUrl:
+                coverUrl, // Pass the cover URL to the widget
+                gameId: game['id'], // Pass the game ID to the widget
+              );
+            },
+          ),
+          if (_isLoadingMore)
+            Positioned(
+              bottom: 10,
+              left: 0,
+              right: 0,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
+      ),
       bottomNavigationBar: const CustomBottomNavBar(currentIndex: 1),
     );
   }

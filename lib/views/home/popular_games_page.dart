@@ -18,13 +18,13 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
   int _offset = 0; // Start offset
   final ScrollController _scrollController = ScrollController(); // Controller for lazy loading
 
-  // Preselect Popularity
-  String? _selectedOrderBy = 'Popularity'; // Default sorting: Popularity
+  // Preselect Popularity as the default sorting
+  String? _selectedOrderBy = 'Popularity';
   String? _selectedPlatform;
   String? _selectedGenre;
 
   // Filter options lists
-  final List<String> _orderByOptions = ['Popularity', 'Released This Month', 'Upcoming Games', 'Alphabetical', 'Rating'];
+  final List<String> _orderByOptions = ['Popularity', 'Alphabetical', 'Rating'];
   final List<String> _platformOptions = ['PS4', 'Xbox One', 'PC'];
   final List<String> _genreOptions = ['Action', 'Adventure', 'RPG', 'Shooter'];
 
@@ -52,11 +52,12 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
       });
 
       final gamesResponse = await GameApiService.fetchFilteredGames(
-        orderBy: _selectedOrderBy, // Use the preselected order: Popularity
-        platform: _selectedPlatform,
-        genre: _selectedGenre,
-        limit: 100,
-        offset: _offset,
+          orderBy: _selectedOrderBy, // Use Popularity as default
+          platform: _selectedPlatform,
+          genre: _selectedGenre,
+          limit: 100,
+          offset: _offset,
+          page: 'POPULAR'
       );
 
       if (gamesResponse.isNotEmpty) {
@@ -305,18 +306,18 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
               );
             },
           ),
+
+          // Display loading indicator for lazy loading
           if (_isLoadingMore)
-            Positioned(
-              bottom: 10,
+            const Positioned(
+              bottom: 16,
               left: 0,
               right: 0,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             ),
         ],
       ),
-      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 0),
+      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 1),
     );
   }
 }
