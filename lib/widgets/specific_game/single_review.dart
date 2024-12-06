@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/models/review.dart';
 import 'package:gamerverse/services/specific_game/review_service.dart';
 import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
-import 'package:gamerverse/widgets/common_sections/report_user.dart';
+import 'package:gamerverse/widgets/common_sections/report_menu.dart';
 import 'package:gamerverse/widgets/specific_game/like_dislike_button.dart';
-import 'package:gamerverse/widgets/common_sections/report.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class SingleReview extends StatefulWidget {
@@ -27,32 +26,6 @@ class SingleReview extends StatefulWidget {
 
 class SingleReviewState extends State<SingleReview> {
   bool _isExpanded = false;
-
-  //function to show bottom pop up for report review
-  void _showReport(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (BuildContext context) {
-        return const ReportWidget();
-      },
-    );
-  }
-
-  //function to show bottom pop up for report user
-  void _showReportUser(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (BuildContext context) {
-        return const ReportUserWidget();
-      },
-    );
-  }
 
   //function to show the modal to remove the review
   void _showDeleteConfirmation(
@@ -161,11 +134,17 @@ class SingleReviewState extends State<SingleReview> {
                               );
                             }
                           },
-                          child: Text(
-                            widget.review!.writerUsername,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                          child: Container(
+                            width: 200,
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              widget.review!.writerUsername,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              maxLines: null,
+                              softWrap: true,
                             ),
                           ),
                         ),
@@ -200,7 +179,7 @@ class SingleReviewState extends State<SingleReview> {
                 ),
 
                 // View More / View Less
-                if (widget.review!.description.length > 100)
+                if (widget.review!.description.toUpperCase().length > 74)
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -234,6 +213,7 @@ class SingleReviewState extends State<SingleReview> {
           right: 15,
           child: Row(
             children: [
+              //Status
               Text(
                 widget.review!.status,
                 style: TextStyle(
@@ -244,26 +224,11 @@ class SingleReviewState extends State<SingleReview> {
               // Toggle menu
               if (widget.userId != null &&
                   widget.userId != widget.review?.writerId)
-                PopupMenuButton<String>(
-                  onSelected: (value) {
-                    if (value == 'Report_Review') {
-                      _showReport(context);
-                    } else if (value == 'Report_User') {
-                      _showReportUser(context);
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'Report_Review',
-                      child: Text('Report Review'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'Report_User',
-                      child: Text('Report User'),
-                    ),
-                  ],
-                  icon: const Icon(Icons.more_vert, color: Colors.grey),
-                ),
+                ReportMenu(
+                    userId: widget.userId,
+                    reportedId: widget.review?.writerId,
+                    parentContext: widget.gameContext,
+                    type: 'Review'),
               //remove review
               if (widget.userId != null &&
                   widget.userId == widget.review?.writerId &&

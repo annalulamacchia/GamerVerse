@@ -10,9 +10,12 @@ import 'package:gamerverse/models/post.dart'; // Modello Post
 
 class ProfilePosts extends StatefulWidget {
   final String userId; // ID dell'utente
+  final String? currentUser;
 
   const ProfilePosts(
-      {super.key, required this.userId}); // Richiediamo userId nel costruttore
+      {super.key,
+      required this.userId,
+      required this.currentUser}); // Richiediamo userId nel costruttore
 
   @override
   _ProfilePostPageState createState() => _ProfilePostPageState();
@@ -97,6 +100,7 @@ class _ProfilePostPageState extends State<ProfilePosts> {
                         commentCount: 5,
                         // Commenti (placeholder)
                         timestamp: post.timestamp,
+                        currentUser: widget.currentUser,
                         // Data
                         onCommentPressed: () {
                           // Logica per i commenti
@@ -106,6 +110,7 @@ class _ProfilePostPageState extends State<ProfilePosts> {
                             arguments: post.id,
                           );
                         },
+                        postId: post.id,
                         onDeletePressed: () {
                           // Logica per eliminare il post
                           print('Post eliminato: ${post.id}');

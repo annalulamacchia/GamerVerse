@@ -59,7 +59,7 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
         offset: _offset,
       );
 
-      if (gamesResponse != null && gamesResponse.isNotEmpty) {
+      if (gamesResponse.isNotEmpty) {
         setState(() {
           _games.addAll(gamesResponse); // Append new games to the list
           _isLoading = false;

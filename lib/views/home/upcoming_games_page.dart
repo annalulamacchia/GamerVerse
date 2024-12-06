@@ -59,7 +59,7 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
         offset: _offset,
       );
 
-      if (gamesResponse != null && gamesResponse.isNotEmpty) {
+      if (gamesResponse.isNotEmpty) {
         setState(() {
           _games.addAll(gamesResponse); // Append new games to the list
           _isLoading = false;

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-
-// Importa i widget personalizzati dalla cartella widgets
-import 'package:gamerverse/widgets/profile_or_users/posts/PostCardUser.dart';
+import 'package:gamerverse/widgets/profile_or_users/posts/PostCardProfile.dart';
 
 class UserPosts extends StatelessWidget {
   final String userId; // Aggiunto userId come parametro obbligatorio
+  final String? currentUser;
 
-  const UserPosts({super.key, required this.userId}); // Il costruttore ora richiede userId
+  const UserPosts(
+      {super.key,
+      required this.userId,
+      required this.currentUser}); // Il costruttore ora richiede userId
 
   @override
   Widget build(BuildContext context) {
@@ -18,19 +20,33 @@ class UserPosts extends StatelessWidget {
             child: ListView.builder(
               itemCount: 3, // Numero dei post
               itemBuilder: (context, index) {
-                return UserPostCard(
-                  gameName: 'Game Name $index', // Nome dinamico del gioco
-                  gameImageUrl:
-                  'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg', // URL immagine
-                  description: 'Game description goes here for post $index...',
-                  likeCount: 11, // Like iniziali
-                  commentCount: 5, // Commenti iniziali
-                  onLikePressed: () {
-                    // Logica per il like
-                  },
+                return PostCard(
+                  userId: "w",
+                  // Autore
+                  gameId: "we",
+                  // ID gioco
+                  description: "ee",
+                  // Contenuto
+                  likeCount: 2,
+                  // Like
+                  commentCount: 5,
+                  // Commenti (placeholder)
+                  timestamp: "ss",
+                  // Data
                   onCommentPressed: () {
-                    Navigator.pushNamed(context, '/comments'); // Apri la pagina dei commenti
+                    // Logica per i commenti
+                    Navigator.pushNamed(
+                      context,
+                      '/comments',
+                      arguments: "d",
+                    );
                   },
+                  postId: "c",
+                  onDeletePressed: () {
+                    // Logica per eliminare il post
+                    print('Post eliminato: ${22}');
+                  },
+                  currentUser: "c",
                 );
               },
             ),

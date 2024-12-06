@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/user/Get_user_info.dart';
 import 'package:gamerverse/services/specific_game/get_game_service.dart';
+import 'package:gamerverse/widgets/common_sections/report_menu.dart';
+import 'package:hugeicons/hugeicons.dart';
 
-class PostCard extends StatelessWidget {
+class PostCard extends StatefulWidget {
+  final String postId;
   final String userId;
   final String gameId;
   final String content;
@@ -11,34 +14,39 @@ class PostCard extends StatelessWidget {
   final int likeCount;
   final int commentCount;
   final VoidCallback onLikePressed;
-  final VoidCallback onCommentPressed;
-  final VoidCallback onReportUserPressed;
-  final VoidCallback onReportPostPressed;
+  final String? currentUser;
 
-  const PostCard({
-    super.key,
-    required this.userId,
-    required this.gameId,
-    required this.content,
-    required this.imageUrl,
-    required this.timestamp,
-    required this.likeCount,
-    required this.commentCount,
-    required this.onLikePressed,
-    required this.onCommentPressed,
-    required this.onReportUserPressed,
-    required this.onReportPostPressed,
-  });
+  const PostCard(
+      {super.key,
+      required this.userId,
+      required this.gameId,
+      required this.content,
+      required this.imageUrl,
+      required this.timestamp,
+      required this.likeCount,
+      required this.commentCount,
+      required this.onLikePressed,
+      required this.postId,
+      required this.currentUser});
+
+  @override
+  PostCardState createState() => PostCardState();
+}
+
+class PostCardState extends State<PostCard> {
+  bool _isExpanded = false;
 
   Future<Map> fetchPostDetails() async {
     Map<String, dynamic>? userData;
     Map<String, dynamic>? gameData;
-    final responseUser = await UserProfileService.getUserByUid(); // Recupera informazioni utente
-    final responseGame = await GameService.getGamebyId(gameId); // Recupera informazioni gioco
+    final responseUser =
+        await UserProfileService.getUserByUid(); // Recupera informazioni utente
+    final responseGame = await GameService.getGamebyId(
+        widget.gameId); // Recupera informazioni gioco
 
     if (responseUser['success']) {
-        userData = responseUser['data'];
-        // Popola i controller con i dati dell'utente
+      userData = responseUser['data'];
+      // Popola i controller con i dati dell'utente
     }
     if (responseGame['success']) {
       gameData = responseGame['data'];
@@ -66,12 +74,12 @@ class PostCard extends StatelessWidget {
           final author = snapshot.data!["author"];
           final gameName = snapshot.data!["gameName"];
           final cover = snapshot.data!["cover"];
-
           return Stack(
             children: [
               Card(
                 color: const Color(0xfff0f9f1),
-                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -104,15 +112,24 @@ class PostCard extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  gameName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.black87,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/game',
+                                        arguments: int.parse(widget.gameId));
+                                  },
+                                  child: Container(
+                                    width: 240,
+                                    alignment: Alignment.bottomLeft,
+                                    child: Text(
+                                      gameName,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      maxLines: null,
+                                      softWrap: true,
+                                    ),
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
                                   'Author: $author',
@@ -132,21 +149,36 @@ class PostCard extends StatelessWidget {
                       const SizedBox(height: 10),
                       // Descrizione
                       Text(
-                        content,
-                        maxLines: 6,
+                        widget.content,
+                        maxLines: _isExpanded ? widget.content.length : 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontSize: 15,
-                        ),
+                        style: const TextStyle(
+                            fontSize: 14, color: Colors.black87),
                       ),
+
+                      // View More / View Less
+                      if (widget.content.toUpperCase().length > 74)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isExpanded = !_isExpanded;
+                            });
+                          },
+                          child: Text(
+                            _isExpanded ? 'View Less' : 'View More',
+                            style: const TextStyle(
+                              color: Colors.teal,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 15),
                       // Footer con timestamp, like e commenti
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            timestamp,
+                            widget.timestamp,
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 14,
@@ -155,11 +187,12 @@ class PostCard extends StatelessWidget {
                           Row(
                             children: [
                               IconButton(
-                                icon: Icon(Icons.thumb_up, color: Colors.grey[700]),
-                                onPressed: onLikePressed,
+                                icon: Icon(Icons.thumb_up,
+                                    color: Colors.grey[700]),
+                                onPressed: widget.onLikePressed,
                               ),
                               Text(
-                                "$likeCount",
+                                "${widget.likeCount}",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black87,
@@ -167,11 +200,12 @@ class PostCard extends StatelessWidget {
                               ),
                               const SizedBox(width: 20),
                               IconButton(
-                                icon: Icon(Icons.comment, color: Colors.grey[700]),
-                                onPressed: onCommentPressed,
+                                icon: Icon(Icons.comment,
+                                    color: Colors.grey[700]),
+                                onPressed: null,
                               ),
                               Text(
-                                "$commentCount",
+                                "${widget.commentCount}",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black87,
@@ -188,27 +222,27 @@ class PostCard extends StatelessWidget {
               Positioned(
                 top: 20,
                 right: 20,
-                child: PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_vert, color: Colors.grey, size: 35),
-                  onSelected: (value) {
-                    if (value == 'reportUser') {
-                      onReportUserPressed();
-                    } else if (value == 'reportPost') {
-                      onReportPostPressed();
-                    }
-                  },
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      const PopupMenuItem<String>(
-                        value: 'reportUser',
-                        child: Text("Report User"),
+                child: Row(
+                  children: [
+                    //Toggle menu
+                    if (widget.currentUser != widget.userId)
+                      ReportMenu(
+                          userId: widget.currentUser,
+                          reportedId: widget.postId,
+                          parentContext: context,
+                          type: 'Post'),
+
+                    //remove review
+                    if (widget.currentUser == widget.userId)
+                      IconButton(
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedDelete02,
+                          color: Colors.black,
+                          size: 20.0,
+                        ),
+                        onPressed: () => {},
                       ),
-                      const PopupMenuItem<String>(
-                        value: 'reportPost',
-                        child: Text("Report Post"),
-                      ),
-                    ];
-                  },
+                  ],
                 ),
               ),
             ],
@@ -217,5 +251,4 @@ class PostCard extends StatelessWidget {
       },
     );
   }
-
 }

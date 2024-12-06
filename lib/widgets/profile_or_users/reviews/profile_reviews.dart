@@ -6,8 +6,10 @@ import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 
 class ProfileReviews extends StatefulWidget {
   final String userId;
+  final String? currentUser;
 
-  const ProfileReviews({super.key, required this.userId});
+  const ProfileReviews(
+      {super.key, required this.userId, required this.currentUser});
 
   @override
   State<ProfileReviews> createState() => _ProfileReviewsPageState();
@@ -68,11 +70,11 @@ class _ProfileReviewsPageState extends State<ProfileReviews> {
                     GameReview review = reviews[index];
                     return GameReviewCard(
                       gameReview: review,
-                      userId: widget.userId,
                       gameContext: parentContext,
                       onReviewRemoved: () {
                         _loadReviews();
                       },
+                      currentUser: widget.currentUser,
                     );
                   },
                 ),

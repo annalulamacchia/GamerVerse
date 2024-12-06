@@ -3,17 +3,20 @@ import 'package:gamerverse/models/game_profile.dart';
 
 class ImageCardProfileWidget extends StatelessWidget {
   final GameProfile game;
+  final String currentUser;
 
   const ImageCardProfileWidget({
     super.key,
     required this.game,
+    required this.currentUser,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/userGame', arguments: game);
+        Navigator.pushNamed(context, '/userGame',
+            arguments: {'game': game, 'currentUser': currentUser});
       },
       child: Card(
         shape: RoundedRectangleBorder(

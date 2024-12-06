@@ -6,8 +6,10 @@ import 'package:intl/intl.dart';
 
 class SpecificUserGame extends StatelessWidget {
   final GameProfile game;
+  final String currentUser;
 
-  const SpecificUserGame({super.key, required this.game});
+  const SpecificUserGame(
+      {super.key, required this.game, required this.currentUser});
 
   @override
   Widget build(BuildContext context) {
@@ -116,14 +118,17 @@ class SpecificUserGame extends StatelessWidget {
 
             //Post section
             ...List.generate(5, (index) {
-              return const UserPost(
+              return UserPost(
                 username: 'Username',
                 commentText:
-                    'Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo',
+                    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
                 likeCount: 11,
                 commentCount: 12,
                 avatarUrl:
                     'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',
+                currentUser: currentUser,
+                writerId: "1",
+                postId: "1",
               );
             }),
           ],

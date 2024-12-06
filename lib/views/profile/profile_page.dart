@@ -68,6 +68,7 @@ class ProfilePageState extends State<ProfilePage> {
                     mode: 0,
                     selected: 0,
                     userId: userId,
+                    currentUser: userId,
                   ),
                 ),
               ],
