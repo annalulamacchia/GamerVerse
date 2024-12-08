@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/report.dart';
+import 'package:gamerverse/services/report_service.dart';
 import 'package:gamerverse/widgets/admin/category_reports.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utils/firebase_auth_helper.dart';
+import '../widgets/specific_game/no_data_list.dart';
 
 class AdminReportPage extends StatefulWidget {
   const AdminReportPage({super.key});
@@ -10,11 +16,69 @@ class AdminReportPage extends StatefulWidget {
 }
 
 class AdminReportPageState extends State<AdminReportPage> {
-  //Default section
+  late String? userId = '';
+  Future<Map<String, List<Report>>> reports = Future.value({});
   String selectedStatus = 'Pending';
 
   @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+    _fetchReports();
+  }
+
+  //load the user_id
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? uid = prefs.getString('user_uid');
+    final valid = await FirebaseAuthHelper.checkTokenValidity();
+    setState(() {
+      if (valid) {
+        userId = uid;
+      } else {
+        userId = null;
+      }
+    });
+  }
+
+  Future<void> _fetchReports() async {
+    reports = _loadReports();
+  }
+
+  Future<Map<String, List<Report>>> _loadReports() async {
+    if (selectedStatus == 'Pending') {
+      return await ReportService.getPendingReports();
+    } else if (selectedStatus == 'Accepted') {
+      return await ReportService.getAcceptedReports();
+    } else {
+      return await ReportService.getDeclinedReports();
+    }
+  }
+
+  // Load Pending Reports
+  Future<void> _loadPendingReports() async {
+    setState(() {
+      reports = ReportService.getPendingReports();
+    });
+  }
+
+  // Load Accepted Reports
+  Future<void> _loadAcceptedReports() async {
+    setState(() {
+      reports = ReportService.getAcceptedReports();
+    });
+  }
+
+  // Load Declined Reports
+  Future<void> _loadDeclinedReports() async {
+    setState(() {
+      reports = ReportService.getDeclinedReports();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final parentContext = context;
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
@@ -28,37 +92,137 @@ class AdminReportPageState extends State<AdminReportPage> {
         title: const Text('Reports', style: TextStyle(color: Colors.white)),
       ),
       body: SingleChildScrollView(
-          child: Column(
-        children: [
-          //Sections
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildStatusButton('Declined', Colors.red),
-                _buildStatusButton('Pending', Colors.orange),
-                _buildStatusButton('Accepted', Colors.green),
-              ],
+        child: Column(
+          children: [
+            //Sections
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildStatusButton('Declined', Colors.red),
+                  _buildStatusButton('Pending', Colors.orange),
+                  _buildStatusButton('Accepted', Colors.green),
+                ],
+              ),
             ),
-          ),
-
-          ReportsCategory(title: 'Users', selectedStatus: selectedStatus),
-          const SizedBox(height: 10),
-          ReportsCategory(title: 'Posts', selectedStatus: selectedStatus),
-          const SizedBox(height: 10),
-          ReportsCategory(title: 'Reviews', selectedStatus: selectedStatus),
-          const SizedBox(height: 10),
-          if (selectedStatus == 'Pending')
-            ReportsCategory(
-                title: 'Temporary Blocked Users',
-                selectedStatus: selectedStatus),
-          if (selectedStatus == 'Declined')
-            ReportsCategory(
-                title: 'Permanently Blocked Users',
-                selectedStatus: selectedStatus),
-        ],
-      )),
+            FutureBuilder<Map<String, List<Report>>>(
+              future: reports, // Pass the Future that loads all reports
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return NoDataList(
+                    message: 'No reports available.',
+                    subMessage: 'There are no reports under this status.',
+                    color: Colors.grey.withOpacity(0.1),
+                    textColor: Colors.grey,
+                    icon: Icons.report_off,
+                  );
+                } else {
+                  // Access the reports by category (Users, Posts, Reviews)
+                  Map<String, List<dynamic>> reportsData = snapshot.data!;
+                  if (reportsData['Users']!.isEmpty &&
+                      reportsData['Posts']!.isEmpty &&
+                      reportsData['Reviews']!.isEmpty) {
+                    if (selectedStatus == 'Declined') {
+                      return NoDataList(
+                        message: 'No reports available.',
+                        subMessage: 'There are no Declined reports yet',
+                        color: Colors.red,
+                        textColor: Colors.white,
+                        icon: Icons.report_off,
+                      );
+                    } else if (selectedStatus == 'Accepted') {
+                      return NoDataList(
+                        message: 'No reports available.',
+                        subMessage: 'There are no Accepted reports yet',
+                        color: Colors.green,
+                        textColor: Colors.white,
+                        icon: Icons.report_off,
+                      );
+                    } else {
+                      return NoDataList(
+                        message: 'No reports available.',
+                        subMessage: 'There are no Pending reports yet',
+                        color: Colors.orange,
+                        textColor: Colors.white,
+                        icon: Icons.report_off,
+                      );
+                    }
+                  }
+                  return Column(
+                    children: [
+                      // Users reports section
+                      if (reportsData['Users'] != null &&
+                          reportsData['Users']!.isNotEmpty)
+                        ReportsCategory(
+                          title: 'Users',
+                          selectedStatus: selectedStatus,
+                          reports: reportsData['Users']!,
+                          parentContext: parentContext,
+                          onPending: _loadPendingReports,
+                          onDeclined: _loadDeclinedReports,
+                          onAccepted: _loadAcceptedReports,
+                        ),
+                      const SizedBox(height: 10),
+                      // Posts reports section
+                      if (reportsData['Posts'] != null &&
+                          reportsData['Posts']!.isNotEmpty)
+                        ReportsCategory(
+                          title: 'Posts',
+                          selectedStatus: selectedStatus,
+                          reports: reportsData['Posts']!,
+                          parentContext: parentContext,
+                          onPending: _loadPendingReports,
+                          onDeclined: _loadDeclinedReports,
+                          onAccepted: _loadAcceptedReports,
+                        ),
+                      const SizedBox(height: 10),
+                      // Reviews reports section
+                      if (reportsData['Reviews'] != null &&
+                          reportsData['Reviews']!.isNotEmpty)
+                        ReportsCategory(
+                          title: 'Reviews',
+                          selectedStatus: selectedStatus,
+                          reports: reportsData['Reviews']!,
+                          parentContext: parentContext,
+                          onPending: _loadPendingReports,
+                          onDeclined: _loadDeclinedReports,
+                          onAccepted: _loadAcceptedReports,
+                        ),
+                      const SizedBox(height: 10),
+                      // Sections for Pending or Declined status
+                      if (selectedStatus == 'Pending')
+                        ReportsCategory(
+                          title: 'Temporary Blocked Users',
+                          selectedStatus: selectedStatus,
+                          reports: [],
+                          parentContext: parentContext,
+                          onPending: _loadPendingReports,
+                          onDeclined: _loadDeclinedReports,
+                          onAccepted: _loadAcceptedReports,
+                        ),
+                      if (selectedStatus == 'Declined')
+                        ReportsCategory(
+                          title: 'Permanently Blocked Users',
+                          selectedStatus: selectedStatus,
+                          reports: [],
+                          parentContext: parentContext,
+                          onPending: _loadPendingReports,
+                          onDeclined: _loadDeclinedReports,
+                          onAccepted: _loadAcceptedReports,
+                        ),
+                    ],
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 3,
       ),
@@ -74,6 +238,7 @@ class AdminReportPageState extends State<AdminReportPage> {
       onPressed: () {
         setState(() {
           selectedStatus = status;
+          _fetchReports();
         });
       },
       child: Text(status,

@@ -5,8 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInfoCard extends StatefulWidget {
   final String userId;
+  final int games_counter;
 
-  const UserInfoCard({super.key, required this.userId});
+  const UserInfoCard({super.key, required this.userId,required this.games_counter});
 
   @override
   State<UserInfoCard> createState() => _UserInfoCardState();
@@ -139,7 +140,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildAvatar(userData!['profile_picture']),
-                _buildStatColumn('11', 'Games'),
+                _buildStatColumn((widget.games_counter).toString(), 'Games'),
                 _buildStatColumn(userData!['followed_count']?.toString() ?? '0', 'Followed'),
                 _buildStatColumn(userData!['followers_count']?.toString() ?? '0', 'Followers'),
               ],

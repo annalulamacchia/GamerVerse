@@ -89,11 +89,17 @@ class UserPostState extends State<UserPost> {
                               // Navigate to a new page when the text is tapped
                               Navigator.pushNamed(context, '/userProfile');
                             },
-                            child: Text(
-                              widget.username,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                            child: Container(
+                              width: 250,
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                widget.username,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                                maxLines: null,
+                                softWrap: true,
                               ),
                             ),
                           ),
@@ -190,6 +196,7 @@ class UserPostState extends State<UserPost> {
                     userId: widget.currentUser,
                     reportedId: widget.writerId,
                     parentContext: context,
+                    writerId: widget.writerId,
                     type: 'Post'),
               //remove review
               if (widget.currentUser == widget.writerId)

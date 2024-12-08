@@ -4,6 +4,7 @@ import 'package:gamerverse/widgets/profile_or_users/info/profile_info_card.dart'
 import 'package:gamerverse/widgets/profile_or_users/info/profile_tab_bar.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:gamerverse/services/specific_game/wishlist_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -22,11 +23,31 @@ class ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     userIdFuture = _loadUserId();
+    _loadWishlist(userIdFuture);
   }
 
   Future<String> _loadUserId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('user_uid') ?? 'default_user';
+  }
+
+  Future<void> _loadWishlist(Future<String> userIdFuture) async {
+    try {
+      final userId = await userIdFuture;
+      final games = await WishlistService.getWishlist(userId);
+
+      setState(() {
+        wishlist = games;
+        gamesCounter = games.length;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        wishlist = [];
+        isLoading = false;
+      });
+      debugPrint('Error loading wishlist: $e');
+    }
   }
 
   @override
@@ -38,7 +59,7 @@ class ProfilePageState extends State<ProfilePage> {
         title: const Text('Profile', style: TextStyle(color: Colors.white)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings), // Icona a forma di ingranaggio
+            icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.pushNamed(context, '/profileSettings');
             },
@@ -49,32 +70,13 @@ class ProfilePageState extends State<ProfilePage> {
         future: userIdFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return _buildLoading();
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return _buildError(snapshot.error.toString());
           } else if (snapshot.hasData) {
-            String userId = snapshot.data!;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: ProfileInfoCard(),
-                ),
-                // Usa Expanded per evitare overflow con il ListView
-                Expanded(
-                  child: TabBarSection(
-                    mode: 0,
-                    selected: 0,
-                    userId: userId,
-                    currentUser: userId,
-                  ),
-                ),
-              ],
-            );
+            return _buildContent(snapshot.data!);
           } else {
-            return const Center(child: Text('No data available'));
+            return _buildNoData();
           }
         },
       ),
@@ -83,4 +85,30 @@ class ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  Widget _buildLoading() => const Center(child: CircularProgressIndicator());
+
+  Widget _buildError(String error) => Center(child: Text('Error: $error'));
+
+  Widget _buildContent(String userId) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const SizedBox(height: 20),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: ProfileInfoCard(games_counter: gamesCounter),
+      ),
+      Expanded(
+        child: TabBarSection(
+          mode: 0,
+          selected: 0,
+          userId: userId,
+          currentUser: userId,
+          wishlist: wishlist.isNotEmpty ? wishlist : [],
+        ),
+      ),
+    ],
+  );
+
+  Widget _buildNoData() => const Center(child: Text('No data available'));
 }

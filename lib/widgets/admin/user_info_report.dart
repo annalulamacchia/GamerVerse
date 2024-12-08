@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/report.dart';
 
 class UserInfo extends StatelessWidget {
   final String title;
+  final Report report;
 
-  const UserInfo({super.key, required this.title});
+  const UserInfo({super.key, required this.title, required this.report});
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +24,15 @@ class UserInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //Avatar
-              const CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(
-                  'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg', // URL dell'immagine utente
-                ),
+              CircleAvatar(
+                backgroundImage: report
+                            .additionalUserInfo?.profilePicture.isNotEmpty ??
+                        false
+                    ? NetworkImage(report.additionalUserInfo!.profilePicture)
+                    : null,
+                child: report.additionalUserInfo?.profilePicture.isEmpty ?? true
+                    ? Icon(Icons.person, size: 40)
+                    : null,
               ),
               const SizedBox(height: 8),
 
@@ -34,10 +40,10 @@ class UserInfo extends StatelessWidget {
               if (title == 'Users' || title == 'Temporary Blocked Users')
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/userProfile');
+                    Navigator.pushNamed(context, '/userProfile', arguments: report.reportedId);
                   },
-                  child: const Text(
-                    'Name',
+                  child: Text(
+                    report.additionalUserInfo!.name,
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -54,21 +60,21 @@ class UserInfo extends StatelessWidget {
                 ),
 
               //Username
-              const Text(
-                'Username',
+              Text(
+                report.additionalUserInfo!.username,
                 style: TextStyle(fontSize: 14, color: Colors.white54),
               ),
             ],
           ),
 
           //Games, Followed and Followers
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               //Games
               Column(
                 children: [
-                  Text('10',
+                  Text(report.additionalUserInfo!.numberGames.toString(),
                       style: TextStyle(fontSize: 16, color: Colors.white)),
                   Text('Game',
                       style: TextStyle(fontSize: 12, color: Colors.white)),
@@ -79,7 +85,7 @@ class UserInfo extends StatelessWidget {
               //Followed
               Column(
                 children: [
-                  Text('10',
+                  Text(report.additionalUserInfo!.followed.toString(),
                       style: TextStyle(fontSize: 16, color: Colors.white)),
                   Text('Followed',
                       style: TextStyle(fontSize: 12, color: Colors.white)),
@@ -90,7 +96,7 @@ class UserInfo extends StatelessWidget {
               //Followers
               Column(
                 children: [
-                  Text('10',
+                  Text(report.additionalUserInfo!.followers.toString(),
                       style: TextStyle(fontSize: 16, color: Colors.white)),
                   Text('Follower',
                       style: TextStyle(fontSize: 12, color: Colors.white)),

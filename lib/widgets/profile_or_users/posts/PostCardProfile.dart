@@ -132,13 +132,13 @@ class _PostCardState extends State<PostCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  width: 200,
+                                  width: 225,
                                   alignment: Alignment.bottomLeft,
                                   child: Text(
                                     gameName,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 22,
+                                      fontSize: 20,
                                       color: Colors.black87,
                                     ),
                                     maxLines: null,
@@ -147,12 +147,12 @@ class _PostCardState extends State<PostCard> {
                                 ),
                                 const SizedBox(height: 5),
                                 Container(
-                                  width: 175,
+                                  width: 225,
                                   alignment: Alignment.bottomLeft,
                                   child: Text(
                                     "Author: $author",
                                     style: const TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       color: Colors.grey,
                                     ),
                                     maxLines: null,
@@ -241,6 +241,7 @@ class _PostCardState extends State<PostCard> {
                           userId: widget.currentUser,
                           reportedId: widget.postId,
                           parentContext: context,
+                          writerId: widget.userId,
                           type: 'Post'),
 
                     //remove review

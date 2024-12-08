@@ -220,8 +220,9 @@ class GameReviewCardState extends State<GameReviewCard> {
               if (widget.currentUser != widget.gameReview.writerId)
                 ReportMenu(
                     userId: widget.currentUser,
-                    reportedId: widget.gameReview.writerId,
+                    reportedId: widget.gameReview.reviewId,
                     parentContext: context,
+                    writerId: widget.gameReview.writerId,
                     type: 'Review'),
 
               //remove review

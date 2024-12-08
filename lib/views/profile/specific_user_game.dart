@@ -119,7 +119,7 @@ class SpecificUserGame extends StatelessWidget {
             //Post section
             ...List.generate(5, (index) {
               return UserPost(
-                username: 'Username',
+                username: 'Usernameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
                 commentText:
                     'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
                 likeCount: 11,

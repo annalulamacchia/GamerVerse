@@ -3,7 +3,8 @@ import 'package:gamerverse/views/profile/followers_or_following_page.dart';
 import 'package:gamerverse/services/user/Get_user_info.dart';
 
 class ProfileInfoCard extends StatefulWidget {
-  const ProfileInfoCard({super.key});
+  final int games_counter;
+  const ProfileInfoCard({super.key,required this.games_counter});
 
   @override
   State<ProfileInfoCard> createState() => _ProfileInfoCardState();
@@ -97,7 +98,7 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildAvatar(userData!['data']!['profile_picture']),
-                    _buildStatColumn(userData!['Games'], 'Games'),
+                    _buildStatColumn((widget.games_counter).toString(), 'Games'),
                     _buildClickableStatColumn(context,userData!['data']['followed_count']?.toString() ?? '0', 'Followed',const FollowersPage()),
                     _buildClickableStatColumn(context,userData!['data']['followers_count']?.toString() ?? '0', 'Followers',const FollowersPage()),
                    ],
