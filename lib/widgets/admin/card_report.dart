@@ -1,18 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/report.dart';
+import 'package:gamerverse/services/report_service.dart';
 import 'package:gamerverse/widgets/admin/post_info_report.dart';
 import 'package:gamerverse/widgets/admin/review_info_report.dart';
 import 'package:gamerverse/widgets/admin/user_info_report.dart';
+import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 
 class ReportCardWidget extends StatelessWidget {
-  final String imageUrl;
+  final Report report;
   final String title;
   final String selectedStatus;
+  final BuildContext parentContext;
+  final Future<void> Function() onAccepted;
+  final Future<void> Function() onDeclined;
+  final Future<void> Function() onPending;
 
   const ReportCardWidget(
       {super.key,
-      required this.imageUrl,
+      required this.report,
       required this.title,
-      required this.selectedStatus});
+      required this.selectedStatus,
+      required this.parentContext,
+      required this.onAccepted,
+      required this.onDeclined,
+      required this.onPending});
+
+  // Decline Report
+  void _declineReport(BuildContext context) async {
+    final result = await ReportService.declineReport(report.reportId);
+    if (result) {
+      onDeclined();
+      onPending();
+      DialogHelper.showSuccessDialog(context, "Report Declined successfully!");
+    } else {
+      DialogHelper.showErrorDialog(context, "Error in declining report");
+    }
+  }
+
+  // Accept Report
+  void _acceptReport(BuildContext context) async {
+    final result = await ReportService.acceptReport(report.reportId);
+    if (result) {
+      onAccepted();
+      onPending();
+      DialogHelper.showSuccessDialog(context, "Report Accepted successfully!");
+    } else {
+      DialogHelper.showErrorDialog(context, "Error in accepting report");
+    }
+  }
 
   //function to show the dialog
   void _showDetailDialog(BuildContext context, String title) {
@@ -64,33 +99,13 @@ class ReportCardWidget extends StatelessWidget {
               if (title == 'Users' ||
                   title == 'Permanently Blocked Users' ||
                   title == 'Temporary Blocked Users')
-                UserInfo(title: title),
+                UserInfo(title: title, report: report),
 
               //Posts
-              if (title == 'Posts')
-                const PostInfoReport(
-                  username: 'Username',
-                  gameName: 'Game Name',
-                  comment: 'Questo gioco mi fa schifo. Dio Cristo!!!!',
-                  gameUrl:
-                      'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',
-                  likes: 10,
-                  numberComments: 11,
-                  timestamp: 10,
-                ),
+              if (title == 'Posts') PostInfoReport(report: report),
 
               //Reviews
-              if (title == 'Reviews')
-                const ReviewInfoReport(
-                  username: 'Username',
-                  rating: 1,
-                  comment: 'Questo gioco mi fa schifo. Dio Cristo!!!!',
-                  gameUrl:
-                      'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg',
-                  likes: 10,
-                  dislikes: 11,
-                  timestamp: 10,
-                ),
+              if (title == 'Reviews') ReviewInfoReport(report: report),
               const SizedBox(height: 16),
 
               //Reason
@@ -102,8 +117,8 @@ class ReportCardWidget extends StatelessWidget {
                     color: const Color(0xff1c463f),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: const Text(
-                    'Reason',
+                  child: Text(
+                    report.reason,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
@@ -125,6 +140,7 @@ class ReportCardWidget extends StatelessWidget {
                             backgroundColor: Colors.red,
                           ),
                           onPressed: () {
+                            _declineReport(parentContext);
                             Navigator.of(context).pop();
                           },
                           child: const Text('Decline',
@@ -138,6 +154,7 @@ class ReportCardWidget extends StatelessWidget {
                             backgroundColor: Colors.green,
                           ),
                           onPressed: () {
+                            _acceptReport(parentContext);
                             Navigator.of(context).pop();
                           },
                           child: const Text('Accept',
@@ -156,6 +173,14 @@ class ReportCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String image = '';
+    if (title == 'Users') {
+      image = report.additionalUserInfo!.profilePicture;
+    } else if (title == 'Posts') {
+      image = report.additionalPostInfo!.gameCover;
+    } else if (title == 'Reviews') {
+      image = report.additionalReviewInfo!.gameCover;
+    }
     return InkWell(
       onTap: () {
         //show dialog on tap on the card
@@ -185,10 +210,21 @@ class ReportCardWidget extends StatelessWidget {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(15),
                   ),
-                  child: Image.network(
-                    'https://i.ytimg.com/vi/fwX3k126zo8/maxresdefault.jpg',
-                    fit: BoxFit.cover,
-                  ),
+                  child: image != ''
+                      ? Image.network(
+                          image,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          color: Colors.teal,
+                          child: Center(
+                            child: Icon(
+                              Icons.image_not_supported,
+                              size: 40,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 10),
@@ -197,11 +233,11 @@ class ReportCardWidget extends StatelessWidget {
               if (title == 'Users' ||
                   title == 'Permanently Blocked Users' ||
                   title == 'Temporary Blocked Users')
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Username',
+                      report.additionalUserInfo!.username,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -212,7 +248,7 @@ class ReportCardWidget extends StatelessWidget {
 
               //Avatar and username in Posts or Review Section
               if (title == 'Posts' || title == 'Reviews')
-                const Row(
+                Row(
                   children: [
                     SizedBox(width: 7.5),
 
@@ -220,15 +256,36 @@ class ReportCardWidget extends StatelessWidget {
                     CircleAvatar(
                       radius: 25,
                       backgroundColor: Colors.white,
-                      backgroundImage: NetworkImage(
-                        'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg', // URL dell'immagine utente
-                      ),
+                      backgroundImage: (title == 'Posts'
+                                  ? report.additionalPostInfo!.profilePicture
+                                  : report
+                                      .additionalReviewInfo!.profilePicture) !=
+                              ''
+                          ? NetworkImage(
+                              title == 'Posts'
+                                  ? report.additionalPostInfo!.profilePicture
+                                  : report.additionalReviewInfo!.profilePicture,
+                            )
+                          : null,
+                      child: (title == 'Posts'
+                                  ? report.additionalPostInfo!.profilePicture
+                                  : report
+                                      .additionalReviewInfo!.profilePicture) ==
+                              ''
+                          ? Icon(
+                              Icons.person,
+                              size: 24,
+                              color: Colors.grey,
+                            )
+                          : null,
                     ),
                     SizedBox(width: 10),
 
                     //Username
                     Text(
-                      'Username',
+                      title == 'Posts'
+                          ? report.additionalPostInfo!.username
+                          : report.additionalReviewInfo!.username,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

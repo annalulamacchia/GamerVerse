@@ -131,15 +131,18 @@ class PostCardState extends State<PostCard> {
                                     ),
                                   ),
                                 ),
-                                Text(
-                                  'Author: $author',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
+                                Container(
+                                  width: 240,
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    "Author: $author",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                    maxLines: null,
+                                    softWrap: true,
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             ),
@@ -230,6 +233,7 @@ class PostCardState extends State<PostCard> {
                           userId: widget.currentUser,
                           reportedId: widget.postId,
                           parentContext: context,
+                          writerId: widget.userId,
                           type: 'Post'),
 
                     //remove review

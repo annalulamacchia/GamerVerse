@@ -4,6 +4,7 @@ import 'package:gamerverse/widgets/common_sections/report.dart';
 class ReportMenu extends StatelessWidget {
   final String? userId;
   final String? reportedId;
+  final String? writerId;
   final BuildContext parentContext;
   final String type;
 
@@ -13,9 +14,10 @@ class ReportMenu extends StatelessWidget {
     required this.reportedId,
     required this.parentContext,
     required this.type,
+    required this.writerId,
   });
 
-  void _showReport(BuildContext context, String type) {
+  void _showReport(BuildContext context, String type, String? reportedId) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -33,9 +35,9 @@ class ReportMenu extends StatelessWidget {
     return PopupMenuButton<String>(
       onSelected: (value) {
         if (value == 'Report_$type') {
-          _showReport(parentContext, type);
+          _showReport(parentContext, type, reportedId);
         } else if (value == 'Report_User') {
-          _showReport(parentContext, "User");
+          _showReport(parentContext, "User", writerId);
         }
       },
       itemBuilder: (context) => [

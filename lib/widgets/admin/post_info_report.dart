@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/report.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
-class PostInfoReport extends StatelessWidget {
-  final String username;
-  final String gameName;
-  final String comment;
-  final String gameUrl;
-  final int likes;
-  final int numberComments;
-  final int timestamp;
+class PostInfoReport extends StatefulWidget {
+  final Report report;
 
-  const PostInfoReport(
-      {super.key,
-      required this.username,
-      required this.gameName,
-      required this.comment,
-      required this.gameUrl,
-      required this.likes,
-      required this.numberComments,
-      required this.timestamp});
+  const PostInfoReport({super.key, required this.report});
+
+  @override
+  PostInfoReportState createState() => PostInfoReportState();
+}
+
+class PostInfoReportState extends State<PostInfoReport> {
+  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +31,13 @@ class PostInfoReport extends StatelessWidget {
               //Game Image
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/game');
+                  Navigator.pushNamed(context, '/game',
+                      arguments: widget.report.additionalPostInfo!.gameId);
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
                   child: Image.network(
-                    gameUrl,
+                    widget.report.additionalPostInfo!.gameCover,
                     width: 50,
                     height: 60,
                     fit: BoxFit.cover,
@@ -56,10 +52,11 @@ class PostInfoReport extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/game');
+                      Navigator.pushNamed(context, '/game',
+                          arguments: widget.report.additionalPostInfo!.gameId);
                     },
                     child: Text(
-                      gameName,
+                      widget.report.additionalPostInfo!.gameName,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -70,12 +67,14 @@ class PostInfoReport extends StatelessWidget {
                   //Username
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/userProfile');
+                      Navigator.pushNamed(context, '/userProfile',
+                          arguments:
+                              widget.report.additionalPostInfo!.writerId);
                     },
                     child: Row(
                       children: [
                         Text(
-                          'Author: $username',
+                          'Author: ${widget.report.additionalPostInfo!.username}',
                           style: const TextStyle(
                               fontSize: 14, color: Colors.white54),
                         ),
@@ -90,9 +89,33 @@ class PostInfoReport extends StatelessWidget {
 
           //Post
           Text(
-            comment,
+            widget.report.additionalPostInfo!.description,
             style: const TextStyle(fontSize: 14, color: Colors.white),
+            maxLines: _isExpanded
+                ? widget.report.additionalPostInfo!.description.length
+                : 2,
+            overflow: TextOverflow.ellipsis,
           ),
+
+          // View More / View Less
+          if (widget.report.additionalPostInfo!.description
+                  .toUpperCase()
+                  .length >
+              74)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isExpanded = !_isExpanded;
+                });
+              },
+              child: Text(
+                _isExpanded ? 'View Less' : 'View More',
+                style: const TextStyle(
+                  color: Colors.teal,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           const SizedBox(height: 15),
 
           // Like and Comments
@@ -101,7 +124,10 @@ class PostInfoReport extends StatelessWidget {
             children: [
               //Timestamp
               Text(
-                '$timestamp hours ago', // Display timestamp
+                widget.report.additionalPostInfo!.timestamp != ""
+                    ? timeago.format(DateTime.parse(
+                        widget.report.additionalPostInfo!.timestamp))
+                    : "", // Display timestamp
                 style: const TextStyle(
                   fontSize: 12,
                   color: Colors.white54,
@@ -112,14 +138,14 @@ class PostInfoReport extends StatelessWidget {
               //Likes
               const Icon(Icons.thumb_up_outlined, color: Colors.white54),
               const SizedBox(width: 2.5),
-              Text(likes.toString(),
+              Text(widget.report.additionalPostInfo!.numberLikes.toString(),
                   style: const TextStyle(color: Colors.white54)),
               const SizedBox(width: 15),
 
               //Comments
               const Icon(Icons.comment_outlined, color: Colors.white54),
               const SizedBox(width: 2.5),
-              Text(numberComments.toString(),
+              Text(widget.report.additionalPostInfo!.numberComments.toString(),
                   style: const TextStyle(color: Colors.white54)),
             ],
           ),

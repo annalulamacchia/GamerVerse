@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/models/report.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
-class ReviewInfoReport extends StatelessWidget {
-  final String username;
-  final double rating;
-  final String comment;
-  final String gameUrl;
-  final int likes;
-  final int dislikes;
-  final int timestamp;
+class ReviewInfoReport extends StatefulWidget {
+  final Report report;
 
-  const ReviewInfoReport(
-      {super.key,
-      required this.username,
-      required this.rating,
-      required this.comment,
-      required this.gameUrl,
-      required this.likes,
-      required this.dislikes,
-      required this.timestamp});
+  const ReviewInfoReport({super.key, required this.report});
+
+  @override
+  ReviewInfoReportState createState() => ReviewInfoReportState();
+}
+
+class ReviewInfoReportState extends State<ReviewInfoReport> {
+  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +32,14 @@ class ReviewInfoReport extends StatelessWidget {
               //Game Image
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/game');
+                  Navigator.pushNamed(context, '/game',
+                      arguments: int.parse(
+                          widget.report.additionalReviewInfo!.gameId));
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
                   child: Image.network(
-                    gameUrl,
+                    widget.report.additionalReviewInfo!.gameCover,
                     width: 50,
                     height: 60,
                     fit: BoxFit.cover,
@@ -57,10 +54,12 @@ class ReviewInfoReport extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/userProfile');
+                      Navigator.pushNamed(context, '/userProfile',
+                          arguments:
+                              widget.report.additionalReviewInfo!.writerId);
                     },
                     child: Text(
-                      username,
+                      widget.report.additionalReviewInfo!.username,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -78,7 +77,7 @@ class ReviewInfoReport extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        rating.toString(),
+                        widget.report.additionalReviewInfo!.rating.toString(),
                         style:
                             const TextStyle(fontSize: 20, color: Colors.white),
                       ),
@@ -102,9 +101,33 @@ class ReviewInfoReport extends StatelessWidget {
 
           // Review
           Text(
-            comment,
+            widget.report.additionalReviewInfo!.description,
             style: const TextStyle(fontSize: 14, color: Colors.white),
+            maxLines: _isExpanded
+                ? widget.report.additionalReviewInfo!.description.length
+                : 2,
+            overflow: TextOverflow.ellipsis,
           ),
+
+          // View More / View Less
+          if (widget.report.additionalReviewInfo!.description
+                  .toUpperCase()
+                  .length >
+              74)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isExpanded = !_isExpanded;
+                });
+              },
+              child: Text(
+                _isExpanded ? 'View Less' : 'View More',
+                style: const TextStyle(
+                  color: Colors.teal,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           const SizedBox(height: 15),
 
           // Like and Dislike
@@ -113,7 +136,10 @@ class ReviewInfoReport extends StatelessWidget {
             children: [
               //Timestamp
               Text(
-                '$timestamp hours ago', // Display timestamp
+                widget.report.additionalReviewInfo!.timestamp != ""
+                    ? timeago.format(DateTime.parse(
+                        widget.report.additionalReviewInfo!.timestamp))
+                    : "", // Display timestamp
                 style: const TextStyle(
                   fontSize: 12,
                   color: Colors.white54,
@@ -124,14 +150,15 @@ class ReviewInfoReport extends StatelessWidget {
               //Likes
               const Icon(Icons.thumb_up_outlined, color: Colors.white54),
               const SizedBox(width: 2.5),
-              Text(likes.toString(),
+              Text(widget.report.additionalReviewInfo!.numberLikes.toString(),
                   style: const TextStyle(color: Colors.white54)),
               const SizedBox(width: 15),
 
               //Dislikes
               const Icon(Icons.thumb_down_outlined, color: Colors.white54),
               const SizedBox(width: 2.5),
-              Text(dislikes.toString(),
+              Text(
+                  widget.report.additionalReviewInfo!.numberDislikes.toString(),
                   style: const TextStyle(color: Colors.white54)),
             ],
           ),

@@ -4,15 +4,30 @@ import 'package:gamerverse/widgets/admin/card_report.dart';
 class ReportsCategory extends StatelessWidget {
   final String title;
   final String selectedStatus;
+  final List<dynamic> reports;
+  final BuildContext parentContext;
+  final Future<void> Function() onAccepted;
+  final Future<void> Function() onDeclined;
+  final Future<void> Function() onPending;
 
   const ReportsCategory({
     super.key,
     required this.title,
     required this.selectedStatus,
+    required this.reports,
+    required this.parentContext,
+    required this.onAccepted,
+    required this.onDeclined,
+    required this.onPending,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (reports.isEmpty) {
+      return Container();
+    }
+
+    // List of reports retrieved successfully
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -24,9 +39,10 @@ class ReportsCategory extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ],
           ),
@@ -35,17 +51,21 @@ class ReportsCategory extends StatelessWidget {
           height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 10,
+            itemCount: reports.length,
             itemBuilder: (context, index) {
-              String imageUrl =
-                  'https://t3.ftcdn.net/jpg/06/24/16/90/360_F_624169025_g8SF8gci4C4JT5f6wZgJ0IcKZ6ZuKM7u.jpg'; // Placeholder immagine
+              var report = reports[index];
               return Container(
                 width: 200,
                 margin: const EdgeInsets.symmetric(horizontal: 2),
                 child: ReportCardWidget(
-                    imageUrl: imageUrl,
-                    title: title,
-                    selectedStatus: selectedStatus),
+                  report: report,
+                  title: title,
+                  selectedStatus: selectedStatus,
+                  parentContext: parentContext,
+                  onAccepted: onAccepted,
+                  onDeclined: onDeclined,
+                  onPending: onPending,
+                ),
               );
             },
           ),

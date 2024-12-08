@@ -223,10 +223,12 @@ class SingleReviewState extends State<SingleReview> {
               ),
               // Toggle menu
               if (widget.userId != null &&
-                  widget.userId != widget.review?.writerId)
+                  widget.userId != widget.review?.writerId &&
+                  widget.review?.reviewId != null)
                 ReportMenu(
                     userId: widget.userId,
-                    reportedId: widget.review?.writerId,
+                    writerId: widget.review?.writerId,
+                    reportedId: widget.review?.reviewId,
                     parentContext: widget.gameContext,
                     type: 'Review'),
               //remove review
@@ -242,9 +244,7 @@ class SingleReviewState extends State<SingleReview> {
                   onPressed: () => _showDeleteConfirmation(widget.gameContext,
                       widget.review?.reviewId, widget.review?.gameId),
                 ),
-              if ((widget.userId != null &&
-                      widget.userId == widget.review?.writerId &&
-                      widget.review?.reviewId == null) ||
+              if ((widget.userId != null && widget.review?.reviewId == null) ||
                   widget.userId == null)
                 Icon(Icons.more_vert, color: Colors.transparent, size: 37.5)
             ],

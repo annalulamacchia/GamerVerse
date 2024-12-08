@@ -46,7 +46,7 @@ class UserPosts extends StatelessWidget {
                     // Logica per eliminare il post
                     print('Post eliminato: ${22}');
                   },
-                  currentUser: "c",
+                  currentUser: currentUser,
                 );
               },
             ),
