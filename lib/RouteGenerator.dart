@@ -141,7 +141,13 @@ class RouteGenerator {
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/newPassword':
-        return MaterialPageRoute(builder: (context) => NewPasswordPage());
+        if (args is Map<String, dynamic> && args.containsKey('email')) {
+          return MaterialPageRoute(
+            builder: (context) => NewPasswordPage(email: args['email']),
+          );
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
+
       case '/series':
         if (args is Map<String, dynamic> &&
             args.containsKey('gameIds') &&
