@@ -86,29 +86,30 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildLoading() => const Center(child: CircularProgressIndicator());
+  Widget _buildLoading() =>
+      const Center(child: CircularProgressIndicator(color: Colors.teal));
 
   Widget _buildError(String error) => Center(child: Text('Error: $error'));
 
   Widget _buildContent(String userId) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const SizedBox(height: 20),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ProfileInfoCard(games_counter: gamesCounter),
-      ),
-      Expanded(
-        child: TabBarSection(
-          mode: 0,
-          selected: 0,
-          userId: userId,
-          currentUser: userId,
-          wishlist: wishlist.isNotEmpty ? wishlist : [],
-        ),
-      ),
-    ],
-  );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ProfileInfoCard(games_counter: gamesCounter),
+          ),
+          Expanded(
+            child: TabBarSection(
+              mode: 0,
+              selected: 0,
+              userId: userId,
+              currentUser: userId,
+              wishlist: wishlist.isNotEmpty ? wishlist : [],
+            ),
+          ),
+        ],
+      );
 
   Widget _buildNoData() => const Center(child: Text('No data available'));
 }

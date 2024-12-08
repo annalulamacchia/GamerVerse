@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_profile.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
@@ -23,42 +22,44 @@ class GameListSectionState extends State<GameListSection> {
   List<GameProfile> liked = [];
   List<GameProfile> playing = [];
   List<GameProfile> completed = [];
+
   @override
   void initState() {
     super.initState();
-
   }
 
   // Load and filter wishlist into different categories
 
-
   @override
   Widget build(BuildContext context) {
-
     liked = widget.wishlist.where((game) => game.liked == true).toList();
-    playing = widget.wishlist.where((game) => game.status == 'Playing').toList();
-    completed = widget.wishlist.where((game) => game.status == 'Completed').toList();
+    playing =
+        widget.wishlist.where((game) => game.status == 'Playing').toList();
+    completed =
+        widget.wishlist.where((game) => game.status == 'Completed').toList();
 
     return isLoading
-
-        ? const Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator(color: Colors.teal))
         : ListView(
-      children: [
-        if (liked.isEmpty && playing.isEmpty && completed.isEmpty)
-          NoDataList(
-            textColor: Colors.white,
-            icon: HugeIcons.strokeRoundedAircraftGame,
-            message: 'No games added yet',
-            subMessage:
-            'Start adding games to your list to keep track of your progress.',
-            color: Colors.grey[500]!,
-          ),
-        if (liked.isNotEmpty) _buildGameSection(context, 'Wishlist', liked),
-        if (playing.isNotEmpty) _buildGameSection(context, 'Playing', playing),
-        if (completed.isNotEmpty) _buildGameSection(context, 'Completed', completed),
-        const SizedBox(height: 20),
-      ],
-    );
+            children: [
+              if (liked.isEmpty && playing.isEmpty && completed.isEmpty)
+                NoDataList(
+                  textColor: Colors.white,
+                  icon: HugeIcons.strokeRoundedAircraftGame,
+                  message: 'No games added yet',
+                  subMessage:
+                      'Start adding games to your list to keep track of your progress.',
+                  color: Colors.grey[500]!,
+                ),
+              if (liked.isNotEmpty)
+                _buildGameSection(context, 'Wishlist', liked),
+              if (playing.isNotEmpty)
+                _buildGameSection(context, 'Playing', playing),
+              if (completed.isNotEmpty)
+                _buildGameSection(context, 'Completed', completed),
+              const SizedBox(height: 20),
+            ],
+          );
   }
 
   Widget _buildGameSection(

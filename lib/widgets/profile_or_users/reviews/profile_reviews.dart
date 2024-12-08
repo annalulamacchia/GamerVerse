@@ -42,7 +42,8 @@ class _ProfileReviewsPageState extends State<ProfileReviews> {
             future: _reviewsFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(
+                    child: CircularProgressIndicator(color: Colors.teal));
               }
 
               if (snapshot.hasError) {

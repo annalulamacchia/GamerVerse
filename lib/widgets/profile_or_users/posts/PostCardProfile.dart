@@ -79,7 +79,8 @@ class _PostCardState extends State<PostCard> {
       future: fetchPostDetails(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(color: Colors.teal));
         } else if (snapshot.hasError) {
           return const Center(child: Text("Error loading game details"));
         } else if (!snapshot.hasData) {

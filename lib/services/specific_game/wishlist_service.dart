@@ -94,7 +94,7 @@ class WishlistService {
   }
 
   //function to get all users that have a specific game on their wishlist
-  static Future<List<User>?> getUsersByGame(String gameId) async {
+  static Future<List<User>?> getUsersByGame({required String gameId}) async {
     final String url =
         'https://gamerversemobile.pythonanywhere.com/get_users_by_game';
 

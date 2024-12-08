@@ -4,7 +4,8 @@ import 'package:gamerverse/services/user/Get_user_info.dart';
 
 class ProfileInfoCard extends StatefulWidget {
   final int games_counter;
-  const ProfileInfoCard({super.key,required this.games_counter});
+
+  const ProfileInfoCard({super.key, required this.games_counter});
 
   @override
   State<ProfileInfoCard> createState() => _ProfileInfoCardState();
@@ -14,7 +15,7 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
   Map<String, dynamic>? userData;
   bool isLoading = true;
   String errorMessage = '';
-  String debugMessage = '';  // A new variable to hold debug information
+  String debugMessage = ''; // A new variable to hold debug information
 
   @override
   void initState() {
@@ -24,19 +25,16 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
 
   // Recupera l'userId da SharedPreferences e quindi chiama il servizio
   Future<void> fetchUserData() async {
-
     // Add debug information
-    setState(() {
-
-
-    });
+    setState(() {});
 
     // Chiamata al servizio per ottenere i dati utente
     final response = await UserProfileService.getUserByUid();
 
     // Log the response from the service
     setState(() {
-      debugMessage += '\nResponse: ${response['message']}'; // Add response message to debug info
+      debugMessage +=
+          '\nResponse: ${response['message']}'; // Add response message to debug info
     });
 
     if (response['success']) {
@@ -63,7 +61,7 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator(color: Colors.teal));
     }
 
     if (errorMessage.isNotEmpty) {
@@ -98,12 +96,23 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildAvatar(userData!['data']!['profile_picture']),
-                    _buildStatColumn((widget.games_counter).toString(), 'Games'),
-                    _buildClickableStatColumn(context,userData!['data']['followed_count']?.toString() ?? '0', 'Followed',const FollowersPage()),
-                    _buildClickableStatColumn(context,userData!['data']['followers_count']?.toString() ?? '0', 'Followers',const FollowersPage()),
-                   ],
+                    _buildStatColumn(
+                        (widget.games_counter).toString(), 'Games'),
+                    _buildClickableStatColumn(
+                        context,
+                        userData!['data']['followed_count']?.toString() ?? '0',
+                        'Followed',
+                        const FollowersPage()),
+                    _buildClickableStatColumn(
+                        context,
+                        userData!['data']['followers_count']?.toString() ?? '0',
+                        'Followers',
+                        const FollowersPage()),
+                  ],
                 ),
-                _buildName(userData!['data']!['name'],userData!['data']!['surname'] ), // userData!['surname']
+                _buildName(
+                    userData!['data']!['name'], userData!['data']!['surname']),
+                // userData!['surname']
               ],
             ),
           ),
@@ -126,12 +135,12 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
         shape: BoxShape.circle,
         color: Colors.grey.shade300,
         image: profilePictureUrl != null
-            ? DecorationImage(image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
+            ? DecorationImage(
+                image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
             : null,
       ),
-      child: profilePictureUrl == null
-          ? const Icon(Icons.person, size: 40)
-          : null,
+      child:
+          profilePictureUrl == null ? const Icon(Icons.person, size: 40) : null,
     );
   }
 
@@ -158,7 +167,6 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
     );
   }
 
-
   Widget _buildName(String name, String surname) {
     return Container(
       margin: const EdgeInsets.only(top: 10, left: 25.0, right: 8),
@@ -166,7 +174,8 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text('$name $surname',
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+              style:
+                  const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
         ],
       ),
     );

@@ -127,7 +127,7 @@ class ReportWidgetState extends State<ReportWidget> {
           //Report Button
           Center(
             child: _isSubmitting
-                ? const CircularProgressIndicator()
+                ? const CircularProgressIndicator(color: Colors.teal)
                 : ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff3e6259),

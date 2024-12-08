@@ -134,7 +134,7 @@ class LoginPage extends StatelessWidget {
       ),
       // Bottom navigation bar
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1, // Set to Home index or adjust as needed
+        currentIndex: 2, // Set to Home index or adjust as needed
       ),
     );
   }

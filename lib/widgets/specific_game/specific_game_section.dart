@@ -83,7 +83,8 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
               showSpecificGamePopup(context);
             } else {
               isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Colors.teal))
                   : Navigator.pushNamed(
                       context,
                       '/series',

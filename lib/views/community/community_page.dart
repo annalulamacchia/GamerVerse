@@ -89,8 +89,9 @@ class _CommunityPageState extends State<CommunityPage> {
       ),
       body: Posts.isEmpty
           ? const Center(
-              child:
-                  CircularProgressIndicator()) // Mostra un caricamento finché i post non sono disponibili
+              child: CircularProgressIndicator(
+                  color: Colors
+                      .teal)) // Mostra un caricamento finché i post non sono disponibili
           : ListView.builder(
               itemCount: Posts.length, // Numero di post
               itemBuilder: (context, index) {

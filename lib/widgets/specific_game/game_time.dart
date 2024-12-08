@@ -187,7 +187,7 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
   Widget build(BuildContext context) {
     return isLoading
         ? const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(color: Colors.teal),
           )
         : ValueListenableBuilder<double>(
             valueListenable: widget.averageTimeNotifier,

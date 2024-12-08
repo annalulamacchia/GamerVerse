@@ -155,7 +155,7 @@ class MediaGameWidgetState extends State<MediaGameWidget> {
     //Images
     mediaWidgets.addAll(images.map((media) {
       return isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Colors.teal))
           : Container(
               width: 200,
               height: 125,

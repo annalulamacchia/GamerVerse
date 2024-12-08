@@ -6,12 +6,14 @@ class FavoriteButton extends StatefulWidget {
   final String? userId;
   final Game? game;
   final ValueNotifier<int> likedCountNotifier;
+  final Future<void> Function() onLoadWishlist;
 
   const FavoriteButton(
       {super.key,
       required this.userId,
       required this.game,
-      required this.likedCountNotifier});
+      required this.likedCountNotifier,
+      required this.onLoadWishlist});
 
   @override
   FavoriteButtonState createState() => FavoriteButtonState();
@@ -44,20 +46,18 @@ class FavoriteButtonState extends State<FavoriteButton> {
   }
 
   //function to alternate favourite (add to wishlist) and not favourite (remove from wishlist)
-  void _toggleFavorite() {
-    setState(() {
-      isFavorite = !isFavorite;
-      if (isFavorite) {
-        WishlistService.addGameToWishlist(
-            userId: widget.userId, game: widget.game);
-        widget.likedCountNotifier.value++;
-      }
-      if (!isFavorite) {
-        WishlistService.removeGameFromWishlist(
-            userId: widget.userId, game: widget.game);
-        widget.likedCountNotifier.value--;
-      }
-    });
+  void _toggleFavorite() async {
+    isFavorite = !isFavorite;
+    if (isFavorite) {
+      await WishlistService.addGameToWishlist(
+          userId: widget.userId, game: widget.game);
+      widget.onLoadWishlist();
+    }
+    if (!isFavorite) {
+      await WishlistService.removeGameFromWishlist(
+          userId: widget.userId, game: widget.game);
+      widget.onLoadWishlist();
+    }
   }
 
   //function to redirect to login if the user is not logged

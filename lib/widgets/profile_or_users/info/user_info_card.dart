@@ -7,7 +7,8 @@ class UserInfoCard extends StatefulWidget {
   final String userId;
   final int games_counter;
 
-  const UserInfoCard({super.key, required this.userId,required this.games_counter});
+  const UserInfoCard(
+      {super.key, required this.userId, required this.games_counter});
 
   @override
   State<UserInfoCard> createState() => _UserInfoCardState();
@@ -59,7 +60,6 @@ class _UserInfoCardState extends State<UserInfoCard> {
     }
   }
 
-
   Future<void> toggleFollow() async {
     setState(() {
       isButtonDisabled = true; // Disabilita il pulsante
@@ -68,7 +68,8 @@ class _UserInfoCardState extends State<UserInfoCard> {
     try {
       if (isFollowing) {
         // Chiama il servizio per rimuovere un amico
-        final response = await FriendService.removeFriend(userId: widget.userId);
+        final response =
+            await FriendService.removeFriend(userId: widget.userId);
         if (response['success']) {
           userData!['followers_count'] = userData!['followers_count'] - 1;
           print('Friend removed successfully');
@@ -80,7 +81,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
         // Chiama il servizio per aggiungere un amico
         final response = await FriendService.addFriend(userId: widget.userId);
         if (response['success']) {
-          userData!['followers_count'] = userData!['followers_count']+1;
+          userData!['followers_count'] = userData!['followers_count'] + 1;
           print('Friend added successfully');
         } else {
           print('Failed to add friend: ${response['message']}');
@@ -103,12 +104,10 @@ class _UserInfoCardState extends State<UserInfoCard> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator(color: Colors.teal));
     }
 
     if (errorMessage.isNotEmpty) {
@@ -141,8 +140,11 @@ class _UserInfoCardState extends State<UserInfoCard> {
               children: [
                 _buildAvatar(userData!['profile_picture']),
                 _buildStatColumn((widget.games_counter).toString(), 'Games'),
-                _buildStatColumn(userData!['followed_count']?.toString() ?? '0', 'Followed'),
-                _buildStatColumn(userData!['followers_count']?.toString() ?? '0', 'Followers'),
+                _buildStatColumn(
+                    userData!['followed_count']?.toString() ?? '0', 'Followed'),
+                _buildStatColumn(
+                    userData!['followers_count']?.toString() ?? '0',
+                    'Followers'),
               ],
             ),
             Row(
@@ -177,12 +179,12 @@ class _UserInfoCardState extends State<UserInfoCard> {
         shape: BoxShape.circle,
         color: Colors.grey.shade300,
         image: profilePictureUrl != null
-            ? DecorationImage(image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
+            ? DecorationImage(
+                image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
             : null,
       ),
-      child: profilePictureUrl == null
-          ? const Icon(Icons.person, size: 40)
-          : null,
+      child:
+          profilePictureUrl == null ? const Icon(Icons.person, size: 40) : null,
     );
   }
 
@@ -205,7 +207,8 @@ class _UserInfoCardState extends State<UserInfoCard> {
       child: Row(
         children: [
           Text('$name $surname',
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+              style:
+                  const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
         ],
       ),
     );

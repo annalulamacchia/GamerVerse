@@ -24,7 +24,6 @@ class AdminReportPageState extends State<AdminReportPage> {
   void initState() {
     super.initState();
     _loadUserData();
-    _fetchReports();
   }
 
   //load the user_id
@@ -39,6 +38,7 @@ class AdminReportPageState extends State<AdminReportPage> {
         userId = null;
       }
     });
+    _fetchReports();
   }
 
   Future<void> _fetchReports() async {
@@ -47,32 +47,32 @@ class AdminReportPageState extends State<AdminReportPage> {
 
   Future<Map<String, List<Report>>> _loadReports() async {
     if (selectedStatus == 'Pending') {
-      return await ReportService.getPendingReports();
+      return await ReportService.getPendingReports(userId: userId!);
     } else if (selectedStatus == 'Accepted') {
-      return await ReportService.getAcceptedReports();
+      return await ReportService.getAcceptedReports(userId: userId!);
     } else {
-      return await ReportService.getDeclinedReports();
+      return await ReportService.getDeclinedReports(userId: userId!);
     }
   }
 
   // Load Pending Reports
   Future<void> _loadPendingReports() async {
     setState(() {
-      reports = ReportService.getPendingReports();
+      reports = ReportService.getPendingReports(userId: userId!);
     });
   }
 
   // Load Accepted Reports
   Future<void> _loadAcceptedReports() async {
     setState(() {
-      reports = ReportService.getAcceptedReports();
+      reports = ReportService.getAcceptedReports(userId: userId!);
     });
   }
 
   // Load Declined Reports
   Future<void> _loadDeclinedReports() async {
     setState(() {
-      reports = ReportService.getDeclinedReports();
+      reports = ReportService.getDeclinedReports(userId: userId!);
     });
   }
 
@@ -110,23 +110,18 @@ class AdminReportPageState extends State<AdminReportPage> {
               future: reports, // Pass the Future that loads all reports
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                      child: CircularProgressIndicator(color: Colors.teal));
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return NoDataList(
-                    message: 'No reports available.',
-                    subMessage: 'There are no reports under this status.',
-                    color: Colors.grey.withOpacity(0.1),
-                    textColor: Colors.grey,
-                    icon: Icons.report_off,
-                  );
+                  return Center(child: Text('Data is empty'));
                 } else {
                   // Access the reports by category (Users, Posts, Reviews)
                   Map<String, List<dynamic>> reportsData = snapshot.data!;
                   if (reportsData['Users']!.isEmpty &&
                       reportsData['Posts']!.isEmpty &&
-                      reportsData['Reviews']!.isEmpty) {
+                      reportsData['Reviews']!.isEmpty && reportsData['BlockedUsers']!.isEmpty) {
                     if (selectedStatus == 'Declined') {
                       return NoDataList(
                         message: 'No reports available.',
@@ -166,6 +161,7 @@ class AdminReportPageState extends State<AdminReportPage> {
                           onPending: _loadPendingReports,
                           onDeclined: _loadDeclinedReports,
                           onAccepted: _loadAcceptedReports,
+                          userId: userId!,
                         ),
                       const SizedBox(height: 10),
                       // Posts reports section
@@ -179,6 +175,7 @@ class AdminReportPageState extends State<AdminReportPage> {
                           onPending: _loadPendingReports,
                           onDeclined: _loadDeclinedReports,
                           onAccepted: _loadAcceptedReports,
+                          userId: userId!,
                         ),
                       const SizedBox(height: 10),
                       // Reviews reports section
@@ -192,29 +189,23 @@ class AdminReportPageState extends State<AdminReportPage> {
                           onPending: _loadPendingReports,
                           onDeclined: _loadDeclinedReports,
                           onAccepted: _loadAcceptedReports,
+                          userId: userId!,
                         ),
                       const SizedBox(height: 10),
                       // Sections for Pending or Declined status
                       if (selectedStatus == 'Pending')
-                        ReportsCategory(
-                          title: 'Temporary Blocked Users',
-                          selectedStatus: selectedStatus,
-                          reports: [],
-                          parentContext: parentContext,
-                          onPending: _loadPendingReports,
-                          onDeclined: _loadDeclinedReports,
-                          onAccepted: _loadAcceptedReports,
-                        ),
-                      if (selectedStatus == 'Declined')
-                        ReportsCategory(
-                          title: 'Permanently Blocked Users',
-                          selectedStatus: selectedStatus,
-                          reports: [],
-                          parentContext: parentContext,
-                          onPending: _loadPendingReports,
-                          onDeclined: _loadDeclinedReports,
-                          onAccepted: _loadAcceptedReports,
-                        ),
+                        if (reportsData['BlockedUsers'] != null &&
+                            reportsData['BlockedUsers']!.isNotEmpty)
+                          ReportsCategory(
+                            title: 'Temporarily Blocked Users',
+                            selectedStatus: selectedStatus,
+                            reports: reportsData['BlockedUsers']!,
+                            parentContext: parentContext,
+                            onPending: _loadPendingReports,
+                            onDeclined: _loadDeclinedReports,
+                            onAccepted: _loadAcceptedReports,
+                            userId: userId!,
+                          ),
                     ],
                   );
                 }

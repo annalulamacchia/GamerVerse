@@ -162,7 +162,7 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
         ),
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1,
+        currentIndex: 2,
       ),
     );
   }

@@ -79,7 +79,7 @@ class _ReleasedThisMonthPageState extends State<ReleasedThisMonthPage> {
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 100 &&
+            _scrollController.position.maxScrollExtent - 100 &&
         !_isLoadingMore) {
       _fetchGames();
     }
@@ -149,7 +149,8 @@ class _ReleasedThisMonthPageState extends State<ReleasedThisMonthPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: const Text(
                               'Order By',
                               style: TextStyle(
@@ -175,9 +176,9 @@ class _ReleasedThisMonthPageState extends State<ReleasedThisMonthPage> {
                             }).toList(),
                           ),
                           const SizedBox(height: 16.0),
-
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: const Text(
                               'Platform',
                               style: TextStyle(
@@ -196,16 +197,17 @@ class _ReleasedThisMonthPageState extends State<ReleasedThisMonthPage> {
                                 selectedColor: Colors.green,
                                 onSelected: (selected) {
                                   setState(() {
-                                    _selectedPlatform = selected ? option : null;
+                                    _selectedPlatform =
+                                        selected ? option : null;
                                   });
                                 },
                               );
                             }).toList(),
                           ),
                           const SizedBox(height: 16.0),
-
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: const Text(
                               'Genre',
                               style: TextStyle(
@@ -257,7 +259,8 @@ class _ReleasedThisMonthPageState extends State<ReleasedThisMonthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Released This Month', style: TextStyle(color: Colors.black)),
+        title: const Text('Released This Month',
+            style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.grey[200],
         elevation: 0,
         actions: [
@@ -268,42 +271,43 @@ class _ReleasedThisMonthPageState extends State<ReleasedThisMonthPage> {
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Colors.teal))
           : _errorMessage != null
-          ? Center(child: Text(_errorMessage!))
-          : Stack(
-        children: [
-          GridView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.all(10.0),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: _games.length,
-            itemBuilder: (context, index) {
-              final game = _games[index];
-              final coverUrl = game['coverUrl'] ??
-                  'https://via.placeholder.com/400x200?text=No+Image';
-              return ImageCardWidget(
-                imageUrl: coverUrl,
-                gameId: game['id'],
-              );
-            },
-          ),
-          if (_isLoadingMore)
-            Positioned(
-              bottom: 10,
-              left: 0,
-              right: 0,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-        ],
-      ),
+              ? Center(child: Text(_errorMessage!))
+              : Stack(
+                  children: [
+                    GridView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.all(10.0),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                        childAspectRatio: 0.8,
+                      ),
+                      itemCount: _games.length,
+                      itemBuilder: (context, index) {
+                        final game = _games[index];
+                        final coverUrl = game['coverUrl'] ??
+                            'https://via.placeholder.com/400x200?text=No+Image';
+                        return ImageCardWidget(
+                          imageUrl: coverUrl,
+                          gameId: game['id'],
+                        );
+                      },
+                    ),
+                    if (_isLoadingMore)
+                      Positioned(
+                        bottom: 10,
+                        left: 0,
+                        right: 0,
+                        child: const Center(
+                          child: CircularProgressIndicator(color: Colors.teal),
+                        ),
+                      ),
+                  ],
+                ),
       bottomNavigationBar: const CustomBottomNavBar(currentIndex: 1),
     );
   }

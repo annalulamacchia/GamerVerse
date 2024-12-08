@@ -10,6 +10,7 @@ class ReportCardWidget extends StatelessWidget {
   final Report report;
   final String title;
   final String selectedStatus;
+  final String userId;
   final BuildContext parentContext;
   final Future<void> Function() onAccepted;
   final Future<void> Function() onDeclined;
@@ -23,11 +24,13 @@ class ReportCardWidget extends StatelessWidget {
       required this.parentContext,
       required this.onAccepted,
       required this.onDeclined,
-      required this.onPending});
+      required this.onPending,
+      required this.userId});
 
   // Decline Report
   void _declineReport(BuildContext context) async {
-    final result = await ReportService.declineReport(report.reportId);
+    final result = await ReportService.declineReport(
+        reportId: report.reportId, userId: userId);
     if (result) {
       onDeclined();
       onPending();
@@ -39,13 +42,26 @@ class ReportCardWidget extends StatelessWidget {
 
   // Accept Report
   void _acceptReport(BuildContext context) async {
-    final result = await ReportService.acceptReport(report.reportId);
+    final result = await ReportService.acceptReport(
+        reportId: report.reportId, userId: userId);
     if (result) {
       onAccepted();
       onPending();
       DialogHelper.showSuccessDialog(context, "Report Accepted successfully!");
     } else {
       DialogHelper.showErrorDialog(context, "Error in accepting report");
+    }
+  }
+
+  void _blockUnblockUser(BuildContext context, String action) async {
+    final result = await ReportService.blockUnblockUser(
+        userId: userId, action: action, reportedId: report.reportedId);
+    if (result) {
+      onAccepted();
+      onPending();
+      DialogHelper.showSuccessDialog(context, "User $action successfully!");
+    } else {
+      DialogHelper.showErrorDialog(context, "Error in $action user");
     }
   }
 
@@ -63,18 +79,10 @@ class ReportCardWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (title == 'Temporary Blocked Users')
+              if (title == 'Temporarily Blocked Users')
                 const Text(
                   'Unblock the user?',
                   style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-              if (title == 'Permanently Blocked Users')
-                Text(
-                  title.substring(0, title.length - 1),
-                  style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
@@ -88,17 +96,15 @@ class ReportCardWidget extends StatelessWidget {
                       color: Colors.white),
                 ),
               const SizedBox(height: 16),
-              const Align(
+              Align(
                 alignment: Alignment.topLeft,
-                child: Text('Reported 10 times',
+                child: Text('Reported ${report.counter} times',
                     style: TextStyle(color: Colors.white54)),
               ),
               const SizedBox(height: 5),
 
               //Users
-              if (title == 'Users' ||
-                  title == 'Permanently Blocked Users' ||
-                  title == 'Temporary Blocked Users')
+              if (title == 'Users' || title == 'Temporarily Blocked Users')
                 UserInfo(title: title, report: report),
 
               //Posts
@@ -140,7 +146,13 @@ class ReportCardWidget extends StatelessWidget {
                             backgroundColor: Colors.red,
                           ),
                           onPressed: () {
-                            _declineReport(parentContext);
+                            if (title == 'Users' ||
+                                title == 'Reviews' ||
+                                title == 'Posts') {
+                              _declineReport(parentContext);
+                            } else if (title == 'Temporarily Blocked Users') {
+                              _blockUnblockUser(parentContext, 'block');
+                            }
                             Navigator.of(context).pop();
                           },
                           child: const Text('Decline',
@@ -154,7 +166,13 @@ class ReportCardWidget extends StatelessWidget {
                             backgroundColor: Colors.green,
                           ),
                           onPressed: () {
-                            _acceptReport(parentContext);
+                            if (title == 'Users' ||
+                                title == 'Reviews' ||
+                                title == 'Posts') {
+                              _acceptReport(parentContext);
+                            } else if (title == 'Temporarily Blocked Users') {
+                              _blockUnblockUser(parentContext, 'unblock');
+                            }
                             Navigator.of(context).pop();
                           },
                           child: const Text('Accept',
@@ -175,11 +193,11 @@ class ReportCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     String image = '';
     if (title == 'Users') {
-      image = report.additionalUserInfo!.profilePicture;
+      image = report.profilePicture;
     } else if (title == 'Posts') {
-      image = report.additionalPostInfo!.gameCover;
+      image = report.gameCover!;
     } else if (title == 'Reviews') {
-      image = report.additionalReviewInfo!.gameCover;
+      image = report.gameCover!;
     }
     return InkWell(
       onTap: () {
@@ -230,14 +248,12 @@ class ReportCardWidget extends StatelessWidget {
               const SizedBox(height: 10),
 
               //Username in Users section
-              if (title == 'Users' ||
-                  title == 'Permanently Blocked Users' ||
-                  title == 'Temporary Blocked Users')
+              if (title == 'Users' || title == 'Temporarily Blocked Users')
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      report.additionalUserInfo!.username,
+                      report.username,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -256,22 +272,12 @@ class ReportCardWidget extends StatelessWidget {
                     CircleAvatar(
                       radius: 25,
                       backgroundColor: Colors.white,
-                      backgroundImage: (title == 'Posts'
-                                  ? report.additionalPostInfo!.profilePicture
-                                  : report
-                                      .additionalReviewInfo!.profilePicture) !=
-                              ''
+                      backgroundImage: report.profilePicture != ''
                           ? NetworkImage(
-                              title == 'Posts'
-                                  ? report.additionalPostInfo!.profilePicture
-                                  : report.additionalReviewInfo!.profilePicture,
+                              report.profilePicture,
                             )
                           : null,
-                      child: (title == 'Posts'
-                                  ? report.additionalPostInfo!.profilePicture
-                                  : report
-                                      .additionalReviewInfo!.profilePicture) ==
-                              ''
+                      child: report.profilePicture == ''
                           ? Icon(
                               Icons.person,
                               size: 24,
@@ -282,13 +288,16 @@ class ReportCardWidget extends StatelessWidget {
                     SizedBox(width: 10),
 
                     //Username
-                    Text(
-                      title == 'Posts'
-                          ? report.additionalPostInfo!.username
-                          : report.additionalReviewInfo!.username,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    Container(
+                      width: 100,
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
+                        report.username,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],

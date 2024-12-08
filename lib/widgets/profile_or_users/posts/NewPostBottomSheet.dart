@@ -102,7 +102,7 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
                   barrierDismissible: false,
                   builder: (BuildContext context) {
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(color: Colors.teal),
                     );
                   },
                 );

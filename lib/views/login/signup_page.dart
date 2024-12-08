@@ -229,7 +229,7 @@ class _SignupPageState extends State<SignupPage> {
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(currentIndex: 1), // Pass currentIndex here
+      bottomNavigationBar: CustomBottomNavBar(currentIndex: 2), // Pass currentIndex here
     );
   }
 

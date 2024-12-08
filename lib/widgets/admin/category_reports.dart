@@ -6,6 +6,7 @@ class ReportsCategory extends StatelessWidget {
   final String selectedStatus;
   final List<dynamic> reports;
   final BuildContext parentContext;
+  final String userId;
   final Future<void> Function() onAccepted;
   final Future<void> Function() onDeclined;
   final Future<void> Function() onPending;
@@ -19,6 +20,7 @@ class ReportsCategory extends StatelessWidget {
     required this.onAccepted,
     required this.onDeclined,
     required this.onPending,
+    required this.userId,
   });
 
   @override
@@ -65,12 +67,13 @@ class ReportsCategory extends StatelessWidget {
                   onAccepted: onAccepted,
                   onDeclined: onDeclined,
                   onPending: onPending,
+                  userId: userId,
                 ),
               );
             },
           ),
         ),
-        if (selectedStatus == 'Pending' || selectedStatus == 'Declined')
+        if (selectedStatus == 'Pending')
           const SizedBox(height: 10),
       ],
     );

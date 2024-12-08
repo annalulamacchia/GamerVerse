@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/models/review.dart';
+import 'package:gamerverse/models/user.dart';
 import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/services/specific_game/review_service.dart';
+import 'package:gamerverse/services/specific_game/status_game_service.dart';
+import 'package:gamerverse/services/specific_game/wishlist_service.dart';
 import 'package:gamerverse/utils/firebase_auth_helper.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
@@ -46,9 +49,15 @@ class SpecificGameState extends State<SpecificGame> {
   double userRating = 0;
   Review? latestReview;
   bool isLoadingReview = true;
+  bool isLoadingUsersByGame = true;
+  bool isLoadingUsersByStatus = true;
   ValueNotifier<double> averageUserReviewNotifier = ValueNotifier<double>(0);
   bool _isLoadingUserRating = false;
   bool _isLoadingLatestReview = false;
+  bool _isLoadingUsers = false;
+  bool _isLoadingStatusUsers = false;
+  List<User>? users;
+  List<User>? userStatus;
   ValueNotifier<Review> latestReviewNotifier = ValueNotifier<Review>(Review(
       reviewId: null,
       writerId: null,
@@ -101,19 +110,26 @@ class SpecificGameState extends State<SpecificGame> {
         gameData?['similar_games'].length != 0) {
       _loadCoverSimilarGames(gameData?['similar_games']);
     }
+
     if (gameData != null && gameData?['id'] != null) {
       averageUserReviewNotifier.addListener(_loadAverageUserRating);
       _loadAverageUserRating();
       latestReviewNotifier.addListener(_loadLatestReview);
       _loadLatestReview();
+      likedCountNotifier.addListener(_loadUsersByGame);
+      _loadUsersByGame();
+      playedCountNotifier.addListener(_loadUsersByStatusGame);
+      _loadUsersByStatusGame();
     }
   }
 
   @override
   void dispose() {
+    super.dispose();
     averageUserReviewNotifier.removeListener(_loadAverageUserRating);
     latestReviewNotifier.removeListener(_loadLatestReview);
-    super.dispose();
+    likedCountNotifier.removeListener(_loadUsersByGame);
+    playedCountNotifier.removeListener(_loadUsersByStatusGame);
   }
 
   //load the cover of the game
@@ -207,6 +223,56 @@ class SpecificGameState extends State<SpecificGame> {
     _isLoadingLatestReview = false;
   }
 
+  //load all the users that have that game in the wishlist
+  Future<void> _loadUsersByGame() async {
+    if (_isLoadingUsers) return;
+    _isLoadingUsers = true;
+
+    if (!mounted) {
+      _isLoadingUsers = false;
+      return;
+    }
+
+    final us = await WishlistService.getUsersByGame(
+        gameId: gameData!['id'].toString());
+    setState(() {
+      users = us;
+      if (us != null) {
+        likedCountNotifier.value = us.length;
+      } else {
+        likedCountNotifier.value = 0;
+      }
+      isLoadingUsersByGame = false;
+    });
+
+    _isLoadingUsers = false;
+  }
+
+  //load all the users that have that game in the wishlist
+  Future<void> _loadUsersByStatusGame() async {
+    if (_isLoadingStatusUsers) return;
+    _isLoadingStatusUsers = true;
+
+    if (!mounted) {
+      _isLoadingStatusUsers = false;
+      return;
+    }
+
+    final us = await StatusGameService.getUsersByStatusGame(
+        gameData!['id'].toString());
+    setState(() {
+      userStatus = us;
+      if (us != null) {
+        playedCountNotifier.value = us.length;
+      } else {
+        playedCountNotifier.value = 0;
+      }
+      isLoadingUsersByStatus = false;
+    });
+
+    _isLoadingStatusUsers = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final parentContext = context;
@@ -248,7 +314,8 @@ class SpecificGameState extends State<SpecificGame> {
           FavoriteButton(
               userId: userId,
               game: game,
-              likedCountNotifier: likedCountNotifier)
+              likedCountNotifier: likedCountNotifier,
+              onLoadWishlist: _loadUsersByGame)
         ],
       ),
       body: SingleChildScrollView(
@@ -350,8 +417,9 @@ class SpecificGameState extends State<SpecificGame> {
                     DateTime.now().millisecondsSinceEpoch)
               PlayCompleteButtons(
                   userId: userId,
-                  game: game,
-                  playedCountNotifier: playedCountNotifier),
+                  game: game!,
+                  playedCountNotifier: playedCountNotifier,
+                  onStatusChanged: _loadUsersByStatusGame),
             if ((gameData?['first_release_date'] != null &&
                     gameData?['first_release_date'] * 1000 >
                         DateTime.now().millisecondsSinceEpoch) ||
@@ -396,13 +464,15 @@ class SpecificGameState extends State<SpecificGame> {
 
                 //Liked List
                 LikedButtonToList(
-                    gameId: gameData!['id'].toString(),
-                    likedCountNotifier: likedCountNotifier),
+                  gameId: gameData!['id'].toString(),
+                  likedCountNotifier: likedCountNotifier,
+                  users: users,
+                ),
                 const SizedBox(width: 20),
 
                 //Played List
                 PlayedButtonToList(
-                    game: game!,
+                    game: game,
                     playedCountNotifier: playedCountNotifier,
                     releaseDate: gameData?['first_release_date'],
                     userId: userId),

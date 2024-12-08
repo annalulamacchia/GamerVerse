@@ -39,12 +39,14 @@ class _UserResultsState extends State<UserResults> {
       future: _userResults,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(color: Colors.teal));
         }
 
         if (snapshot.hasError) {
           return Center(
-            child: Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.red)),
+            child: Text('Error: ${snapshot.error}',
+                style: TextStyle(color: Colors.red)),
           );
         }
 
@@ -70,7 +72,8 @@ class _UserResultsState extends State<UserResults> {
               subtitle: Text(user['name']),
               onTap: () {
                 // Handle user selection (e.g., navigate to user profile page)
-                Navigator.pushNamed(context, '/userProfile', arguments: user['id']);
+                Navigator.pushNamed(context, '/userProfile',
+                    arguments: user['id']);
               },
             );
           },

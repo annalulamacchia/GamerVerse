@@ -46,7 +46,7 @@ class _VideoGameResultsState extends State<VideoGameResults> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
             ),
           );
         }

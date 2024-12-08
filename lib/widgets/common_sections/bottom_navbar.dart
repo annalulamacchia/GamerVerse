@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/services/report_service.dart';
+
 // to read token from local storage
 import 'package:gamerverse/utils/firebase_auth_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
+
   const CustomBottomNavBar({
     super.key,
     required this.currentIndex,
@@ -15,6 +19,8 @@ class CustomBottomNavBar extends StatefulWidget {
 
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   bool isLoggedIn = false;
+  bool isAdmin = false;
+  String userId = '';
 
   @override
   void initState() {
@@ -27,6 +33,17 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     setState(() {
       isLoggedIn = loggedIn; // Update the state with the result
     });
+    if (isLoggedIn) {
+      final prefs = await SharedPreferences.getInstance();
+      final String uid = prefs.getString('user_uid')!;
+      setState(() {
+        userId = uid;
+      });
+      final admin = await ReportService.isAdmin(userId: userId);
+      setState(() {
+        isAdmin = admin;
+      });
+    }
   }
 
   void _onItemTapped(BuildContext context, int index) {
@@ -49,33 +66,40 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         // Redirect to Login page if not logged in
         Navigator.pushReplacementNamed(context, '/login');
       }
-    } else if (index == 3) {
+    } else if (isAdmin && index == 3) {
       Navigator.pushReplacementNamed(context, '/admin');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.people),
-          label: 'Community',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
+    final items = <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        icon: Icon(Icons.people),
+        label: 'Community',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home),
+        label: 'Home',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.person),
+        label: 'Profile',
+      ),
+      if (isAdmin)
         BottomNavigationBarItem(
           icon: Icon(Icons.report),
           label: 'Reports',
         ),
-      ],
-      currentIndex: widget.currentIndex,
+    ];
+
+    final validIndex = widget.currentIndex < items.length
+        ? widget.currentIndex
+        : 2;
+
+    return BottomNavigationBar(
+      items: items,
+      currentIndex: validIndex,
       selectedItemColor: Colors.teal,
       unselectedItemColor: Colors.black38,
       onTap: (index) => _onItemTapped(context, index),

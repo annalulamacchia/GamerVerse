@@ -41,7 +41,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       return;
     }
 
-    final success = await CheckAnswerService.checkAnswer(email, selectedQuestion, answer);
+    final success =
+        await CheckAnswerService.checkAnswer(email, selectedQuestion, answer);
     setState(() {
       isLoading = false;
     });
@@ -62,7 +63,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Incorrect answer or email. Please try again.')),
+          const SnackBar(
+              content: Text('Incorrect answer or email. Please try again.')),
         );
       });
     }
@@ -73,7 +75,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     return Scaffold(
       backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        title: const Text('Reset Password', style: TextStyle(color: Colors.white)),
+        title:
+            const Text('Reset Password', style: TextStyle(color: Colors.white)),
         backgroundColor: AppColors.darkGreen,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -82,11 +85,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.videogame_asset, size: 60, color: AppColors.lightestGreen),
+            const Icon(Icons.videogame_asset,
+                size: 60, color: AppColors.lightestGreen),
             const SizedBox(height: 20),
             const Text(
               'Reset Password',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.lightestGreen),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.lightestGreen),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -96,7 +103,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none),
               ),
               style: const TextStyle(color: AppColors.lightestGreen),
             ),
@@ -106,7 +115,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               items: securityQuestions.map((String question) {
                 return DropdownMenuItem<String>(
                   value: question,
-                  child: Text(question, style: const TextStyle(color: AppColors.lightestGreen)),
+                  child: Text(question,
+                      style: const TextStyle(color: AppColors.lightestGreen)),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -119,7 +129,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none),
               ),
               dropdownColor: AppColors.veryDarkGreen,
             ),
@@ -131,25 +143,29 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 labelStyle: const TextStyle(color: AppColors.lightestGreen),
                 fillColor: AppColors.veryDarkGreen,
                 filled: true,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none),
               ),
               style: const TextStyle(color: AppColors.lightestGreen),
             ),
             const SizedBox(height: 20),
             isLoading
-                ? const CircularProgressIndicator()
+                ? const CircularProgressIndicator(color: Colors.teal)
                 : ElevatedButton(
-              onPressed: handleReset,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.mediumGreen,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              ),
-              child: const Text('Reset', style: TextStyle(color: AppColors.lightestGreen)),
-            ),
+                    onPressed: handleReset,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.mediumGreen,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 32, vertical: 12),
+                    ),
+                    child: const Text('Reset',
+                        style: TextStyle(color: AppColors.lightestGreen)),
+                  ),
           ],
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 1),
+      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 2),
     );
   }
 }
