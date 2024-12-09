@@ -19,16 +19,17 @@ class _CommunityPageState extends State<CommunityPage> {
   WishlistService wishlistService = WishlistService();
   List<GameProfile> wishlistGames = []; // Lista di giochi nella wishlist
   List<Post> Posts = [];
+  List<String> Usernames = [];
+  List<String> Games_Names = [];
+  List<String> Games_Covers = [];
   String? currentUser;
 
   // Metodo per recuperare la wishlist
-
   Future<void> _getUserWishlist() async {
     try {
       // Recupera l'ID utente da SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? userId =
-          prefs.getString('user_uid'); // Recupera l'ID dell'utente
+      final String? userId = prefs.getString('user_uid'); // Recupera l'ID dell'utente
 
       if (userId != null) {
         // Recupera la lista dei giochi dalla wishlist usando il servizio
@@ -49,10 +50,12 @@ class _CommunityPageState extends State<CommunityPage> {
     }
   }
 
+  // Metodo per recuperare tutti i post
   Future<void> _getPosts() async {
     try {
       // Chiama la funzione GetPosts dal servizio
       Map<String, dynamic> result = await PostService.GetPosts();
+      print(result);
 
       // Verifica se la risposta è positiva
       if (result["success"] == true) {
@@ -60,9 +63,23 @@ class _CommunityPageState extends State<CommunityPage> {
         List<Post> postsList = (result["posts"] as List)
             .map((postJson) => Post.fromJson(postJson))
             .toList();
+        List<String> UsernamesList = (result["usernames"] as List<dynamic>)
+            .map((username) => username as String? ?? "Deleted Account")
+            .toList();
+
+        List<String> Games_NamesList = (result["game_names"] as List<dynamic>)
+            .map((gameName) => gameName as String? ?? "Unknown Game")
+            .toList();
+
+        List<String> Games_CoversList = (result["game_covers"] as List<dynamic>)
+            .map((cover) => cover as String? ?? "")
+            .toList();
 
         setState(() {
-          Posts = postsList; // Salva i post mappati nella lista
+          Posts = postsList; // Aggiorna la lista di post
+          Usernames = UsernamesList; // Aggiorna gli username
+          Games_Names = Games_NamesList; // Aggiorna i nomi dei giochi
+          Games_Covers = Games_CoversList; // Aggiorna le copertine
         });
       } else {
         print("Failed to fetch posts: ${result["message"]}");
@@ -76,7 +93,7 @@ class _CommunityPageState extends State<CommunityPage> {
   void initState() {
     super.initState();
     _getUserWishlist();
-    _getPosts(); // Recupera la wishlist dell'utente al momento dell'inizializzazione
+    _getPosts(); // Recupera i post al momento dell'inizializzazione
   }
 
   @override
@@ -89,30 +106,35 @@ class _CommunityPageState extends State<CommunityPage> {
       ),
       body: Posts.isEmpty
           ? const Center(
-              child: CircularProgressIndicator(
-                  color: Colors
-                      .teal)) // Mostra un caricamento finché i post non sono disponibili
+        child: CircularProgressIndicator(),
+      ) // Mostra un caricamento finché i post non sono disponibili
           : ListView.builder(
-              itemCount: Posts.length, // Numero di post
-              itemBuilder: (context, index) {
-                final post = Posts[index];
-                return PostCard(
-                  postId: post.id,
-                  gameId: post.gameId,
-                  userId: post.writerId,
-                  content: post.description,
-                  imageUrl: '',
-                  timestamp: post.timestamp,
-                  likeCount: post.likes,
-                  commentCount: 5,
-                  onLikePressed: () {
-                    // Logica per il like
-                    print('Liked Post: ${post.id}');
-                  },
-                  currentUser: currentUser,
-                );
-              },
-            ),
+        itemCount: Posts.length, // Numero di post
+        itemBuilder: (context, index) {
+          final post = Posts[index];
+          final username = Usernames[index]; // Associazione per index
+          final gameName = Games_Names[index];
+          final cover = Games_Covers[index];
+          return PostCard(
+            postId: post.id,
+            gameId: post.gameId,
+            userId: post.writerId,
+            content: post.description,
+            imageUrl: cover, // Passa la copertina come immagine URL
+            timestamp: post.timestamp,
+            likeCount: post.likes,
+            commentCount: 5, // Aggiorna il conteggio commenti se necessario
+            onLikePressed: () {
+              // Logica per il like
+              print('Liked Post: ${post.id}');
+            },
+            currentUser: currentUser,
+            username: username, // Passa l'username
+            gameName: gameName, // Passa il nome del gioco
+            gameCover: cover, // Passa la cover del gioco
+          );
+        },
+      ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 0, // Seleziona 'Home' per questa pagina
       ),

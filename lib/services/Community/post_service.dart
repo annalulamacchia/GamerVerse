@@ -70,7 +70,7 @@ class PostService {
       if (response.statusCode == 200) {
         return json.decode(response.body); // Risposta corretta
       } else {
-        return {"success": false, "message": "Failed to create post"};
+        return {"success": false, "message": "Failed to visualize post"};
       }
     } catch (e) {
       // Gestione degli errori
