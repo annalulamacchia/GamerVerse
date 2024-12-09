@@ -44,9 +44,16 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
         List<dynamic> followers = userData!['data']['followers'] ?? [];
         List<dynamic> followed = userData!['data']['followed'] ?? [];
         print(followed);
-        // Aggiungiamo i conteggi al dizionario userData
-        userData!['data']['followers_count'] = followers.length;
-        userData!['data']['followed_count'] = followed.length;
+
+        // Calcola il numero di followers, escludendo utenti bloccati
+        userData!['data']['followers_count'] = followers.where((follower) {
+          return follower['isBlocked'] == false && follower['isFriend'];
+        }).length;
+
+        // Calcola il numero di utenti seguiti, escludendo utenti bloccati
+        userData!['data']['followed_count'] = followed.where((followedUser) {
+          return followedUser['isBlocked'] == false && followedUser['isFriend'];
+        }).length;
         print('Data: $userData');
       });
     } else {

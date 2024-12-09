@@ -7,9 +7,13 @@ import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 class ProfileReviews extends StatefulWidget {
   final String userId;
   final String? currentUser;
+  final ValueNotifier<bool>? blockedNotifier;
 
   const ProfileReviews(
-      {super.key, required this.userId, required this.currentUser});
+      {super.key,
+      required this.userId,
+      required this.currentUser,
+      this.blockedNotifier});
 
   @override
   State<ProfileReviews> createState() => _ProfileReviewsPageState();
@@ -38,47 +42,66 @@ class _ProfileReviewsPageState extends State<ProfileReviews> {
       backgroundColor: const Color(0xff051f20),
       body: Column(
         children: [
-          FutureBuilder<List<GameReview>?>(
-            future: _reviewsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: CircularProgressIndicator(color: Colors.teal));
-              }
-
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
-
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          ValueListenableBuilder<bool>(
+            valueListenable: widget.blockedNotifier!,
+            builder: (context, isBlocked, child) {
+              // If the user is blocked, show a NoDataList widget
+              if (isBlocked) {
                 return NoDataList(
                   textColor: Colors.grey[400],
                   icon: Icons.reviews_outlined,
-                  message: 'No reviews have been written yet.',
-                  subMessage: 'Start sharing thoughts about games you enjoy!',
+                  message: 'The User is Blocked!',
+                  subMessage: 'Please, unblock to see their reviews.',
                   color: Colors.grey[500]!,
                 );
               }
 
-              List<GameReview> reviews = snapshot.data!;
+              // If the user is not blocked, show the reviews list
+              return FutureBuilder<List<GameReview>?>(
+                // FutureBuilder for loading reviews
+                future: _reviewsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                        child: CircularProgressIndicator(color: Colors.teal));
+                  }
 
-              return Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: reviews.length,
-                  itemBuilder: (context, index) {
-                    GameReview review = reviews[index];
-                    return GameReviewCard(
-                      gameReview: review,
-                      gameContext: parentContext,
-                      onReviewRemoved: () {
-                        _loadReviews();
-                      },
-                      currentUser: widget.currentUser,
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return NoDataList(
+                      textColor: Colors.grey[400],
+                      icon: Icons.reviews_outlined,
+                      message: 'No reviews have been written yet.',
+                      subMessage:
+                          'Start sharing thoughts about games you enjoy!',
+                      color: Colors.grey[500]!,
                     );
-                  },
-                ),
+                  }
+
+                  List<GameReview> reviews = snapshot.data!;
+
+                  return Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: reviews.length,
+                      itemBuilder: (context, index) {
+                        GameReview review = reviews[index];
+                        return GameReviewCard(
+                          gameReview: review,
+                          gameContext: parentContext,
+                          onReviewRemoved: () {
+                            _loadReviews();
+                          },
+                          currentUser: widget.currentUser,
+                        );
+                      },
+                    ),
+                  );
+                },
               );
             },
           ),

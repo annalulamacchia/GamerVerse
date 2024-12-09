@@ -5,13 +5,23 @@ import 'package:gamerverse/models/game_profile.dart';
 class ProfileGames extends StatelessWidget {
   final String userId;
   final List<GameProfile> wishlist;
-  const ProfileGames({super.key, required this.userId,required this.wishlist});
+  final ValueNotifier<bool>? blockedNotifier;
+
+  const ProfileGames(
+      {super.key,
+      required this.userId,
+      required this.wishlist,
+      this.blockedNotifier});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
-      body: GameListSection(userId: userId,wishlist: wishlist),
+      body: GameListSection(
+        userId: userId,
+        wishlist: wishlist,
+        blockedNotifier: blockedNotifier,
+      ),
     );
   }
 }

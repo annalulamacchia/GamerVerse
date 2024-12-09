@@ -67,19 +67,19 @@ class _CommunityPageState extends State<CommunityPage> {
             .map((username) => username as String? ?? "Deleted Account")
             .toList();
 
-        List<String> Games_NamesList = (result["game_names"] as List<dynamic>)
+        List<String> gamesNameslist = (result["game_names"] as List<dynamic>)
             .map((gameName) => gameName as String? ?? "Unknown Game")
             .toList();
 
-        List<String> Games_CoversList = (result["game_covers"] as List<dynamic>)
+        List<String> gamesCoverslist = (result["game_covers"] as List<dynamic>)
             .map((cover) => cover as String? ?? "")
             .toList();
 
         setState(() {
           Posts = postsList; // Aggiorna la lista di post
           Usernames = UsernamesList; // Aggiorna gli username
-          Games_Names = Games_NamesList; // Aggiorna i nomi dei giochi
-          Games_Covers = Games_CoversList; // Aggiorna le copertine
+          Games_Names = gamesNameslist; // Aggiorna i nomi dei giochi
+          Games_Covers = gamesCoverslist; // Aggiorna le copertine
         });
       } else {
         print("Failed to fetch posts: ${result["message"]}");
