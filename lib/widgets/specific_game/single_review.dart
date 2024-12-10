@@ -236,17 +236,16 @@ class SingleReviewState extends State<SingleReview> {
                   widget.userId == widget.review?.writerId &&
                   widget.review?.reviewId != null)
                 IconButton(
-                  icon: HugeIcon(
-                    icon: HugeIcons.strokeRoundedDelete02,
+                  icon: const Icon(
+                    Icons.delete_outline,
                     color: Colors.black54,
-                    size: 20.0,
                   ),
                   onPressed: () => _showDeleteConfirmation(widget.gameContext,
                       widget.review?.reviewId, widget.review?.gameId),
                 ),
               if ((widget.userId != null && widget.review?.reviewId == null) ||
                   widget.userId == null)
-                Icon(Icons.more_vert, color: Colors.transparent, size: 37.5)
+                Icon(Icons.more_vert, color: Colors.transparent, size: 35)
             ],
           ),
         ),

@@ -201,6 +201,7 @@ class ReviewService {
         body: json.encode({'gameId': gameId}),
         headers: {'Content-Type': 'application/json'},
       );
+      print(response.body);
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);

@@ -115,6 +115,7 @@ class _CommunityPageState extends State<CommunityPage> {
           final username = Usernames[index]; // Associazione per index
           final gameName = Games_Names[index];
           final cover = Games_Covers[index];
+          print(post.id);
           return PostCard(
             postId: post.id,
             gameId: post.gameId,

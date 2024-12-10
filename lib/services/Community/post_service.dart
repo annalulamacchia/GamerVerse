@@ -1,23 +1,30 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:gamerverse/models/comment.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PostService {
-  static const String _baseUrl = "https://gamerversemobile.pythonanywhere.com"; // Usa l'URL del tuo backend
+  static const String _baseUrl =
+      "https://gamerversemobile.pythonanywhere.com"; // Usa l'URL del tuo backend
 
   // Funzione per creare un post
-  static Future<Map<String, dynamic>> sendPost(String description, String gameId) async {
+  static Future<Map<String, dynamic>> sendPost(
+      String description, String gameId) async {
     try {
-      final url = Uri.parse("$_baseUrl/create-post"); // La rotta per la creazione del post
+      final url = Uri.parse(
+          "$_baseUrl/create-post"); // La rotta per la creazione del post
       final prefs = await SharedPreferences.getInstance();
-      final String? userId = prefs.getString('user_uid'); // Ottieni l'ID utente salvato localmente (se disponibile)
+      final String? userId = prefs.getString(
+          'user_uid'); // Ottieni l'ID utente salvato localmente (se disponibile)
 
       if (userId == null) {
         return {"success": false, "message": "User not authenticated"};
       }
 
       // Ottieni il timestamp corrente dal client
-      String timestamp = DateTime.now().toIso8601String(); // Ottenere data/ora corrente in formato ISO 8601
+      String timestamp = DateTime.now()
+          .toIso8601String(); // Ottenere data/ora corrente in formato ISO 8601
 
       // Costruisci il corpo della richiesta
       final response = await http.post(
@@ -45,11 +52,14 @@ class PostService {
       return {"success": false, "message": e.toString()};
     }
   }
+
   static Future<Map<String, dynamic>> GetPosts() async {
     try {
-      final url = Uri.parse("$_baseUrl/get-posts"); // La rotta per la creazione del post
+      final url = Uri.parse(
+          "$_baseUrl/get-posts"); // La rotta per la creazione del post
       final prefs = await SharedPreferences.getInstance();
-      final String? userId = prefs.getString('user_uid'); // Ottieni l'ID utente salvato localmente (se disponibile)
+      final String? userId = prefs.getString(
+          'user_uid'); // Ottieni l'ID utente salvato localmente (se disponibile)
 
       if (userId == null) {
         return {"success": false, "message": "User not authenticated"};
@@ -77,7 +87,89 @@ class PostService {
       return {"success": false, "message": e.toString()};
     }
   }
+
+  static Future<bool> addComment(
+      {required String postId,
+      required String userId,
+      required String comment}) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/add_comment'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'postId': postId,
+          'userId': userId,
+          'comment': comment,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        if (kDebugMode) {
+          print('Comment added successfully');
+        }
+        return responseBody['success'] == true;
+      } else {
+        if (kDebugMode) {
+          print('Failed to add comment: ${response.reasonPhrase}');
+        }
+        return false;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+      return false;
+    }
+  }
+
+  static Future<List<Comment>> getComments(String postId) async {
+    final url = Uri.parse('$_baseUrl/get_comments');
+
+    final Map<String, dynamic> requestBody = {
+      'post_id': postId,
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+
+        if (responseBody['comments'] != null) {
+          List<Comment> comments = [];
+          for (var commentData in responseBody['comments']) {
+            comments.add(Comment.fromJson(commentData));
+          }
+
+          if (kDebugMode) {
+            print('Success in getting comments');
+          }
+
+          return comments;
+        } else {
+          if (kDebugMode) {
+            print('No comments found');
+          }
+          return [];
+        }
+      } else {
+        if (kDebugMode) {
+          print('Failed to load comments');
+        }
+        return [];
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error fetching comments: $e');
+      }
+      return [];
+    }
+  }
 }
-
-
-
