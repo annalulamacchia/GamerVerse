@@ -6,11 +6,13 @@ import 'package:hugeicons/hugeicons.dart';
 class GameListSection extends StatefulWidget {
   final String userId;
   final List<GameProfile> wishlist;
+  final ValueNotifier<bool>? blockedNotifier;
 
   const GameListSection({
     super.key,
     required this.userId,
     required this.wishlist,
+    this.blockedNotifier,
   });
 
   @override
@@ -29,7 +31,6 @@ class GameListSectionState extends State<GameListSection> {
   }
 
   // Load and filter wishlist into different categories
-
   @override
   Widget build(BuildContext context) {
     liked = widget.wishlist.where((game) => game.liked == true).toList();
@@ -38,28 +39,71 @@ class GameListSectionState extends State<GameListSection> {
     completed =
         widget.wishlist.where((game) => game.status == 'Completed').toList();
 
-    return isLoading
-        ? const Center(child: CircularProgressIndicator(color: Colors.teal))
-        : ListView(
-            children: [
-              if (liked.isEmpty && playing.isEmpty && completed.isEmpty)
-                NoDataList(
+    return widget.blockedNotifier != null
+        ? ValueListenableBuilder<bool>(
+            valueListenable: widget.blockedNotifier!,
+            builder: (context, isBlocked, child) {
+              // If the user is blocked, show NoDataList
+              if (isBlocked) {
+                return NoDataList(
                   textColor: Colors.white,
                   icon: HugeIcons.strokeRoundedAircraftGame,
-                  message: 'No games added yet',
-                  subMessage:
-                      'Start adding games to your list to keep track of your progress.',
+                  message: 'The user is blocked!',
+                  subMessage: 'Please unblock to view the game list.',
                   color: Colors.grey[500]!,
-                ),
-              if (liked.isNotEmpty)
-                _buildGameSection(context, 'Wishlist', liked),
-              if (playing.isNotEmpty)
-                _buildGameSection(context, 'Playing', playing),
-              if (completed.isNotEmpty)
-                _buildGameSection(context, 'Completed', completed),
-              const SizedBox(height: 20),
-            ],
-          );
+                );
+              }
+
+              // If not blocked, display the game list
+              return isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Colors.teal))
+                  : ListView(
+                      children: [
+                        if (liked.isEmpty &&
+                            playing.isEmpty &&
+                            completed.isEmpty)
+                          NoDataList(
+                            textColor: Colors.white,
+                            icon: HugeIcons.strokeRoundedAircraftGame,
+                            message: 'No games added yet',
+                            subMessage:
+                                'Start adding games to your list to keep track of your progress.',
+                            color: Colors.grey[500]!,
+                          ),
+                        if (liked.isNotEmpty)
+                          _buildGameSection(context, 'Wishlist', liked),
+                        if (playing.isNotEmpty)
+                          _buildGameSection(context, 'Playing', playing),
+                        if (completed.isNotEmpty)
+                          _buildGameSection(context, 'Completed', completed),
+                        const SizedBox(height: 20),
+                      ],
+                    );
+            },
+          )
+        : isLoading
+            ? const Center(child: CircularProgressIndicator(color: Colors.teal))
+            : ListView(
+                children: [
+                  if (liked.isEmpty && playing.isEmpty && completed.isEmpty)
+                    NoDataList(
+                      textColor: Colors.white,
+                      icon: HugeIcons.strokeRoundedAircraftGame,
+                      message: 'No games added yet',
+                      subMessage:
+                          'Start adding games to your list to keep track of your progress.',
+                      color: Colors.grey[500]!,
+                    ),
+                  if (liked.isNotEmpty)
+                    _buildGameSection(context, 'Wishlist', liked),
+                  if (playing.isNotEmpty)
+                    _buildGameSection(context, 'Playing', playing),
+                  if (completed.isNotEmpty)
+                    _buildGameSection(context, 'Completed', completed),
+                  const SizedBox(height: 20),
+                ],
+              );
   }
 
   Widget _buildGameSection(

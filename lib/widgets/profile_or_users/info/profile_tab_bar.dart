@@ -11,15 +11,16 @@ class TabBarSection extends StatefulWidget {
   final int selected;
   final String? userId;
   final List<GameProfile> wishlist;
+  final ValueNotifier<bool>? blockedNotifier;
 
-  const TabBarSection({
-    super.key,
-    required this.mode,
-    required this.selected,
-    this.userId,
-    required this.currentUser,
-    required this.wishlist
-  });
+  const TabBarSection(
+      {super.key,
+      required this.mode,
+      required this.selected,
+      this.userId,
+      required this.currentUser,
+      required this.wishlist,
+      this.blockedNotifier});
 
   @override
   TabBarSectionState createState() => TabBarSectionState();
@@ -88,11 +89,15 @@ class TabBarSectionState extends State<TabBarSection> {
   }
 
   Widget _buildTabContent() {
-    if (_currentTabIndex == 0) {
+    if (_currentTabIndex == 0 && widget.mode == 0) {
       return _buildProfileGamesWidget();
+    } else if (_currentTabIndex == 0 && widget.mode == 1) {
+      return _buildUserGamesWidget();
     }
-    if (_currentTabIndex == 1) {
+    if (_currentTabIndex == 1 && widget.mode == 0) {
       return _buildProfileReviewsWidget();
+    } else if (_currentTabIndex == 1 && widget.mode == 1) {
+      return _buildUserReviewsWidget();
     }
     if (widget.mode == 0 && _currentTabIndex == 2) {
       return _buildProfilePostsWidget();
@@ -139,11 +144,33 @@ class TabBarSectionState extends State<TabBarSection> {
   }
 
   // Widget per il profilo dell'utente (mode == 0)
+  Widget _buildUserGamesWidget() {
+    if (widget.userId == null) {
+      return const Center(child: Text('User not found'));
+    }
+    return ProfileGames(
+      userId: widget.userId!,
+      wishlist: widget.wishlist,
+      blockedNotifier: widget.blockedNotifier,
+    );
+  }
+
   Widget _buildProfileGamesWidget() {
     if (widget.userId == null) {
       return const Center(child: Text('User not found'));
     }
-    return ProfileGames(userId: widget.userId!,wishlist:widget.wishlist);
+    return ProfileGames(userId: widget.userId!, wishlist: widget.wishlist);
+  }
+
+  Widget _buildUserReviewsWidget() {
+    if (widget.userId == null) {
+      return const Center(child: Text('User not found'));
+    }
+    return ProfileReviews(
+      userId: widget.userId!,
+      currentUser: widget.currentUser,
+      blockedNotifier: widget.blockedNotifier,
+    );
   }
 
   Widget _buildProfileReviewsWidget() {
@@ -151,9 +178,7 @@ class TabBarSectionState extends State<TabBarSection> {
       return const Center(child: Text('User not found'));
     }
     return ProfileReviews(
-      userId: widget.userId!,
-      currentUser: widget.currentUser,
-    );
+        userId: widget.userId!, currentUser: widget.currentUser);
   }
 
   Widget _buildProfilePostsWidget() {

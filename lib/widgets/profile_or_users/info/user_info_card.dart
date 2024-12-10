@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/user/Get_user_info.dart';
 import 'package:gamerverse/services/Friends/friend_service.dart';
+import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInfoCard extends StatefulWidget {
   final String userId;
   final int games_counter;
+  final ValueNotifier<bool>? blockedNotifier;
+  final ValueNotifier<bool>? isFollowedNotifier;
+  final ValueNotifier<int>? followersNotifier;
+  final String? currentUser;
 
   const UserInfoCard(
-      {super.key, required this.userId, required this.games_counter});
+      {super.key,
+      required this.userId,
+      required this.games_counter,
+      this.blockedNotifier,
+      this.isFollowedNotifier,
+      this.followersNotifier,
+      this.currentUser});
 
   @override
   State<UserInfoCard> createState() => _UserInfoCardState();
@@ -18,8 +29,8 @@ class _UserInfoCardState extends State<UserInfoCard> {
   Map<String, dynamic>? userData;
   bool isLoading = true;
   String errorMessage = '';
-  bool isFollowing = false;
-  bool isButtonDisabled = false; // Per gestire il pulsante
+  bool isButtonDisabled = false;
+  String? loggedInUserId;
 
   @override
   void initState() {
@@ -38,13 +49,37 @@ class _UserInfoCardState extends State<UserInfoCard> {
           userData = response['data'];
           isLoading = false;
 
-          final String? loggedInUserId = prefs.getString('user_uid');
+          loggedInUserId = prefs.getString('user_uid');
           List<dynamic> followers = userData!['followers'] ?? [];
           List<dynamic> followed = userData!['followed'] ?? [];
 
-          userData!['followers_count'] = followers.length;
-          userData!['followed_count'] = followed.length;
-          isFollowing = followers.contains(loggedInUserId);
+          // Calcola il numero di followers, escludendo utenti bloccati
+          userData!['followers_count'] = followers.where((follower) {
+            return follower['isBlocked'] == false && follower['isFriend'];
+          }).length;
+          if (widget.followersNotifier != null) {
+            widget.followersNotifier!.value = followers.where((follower) {
+              return follower['isBlocked'] == false && follower['isFriend'];
+            }).length;
+          }
+
+          // Calcola il numero di utenti seguiti, escludendo utenti bloccati
+          userData!['followed_count'] = followed.where((followedUser) {
+            return followedUser['isBlocked'] == false &&
+                followedUser['isFriend'];
+          }).length;
+
+          // Verifica se l'utente loggato è seguito e non bloccato
+          widget.isFollowedNotifier!.value = followers.any((follower) {
+            return follower['id'] == loggedInUserId &&
+                follower['isBlocked'] == false &&
+                follower['isFriend'];
+          });
+
+          widget.blockedNotifier!.value = followers.any((follower) {
+            return follower['id'] == loggedInUserId &&
+                (follower['isBlocked'] ?? false);
+          });
         });
       } else {
         setState(() {
@@ -66,13 +101,14 @@ class _UserInfoCardState extends State<UserInfoCard> {
     });
 
     try {
-      if (isFollowing) {
+      if (widget.isFollowedNotifier!.value) {
         // Chiama il servizio per rimuovere un amico
         final response =
             await FriendService.removeFriend(userId: widget.userId);
         if (response['success']) {
           userData!['followers_count'] = userData!['followers_count'] - 1;
           print('Friend removed successfully');
+          widget.followersNotifier!.value--;
         } else {
           print('Failed to remove friend: ${response['message']}');
           throw Exception(response['message']);
@@ -82,6 +118,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
         final response = await FriendService.addFriend(userId: widget.userId);
         if (response['success']) {
           userData!['followers_count'] = userData!['followers_count'] + 1;
+          widget.followersNotifier!.value++;
           print('Friend added successfully');
         } else {
           print('Failed to add friend: ${response['message']}');
@@ -90,7 +127,8 @@ class _UserInfoCardState extends State<UserInfoCard> {
       }
 
       setState(() {
-        isFollowing = !isFollowing; // Aggiorna lo stato
+        widget.isFollowedNotifier!.value =
+            !widget.isFollowedNotifier!.value; // Aggiorna lo stato
       });
     } catch (e) {
       print('Error toggling follow state: $e');
@@ -104,8 +142,27 @@ class _UserInfoCardState extends State<UserInfoCard> {
     }
   }
 
+  Future<void> unblockUser(BuildContext context) async {
+    final result = await FriendService.blockUnblockUser(
+        userId: loggedInUserId!, blockedId: widget.userId, action: 'unblock');
+    if (result) {
+      setState(() {
+        widget.blockedNotifier!.value =
+            !widget.blockedNotifier!.value; // Aggiorna lo stato
+      });
+
+      Navigator.pop;
+      DialogHelper.showSuccessDialog(
+          context, "The User was unblocked successfully!");
+    } else {
+      DialogHelper.showErrorDialog(context,
+          "There was an error for blocking the user. Please, try again!");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    BuildContext parentContext = context;
     if (isLoading) {
       return const Center(child: CircularProgressIndicator(color: Colors.teal));
     }
@@ -142,24 +199,65 @@ class _UserInfoCardState extends State<UserInfoCard> {
                 _buildStatColumn((widget.games_counter).toString(), 'Games'),
                 _buildStatColumn(
                     userData!['followed_count']?.toString() ?? '0', 'Followed'),
-                _buildStatColumn(
-                    userData!['followers_count']?.toString() ?? '0',
-                    'Followers'),
+                // Usa ValueListenableBuilder se followersNotifier è disponibile
+                if (widget.followersNotifier != null)
+                  ValueListenableBuilder<int>(
+                    valueListenable: widget.followersNotifier!,
+                    builder: (context, followersCount, child) {
+                      return _buildStatColumn(
+                          followersCount.toString(), 'Followers');
+                    },
+                  ),
+
+                // Se followersNotifier è null, usa il valore da userData
+                if (widget.followersNotifier == null)
+                  _buildStatColumn(
+                      userData!['followers_count']?.toString() ?? '0',
+                      'Followers'),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildName(userData!['name'], userData!['surname']),
-                ElevatedButton(
-                  onPressed: isButtonDisabled ? null : toggleFollow,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isFollowing ? Colors.red : Colors.green,
-                  ),
-                  child: Text(
-                    isFollowing ? 'Unfollow' : 'Follow',
-                    style: const TextStyle(color: Colors.white),
-                  ),
+                ValueListenableBuilder<bool>(
+                  valueListenable: widget.blockedNotifier!,
+                  builder: (context, isBlocked, child) {
+                    if (widget.currentUser != null) {
+                      return ElevatedButton(
+                        onPressed: isButtonDisabled
+                            ? null
+                            : () {
+                                if (widget.blockedNotifier!.value) {
+                                  unblockUser(
+                                      parentContext); // Funzione per sbloccare l'utente
+                                } else {
+                                  toggleFollow(); // Funzione per seguire/smettere di seguire
+                                }
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isBlocked
+                              ? Colors
+                                  .orange // Colore per il pulsante "Unblock"
+                              : (widget.isFollowedNotifier!.value
+                                  ? Colors.red
+                                  : Colors.green),
+                        ),
+                        child: Text(
+                          isBlocked
+                              ? 'Unblock User'
+                              : (widget.isFollowedNotifier!.value
+                                  ? 'Unfollow'
+                                  : 'Follow'),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      );
+                    } else {
+                      return SizedBox(
+                        height: 30,
+                      );
+                    }
+                  },
                 ),
               ],
             ),

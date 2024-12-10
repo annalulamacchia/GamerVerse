@@ -20,7 +20,7 @@ class Post {
   // Factory per creare un'istanza da una mappa JSON
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
-      id: json['id'] ?? '',
+      id: json['post_id'] ?? '',
       writerId: json['writer_id'] ?? '',
       gameId: json['game_id'] ?? '',
       description: json['description'] ?? '',

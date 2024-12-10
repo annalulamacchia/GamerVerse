@@ -69,7 +69,16 @@ class RouteGenerator {
       case '/signup':
         return MaterialPageRoute(builder: (context) => const SignupPage());
       case '/comments':
-        return MaterialPageRoute(builder: (context) => CommentsPage());
+        if (args is Map<String, dynamic> &&
+            args.containsKey('postId') &&
+            args.containsKey('currentUser')) {
+          return MaterialPageRoute(
+              builder: (context) => CommentsPage(
+                    postId: args['postId'],
+                    currentUser: args['currentUser'],
+                  ));
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case '/suggestedUsers':
         return MaterialPageRoute(
             builder: (context) => const AdvisedUsersPage());

@@ -93,7 +93,7 @@ class PostInfoReportState extends State<PostInfoReport> {
                           Navigator.pushNamed(
                             context,
                             '/game',
-                            arguments: additionalPostInfo.gameId,
+                            arguments: int.parse(additionalPostInfo.gameId),
                           );
                         },
                         child: Text(
@@ -121,11 +121,9 @@ class PostInfoReportState extends State<PostInfoReport> {
                               width: 175,
                               alignment: Alignment.bottomLeft,
                               child: Text(
-                              'Author: ${widget.report.username}',
+                                'Author: ${widget.report.username}',
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
+                                    fontSize: 16, color: Colors.white),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),

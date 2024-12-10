@@ -84,19 +84,38 @@ class PostCardState extends State<PostCard> {
                               Navigator.pushNamed(context, '/game',
                                   arguments: int.parse(widget.gameId));
                             },
-                            child: Text(
-                              widget.gameName,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                            child: Container(
+                              width: 250,
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                widget.gameName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ),
-                          Text(
-                            "Author: ${widget.username}",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
+                          GestureDetector(
+                            onTap: () {
+                              if (widget.userId == widget.currentUser) {
+                                Navigator.pushNamed(context, '/profile',
+                                    arguments: widget.userId);
+                              } else {
+                                Navigator.pushNamed(context, '/userProfile',
+                                    arguments: widget.userId);
+                              }
+                            },
+                            child: Container(
+                              width: 250,
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                "Author: ${widget.username}",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -153,8 +172,21 @@ class PostCardState extends State<PostCard> {
                         ),
                         const SizedBox(width: 20),
                         IconButton(
-                          icon: Icon(Icons.comment, color: Colors.grey[700]),
-                          onPressed: null,
+                          icon: Icon(
+                            Icons.comment_outlined,
+                            color: Colors.grey[700],
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/comments',
+                              arguments: {
+                                'postId': widget.postId,
+                                'currentUser': widget.currentUser
+                              },
+                            );
+                          },
                         ),
                         Text(
                           "${widget.commentCount}",

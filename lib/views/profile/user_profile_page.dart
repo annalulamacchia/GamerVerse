@@ -23,6 +23,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   List<GameProfile> wishlist = []; // Lista dei giochi nella wishlist
   int gamesCounter = 0; // Contatore dei giochi
   bool isLoading = true;
+  ValueNotifier<bool> blockedNotifier = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isFollowedNotifier = ValueNotifier<bool>(false);
+  ValueNotifier<int> followersNotifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -74,10 +77,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 return Text('Error: ${snapshot.error}');
               } else if (snapshot.hasData) {
                 // Passa lo userId e currentUser quando i dati sono disponibili
-                return ReportBlockMenu(
+                if (currentUser != null) {
+                  return ReportBlockMenu(
                     userId: currentUser,
                     reportedId: snapshot.data!,
-                    parentContext: parentContext);
+                    parentContext: parentContext,
+                    blockedNotifier: blockedNotifier,
+                    isFollowedNotifier: isFollowedNotifier,
+                    followersNotifier: followersNotifier,
+                  );
+                }
+                return Container();
               } else {
                 return const SizedBox
                     .shrink(); // Placeholder nel caso di dati non disponibili
@@ -106,9 +116,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: UserInfoCard(
-                    userId: userId,
-                    games_counter: gamesCounter, // Passaggio del contatore
-                  ),
+                      userId: userId,
+                      games_counter: gamesCounter,
+                      blockedNotifier: blockedNotifier,
+                      isFollowedNotifier: isFollowedNotifier,
+                      followersNotifier: followersNotifier,
+                      currentUser: currentUser // Passaggio del contatore
+                      ),
                 ),
                 const SizedBox(height: 10),
                 // Tab Bar con contenuti
@@ -128,6 +142,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       userId: userId,
                       currentUser: currentUser,
                       wishlist: wishlist,
+                      blockedNotifier: blockedNotifier,
                     ),
                   ),
                 ),

@@ -24,6 +24,7 @@ class ReportMenu extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
+        print(reportedId);
         return ReportWidget(
             type: type, reportedId: reportedId, reporterId: userId);
       },

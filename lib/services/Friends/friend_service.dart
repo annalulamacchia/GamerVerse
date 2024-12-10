@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -6,7 +7,8 @@ class FriendService {
   static const String _baseUrl = "https://gamerversemobile.pythonanywhere.com";
 
   /// Aggiunge un amico dato il suo userId.
-  static Future<Map<String, dynamic>> addFriend({required String userId}) async {
+  static Future<Map<String, dynamic>> addFriend(
+      {required String userId}) async {
     try {
       // Recupera il token di autenticazione
       final prefs = await SharedPreferences.getInstance();
@@ -22,7 +24,7 @@ class FriendService {
 
       // Costruisci l'URL per la richiesta
       final url = Uri.parse("$_baseUrl/add-friend");
-      final body = jsonEncode({'friendId': userId,'userId':UID});
+      final body = jsonEncode({'friendId': userId, 'userId': UID});
 
       // Effettua la richiesta POST
       final response = await http.post(
@@ -60,7 +62,8 @@ class FriendService {
     }
   }
 
-  static Future<Map<String, dynamic>> removeFriend({required String userId}) async {
+  static Future<Map<String, dynamic>> removeFriend(
+      {required String userId}) async {
     try {
       // Recupera il token di autenticazione
       final prefs = await SharedPreferences.getInstance();
@@ -114,5 +117,43 @@ class FriendService {
     }
   }
 
+  static Future<bool> blockUnblockUser({
+    required String userId,
+    required String blockedId,
+    required String action,
+  }) async {
+    final url = Uri.parse('$_baseUrl/block_unblock_friend');
 
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'userId': userId,
+          'blockedId': blockedId,
+          'action': action,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print('Success to perform $action');
+        }
+        return true;
+      } else {
+        if (kDebugMode) {
+          print(
+              'Failed to perform $action. Status code: ${response.statusCode}');
+        }
+        return false;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error: $e");
+      }
+      return false;
+    }
+  }
 }
