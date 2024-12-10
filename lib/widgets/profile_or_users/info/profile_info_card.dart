@@ -15,7 +15,6 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
   Map<String, dynamic>? userData;
   bool isLoading = true;
   String errorMessage = '';
-  String debugMessage = ''; // A new variable to hold debug information
 
   @override
   void initState() {
@@ -23,44 +22,27 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
     fetchUserData();
   }
 
-  // Recupera l'userId da SharedPreferences e quindi chiama il servizio
   Future<void> fetchUserData() async {
-    // Add debug information
-    setState(() {});
-
-    // Chiamata al servizio per ottenere i dati utente
     final response = await UserProfileService.getUserByUid();
-
-    // Log the response from the service
-    setState(() {
-      debugMessage +=
-          '\nResponse: ${response['message']}'; // Add response message to debug info
-    });
-
     if (response['success']) {
       setState(() {
         userData = response;
         isLoading = false;
+
         List<dynamic> followers = userData!['data']['followers'] ?? [];
         List<dynamic> followed = userData!['data']['followed'] ?? [];
-        print(followed);
-
-        // Calcola il numero di followers, escludendo utenti bloccati
         userData!['data']['followers_count'] = followers.where((follower) {
           return follower['isBlocked'] == false && follower['isFriend'];
         }).length;
 
-        // Calcola il numero di utenti seguiti, escludendo utenti bloccati
         userData!['data']['followed_count'] = followed.where((followedUser) {
           return followedUser['isBlocked'] == false && followedUser['isFriend'];
         }).length;
-        print('Data: $userData');
       });
     } else {
       setState(() {
         errorMessage = response['message'];
         isLoading = false;
-        print('error: $errorMessage');
       });
     }
   }
@@ -80,111 +62,137 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(5.0),
-      child: Column(
-        children: [
-          // The existing Profile Card UI
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 13),
-            decoration: BoxDecoration(
-              color: const Color(0xff8eb69b),
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildAvatar(userData!['data']!['profile_picture']),
-                    _buildStatColumn(
-                        (widget.games_counter).toString(), 'Games'),
-                    _buildClickableStatColumn(
-                        context,
-                        userData!['data']['followed_count']?.toString() ?? '0',
-                        'Followed',
-                        const FollowersPage()),
-                    _buildClickableStatColumn(
-                        context,
-                        userData!['data']['followers_count']?.toString() ?? '0',
-                        'Followers',
-                        const FollowersPage()),
-                  ],
-                ),
-                _buildName(
-                    userData!['data']!['name'], userData!['data']!['surname']),
-                // userData!['surname']
-              ],
-            ),
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xff163832), Color(0xff3e6259)], // Gradiente della card precedente
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-
-          // Add a space between the profile info and debug messages
-          const SizedBox(height: 20),
-
-          // Debug messages section
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAvatar(String? profilePictureUrl) {
-    return Container(
-      margin: const EdgeInsets.only(top: 0.0, bottom: 0.0),
-      width: 80,
-      height: 80,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.grey.shade300,
-        image: profilePictureUrl != null
-            ? DecorationImage(
-                image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
-            : null,
-      ),
-      child:
-          profilePictureUrl == null ? const Icon(Icons.person, size: 40) : null,
-    );
-  }
-
-  Widget _buildStatColumn(String? count, String label) {
-    return Column(
-      children: [
-        Text(
-          count ?? '0', // Usa '0' se count è null
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          borderRadius: BorderRadius.circular(20.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
-        const SizedBox(height: 4),
-        Text(label, style: const TextStyle(fontSize: 14)),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildAvatarWithName(
+                  userData!['data']!['profile_picture'],
+                  userData!['data']!['name'],
+                  userData!['data']!['surname'],
+                ),
+                const SizedBox(width: 16), // Spazio tra l'immagine e le statistiche
+                Expanded(
+                  child: Column(
+                    children: [
+                      // Righe per le statistiche (Games, Followed, Followers)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildStatColumn(
+                            context,
+                            (widget.games_counter).toString(),
+                            'Games   ',
+                            Icons.videogame_asset,
+                          ),
+                          _buildClickableStatColumn(
+                            context,
+                            userData!['data']['followed_count']?.toString() ?? '0',
+                            'Followed ',
+                            Icons.person_search,
+                            const FollowersPage(),
+                          ),
+                          _buildClickableStatColumn(
+                            context,
+                            userData!['data']['followers_count']?.toString() ?? '0',
+                            'Followers',
+                            Icons.group,
+                            const FollowersPage(),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12), // Distanza tra le statistiche e il nome
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAvatarWithName(String? profilePictureUrl, String name, String surname) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center, // Centra l'immagine e il testo
+      crossAxisAlignment: CrossAxisAlignment.center, // Allinea al centro
+      children: [
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 3),
+            image: profilePictureUrl != null
+                ? DecorationImage(
+                image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
+                : null,
+          ),
+          child: profilePictureUrl == null
+              ? const Icon(Icons.person, size: 40, color: Colors.white)
+              : null,
+        ),
+        const SizedBox(height: 16),  // Spazio tra immagine e testo
+        Text(
+          '$name $surname',
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildClickableStatColumn(
-      BuildContext context, String? count, String label, Widget page) {
+  Widget _buildStatColumn(BuildContext context, String count, String label, IconData icon) {
+    return Column(
+      children: [
+        Icon(icon, color: Colors.white, size: 28),
+        const SizedBox(height: 6),
+        Text(
+          count,
+          style: const TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 14, color: Colors.white70),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildClickableStatColumn(BuildContext context, String count,
+      String label, IconData icon, Widget page) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => page));
       },
-      child: _buildStatColumn(count, label),
-    );
-  }
-
-  Widget _buildName(String name, String surname) {
-    return Container(
-      margin: const EdgeInsets.only(top: 10, left: 25.0, right: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('$name $surname',
-              style:
-                  const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
-        ],
-      ),
+      child: _buildStatColumn(context, count, label, icon),
     );
   }
 }
+
