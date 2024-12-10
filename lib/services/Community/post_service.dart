@@ -45,22 +45,28 @@ class PostService {
       return {"success": false, "message": e.toString()};
     }
   }
-  static Future<Map<String, dynamic>> GetPosts() async {
-    try {
-      final url = Uri.parse("$_baseUrl/get-posts"); // La rotta per la creazione del post
-      final prefs = await SharedPreferences.getInstance();
-      final String? userId = prefs.getString('user_uid'); // Ottieni l'ID utente salvato localmente (se disponibile)
 
-      if (userId == null) {
+  // Funzione per recuperare i post con ID facoltativo
+  static Future<Map<String, dynamic>> GetPosts(bool isCommunity, [String? inputUserId]) async {
+    try {
+      final url = Uri.parse("$_baseUrl/get-posts"); // La rotta per ottenere i post
+      final prefs = await SharedPreferences.getInstance();
+      final String? loggedInUserId = prefs.getString('user_uid'); // Ottieni l'ID utente salvato localmente
+
+      if (loggedInUserId == null && inputUserId == null) {
         return {"success": false, "message": "User not authenticated"};
       }
+
+      // Determina quale ID utente utilizzare
+      final userIdToUse = inputUserId ?? loggedInUserId;
 
       // Costruisci il corpo della richiesta
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
         body: json.encode({
-          "user_id": userId, // L'ID dell'utente
+          "user_id": userIdToUse, // Usa l'ID specificato o quello loggato
+          "isCommunity": isCommunity,
         }),
       );
 
@@ -78,6 +84,3 @@ class PostService {
     }
   }
 }
-
-
-

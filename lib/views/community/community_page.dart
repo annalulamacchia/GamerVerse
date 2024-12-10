@@ -54,7 +54,7 @@ class _CommunityPageState extends State<CommunityPage> {
   Future<void> _getPosts() async {
     try {
       // Chiama la funzione GetPosts dal servizio
-      Map<String, dynamic> result = await PostService.GetPosts();
+      Map<String, dynamic> result = await PostService.GetPosts(true);
       print(result);
 
       // Verifica se la risposta è positiva
