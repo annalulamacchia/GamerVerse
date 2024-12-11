@@ -30,6 +30,7 @@ class AdditionalPostInfo {
   final int numberLikes;
   final int numberComments;
   final String timestamp;
+  final String father;
 
   AdditionalPostInfo(
       {required this.description,
@@ -38,7 +39,8 @@ class AdditionalPostInfo {
       required this.gameName,
       required this.numberLikes,
       required this.numberComments,
-      required this.timestamp});
+      required this.timestamp,
+      required this.father});
 
   // Factory method per creare AdditionalInfo dal JSON
   factory AdditionalPostInfo.fromJson(Map<String, dynamic> json) {
@@ -49,7 +51,8 @@ class AdditionalPostInfo {
         gameName: json['game_name'],
         numberLikes: json['likes'],
         numberComments: json['comments'],
-        timestamp: json['timestamp']);
+        timestamp: json['timestamp'],
+        father: json['father']);
   }
 }
 

@@ -54,11 +54,14 @@ class PostService {
   }
 
   // Funzione per recuperare i post con ID facoltativo
-  static Future<Map<String, dynamic>> GetPosts(bool isCommunity, [String? inputUserId]) async {
+  static Future<Map<String, dynamic>> GetPosts(bool isCommunity,
+      [String? inputUserId]) async {
     try {
-      final url = Uri.parse("$_baseUrl/get-posts"); // La rotta per ottenere i post
+      final url =
+          Uri.parse("$_baseUrl/get-posts"); // La rotta per ottenere i post
       final prefs = await SharedPreferences.getInstance();
-      final String? loggedInUserId = prefs.getString('user_uid'); // Ottieni l'ID utente salvato localmente
+      final String? loggedInUserId =
+          prefs.getString('user_uid'); // Ottieni l'ID utente salvato localmente
 
       if (loggedInUserId == null && inputUserId == null) {
         return {"success": false, "message": "User not authenticated"};
@@ -76,8 +79,6 @@ class PostService {
           "isCommunity": isCommunity,
         }),
       );
-
-      print(response.body);
 
       // Gestione della risposta del server
       if (response.statusCode == 200) {
@@ -173,6 +174,34 @@ class PostService {
         print('Error fetching comments: $e');
       }
       return [];
+    }
+  }
+
+  static Future<bool> removeComment({required String commentId}) async {
+    final url = Uri.parse('$_baseUrl/delete_comment');
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'commentId': commentId}),
+      );
+
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print('Success in deleting the comment');
+        }
+        return true;
+      } else {
+        if (kDebugMode) {
+          print('Failed in deleting the comment');
+        }
+        return false;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('An error occurred: $e');
+      }
+      return false;
     }
   }
 }

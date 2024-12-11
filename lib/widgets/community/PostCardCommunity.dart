@@ -47,7 +47,7 @@ class PostCardState extends State<PostCard> {
       children: [
         Card(
           color: const Color(0xfff0f9f1),
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
+          margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -85,7 +85,7 @@ class PostCardState extends State<PostCard> {
                                   arguments: int.parse(widget.gameId));
                             },
                             child: Container(
-                              width: 250,
+                              width: 240,
                               alignment: Alignment.bottomLeft,
                               child: Text(
                                 widget.gameName,
@@ -107,7 +107,7 @@ class PostCardState extends State<PostCard> {
                               }
                             },
                             child: Container(
-                              width: 250,
+                              width: 240,
                               alignment: Alignment.bottomLeft,
                               child: Text(
                                 "Author: ${widget.username}",
@@ -127,7 +127,7 @@ class PostCardState extends State<PostCard> {
                 // Descrizione
                 Text(
                   widget.content,
-                  maxLines: _isExpanded ? null : 2,
+                  maxLines: _isExpanded ? widget.content.length : 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 14, color: Colors.black87),
                 ),
@@ -218,10 +218,9 @@ class PostCardState extends State<PostCard> {
                 ),
               if (widget.currentUser == widget.userId)
                 IconButton(
-                  icon: HugeIcon(
-                    icon: HugeIcons.strokeRoundedDelete02,
-                    color: Colors.black,
-                    size: 20.0,
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.black54,
                   ),
                   onPressed: () => {},
                 ),

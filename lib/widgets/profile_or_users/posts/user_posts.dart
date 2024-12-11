@@ -30,7 +30,8 @@ class _UserPostsState extends State<UserPosts> {
   // Metodo per recuperare i post dell'utente specifico
   Future<void> _getUserPosts() async {
     try {
-      Map<String, dynamic> result = await PostService.GetPosts(false, widget.userId);
+      Map<String, dynamic> result =
+          await PostService.GetPosts(false, widget.userId);
 
       if (result["success"] == true) {
         List<Post> postsList = (result["posts"] as List)
@@ -75,40 +76,38 @@ class _UserPostsState extends State<UserPosts> {
       backgroundColor: const Color(0xff051f20),
       body: posts.isEmpty
           ? const Center(
-        child: CircularProgressIndicator(),
-      )
+              child: CircularProgressIndicator(color: Colors.teal),
+            )
           : ListView.builder(
-        itemCount: posts.length,
-        itemBuilder: (context, index) {
-          final post = posts[index];
-          final username = usernames[index];
-          final gameName = gamesNames[index];
-          final cover = gamesCovers[index];
-          return PostCard(
-            postId: post.id,
-            gameId: post.gameId,
-            userId: post.writerId,
-            content: post.description,
-            imageUrl: cover,
-            timestamp: post.timestamp,
-            likeCount: post.likes,
-            commentCount: 5,
-            onLikePressed: () {
-              print('Liked Post: ${post.id}');
-            },
-            currentUser: widget.currentUser,
-            username: username,
-            gameName: gameName,
-            gameCover: cover,
-          );
-        },
-      ),
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                final post = posts[index];
+                final username = usernames[index];
+                final gameName = gamesNames[index];
+                final cover = gamesCovers[index];
+                return PostCard(
+                  postId: post.id,
+                  gameId: post.gameId,
+                  userId: post.writerId,
+                  content: post.description,
+                  imageUrl: cover,
+                  timestamp: post.timestamp,
+                  likeCount: post.likes,
+                  commentCount: 5,
+                  onLikePressed: () {
+                    print('Liked Post: ${post.id}');
+                  },
+                  currentUser: widget.currentUser,
+                  username: username,
+                  gameName: gameName,
+                  gameCover: cover,
+                );
+              },
+            ),
     );
   }
 
-  // Funzione per mostrare il Modal Bottom Sheet per creare un nuovo post
+// Funzione per mostrare il Modal Bottom Sheet per creare un nuovo post
 
-
-  // Funzione per inviare i dati del post al backend
-
-  }
+// Funzione per inviare i dati del post al backend
+}

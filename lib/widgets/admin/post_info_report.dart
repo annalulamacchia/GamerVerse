@@ -181,21 +181,28 @@ class PostInfoReportState extends State<PostInfoReport> {
                   const Spacer(),
 
                   // Likes
-                  const Icon(Icons.thumb_up_outlined, color: Colors.white54),
-                  const SizedBox(width: 2.5),
-                  Text(
-                    additionalPostInfo.numberLikes.toString(),
-                    style: const TextStyle(color: Colors.white54),
-                  ),
-                  const SizedBox(width: 15),
+                  if (additionalPostInfo.father == '0')
+                    Row(
+                      children: [
+                        const Icon(Icons.thumb_up_outlined,
+                            color: Colors.white54),
+                        const SizedBox(width: 2.5),
+                        Text(
+                          additionalPostInfo.numberLikes.toString(),
+                          style: const TextStyle(color: Colors.white54),
+                        ),
+                        const SizedBox(width: 15),
 
-                  // Comments
-                  const Icon(Icons.comment_outlined, color: Colors.white54),
-                  const SizedBox(width: 2.5),
-                  Text(
-                    additionalPostInfo.numberComments.toString(),
-                    style: const TextStyle(color: Colors.white54),
-                  ),
+                        // Comments
+                        const Icon(Icons.comment_outlined,
+                            color: Colors.white54),
+                        const SizedBox(width: 2.5),
+                        Text(
+                          additionalPostInfo.numberComments.toString(),
+                          style: const TextStyle(color: Colors.white54),
+                        ),
+                      ],
+                    )
                 ],
               ),
               const SizedBox(height: 10),

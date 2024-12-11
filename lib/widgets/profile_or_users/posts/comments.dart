@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/comment.dart';
+import 'package:gamerverse/services/Community/post_service.dart';
+import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:gamerverse/widgets/common_sections/report_menu.dart';
 
 class CommentCard extends StatefulWidget {
   final Comment comment;
   final String? currentUser;
   final BuildContext parentContext;
+  final VoidCallback onCommentRemoved;
 
   const CommentCard({
     super.key,
     required this.comment,
     required this.currentUser,
     required this.parentContext,
+    required this.onCommentRemoved,
   });
 
   @override
@@ -19,6 +23,22 @@ class CommentCard extends StatefulWidget {
 }
 
 class CommentCardState extends State<CommentCard> {
+  bool _isExpanded = false;
+
+  //function to remove the review
+  void _removeComment(String reviewI, BuildContext context) async {
+    final success =
+        await PostService.removeComment(commentId: widget.comment.commentId);
+
+    if (success) {
+      DialogHelper.showSuccessDialog(context, 'Review removed succesfully!');
+      widget.onCommentRemoved();
+    } else {
+      DialogHelper.showErrorDialog(
+          context, 'Error in removing the review. Please try again.');
+    }
+  }
+
   //function to show the modal to remove the review
   void _showDeleteConfirmation(BuildContext context, String? reviewId) {
     showDialog(
@@ -27,7 +47,7 @@ class CommentCardState extends State<CommentCard> {
         return AlertDialog(
           title: const Text('Delete Review'),
           content: const Text(
-              'Are you sure you want to delete this review? This action cannot be undone.'),
+              'Are you sure you want to delete this comment? This action cannot be undone.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -39,7 +59,8 @@ class CommentCardState extends State<CommentCard> {
               onPressed: () {
                 Navigator.of(context).pop();
                 if (reviewId != null) {
-                  //_removeReview(reviewId, writerId, widget.gameContext);
+                  _removeComment(
+                      widget.comment.commentId, widget.parentContext);
                 }
               },
               child: const Text(
@@ -66,7 +87,7 @@ class CommentCardState extends State<CommentCard> {
           elevation: 8,
           child: Container(
             padding:
-                const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 8),
+                const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -123,17 +144,32 @@ class CommentCardState extends State<CommentCard> {
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    widget.comment.description,
-                    style: const TextStyle(
-                      color: Colors.black87,
-                      fontSize: 16,
-                      height: 1.5,
+                SizedBox(
+                  height: 7.5,
+                ),
+                Text(
+                  widget.comment.description,
+                  maxLines: _isExpanded ? widget.comment.description.length : 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                ),
+
+                // View More / View Less
+                if (widget.comment.description.toUpperCase().length > 74)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _isExpanded = !_isExpanded;
+                      });
+                    },
+                    child: Text(
+                      _isExpanded ? 'View Less' : 'View More',
+                      style: const TextStyle(
+                        color: Colors.teal,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -150,7 +186,7 @@ class CommentCardState extends State<CommentCard> {
                   writerId: widget.comment.writerId,
                   reportedId: widget.comment.commentId,
                   parentContext: widget.parentContext,
-                  type: 'Post',
+                  type: 'Comment',
                 ),
               if (widget.currentUser != null &&
                   widget.comment.writerId == widget.currentUser)

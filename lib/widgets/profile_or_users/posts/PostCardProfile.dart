@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/services/user/Get_user_info.dart';
 import 'package:gamerverse/services/specific_game/get_game_service.dart';
 import 'package:gamerverse/widgets/common_sections/report_menu.dart';
-import 'package:hugeicons/hugeicons.dart';
-
 
 class PostCard extends StatefulWidget {
   final String? currentUser;
@@ -103,7 +101,7 @@ class _PostCardState extends State<PostCard> {
                 elevation: 8,
                 shadowColor: Colors.black.withOpacity(0.5),
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(100),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -134,7 +132,7 @@ class _PostCardState extends State<PostCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  width: 225,
+                                  width: 215,
                                   alignment: Alignment.bottomLeft,
                                   child: Text(
                                     gameName,
@@ -149,7 +147,7 @@ class _PostCardState extends State<PostCard> {
                                 ),
                                 const SizedBox(height: 5),
                                 Container(
-                                  width: 225,
+                                  width: 215,
                                   alignment: Alignment.bottomLeft,
                                   child: Text(
                                     "Author: $author",
@@ -171,11 +169,9 @@ class _PostCardState extends State<PostCard> {
                       Text(
                         description,
                         maxLines: _isExpanded ? description.length : 2,
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontSize: 15,
-                        ),
                         overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 14, color: Colors.black87),
                       ),
 
                       // View More / View Less
@@ -249,10 +245,9 @@ class _PostCardState extends State<PostCard> {
                     //remove review
                     if (widget.currentUser == widget.userId)
                       IconButton(
-                        icon: HugeIcon(
-                          icon: HugeIcons.strokeRoundedDelete02,
-                          color: Colors.black,
-                          size: 20.0,
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.black54,
                         ),
                         onPressed: () => {},
                       ),

@@ -8,7 +8,7 @@ class ReviewService {
   //function to add a review for a specific game
   static Future<bool> addReview(
       {required String? userId,
-      required String reviewId,
+      required String? reviewId,
       required String gameId,
       required String timestamp,
       required String? description,

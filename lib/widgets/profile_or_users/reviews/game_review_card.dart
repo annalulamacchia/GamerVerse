@@ -203,7 +203,7 @@ class GameReviewCardState extends State<GameReviewCard> {
           ),
         ),
         Positioned(
-          top: 10,
+          top: 5,
           right: 15,
           child: Row(
             children: [
@@ -228,10 +228,9 @@ class GameReviewCardState extends State<GameReviewCard> {
               //remove review
               if (widget.currentUser == widget.gameReview.writerId)
                 IconButton(
-                  icon: HugeIcon(
-                    icon: HugeIcons.strokeRoundedDelete02,
-                    color: Colors.black,
-                    size: 20.0,
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.black54,
                   ),
                   onPressed: () => _showDeleteConfirmation(widget.gameContext,
                       widget.gameReview.reviewId, widget.gameReview.gameId),

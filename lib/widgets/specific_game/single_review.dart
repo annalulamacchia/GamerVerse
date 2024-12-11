@@ -65,7 +65,6 @@ class SingleReviewState extends State<SingleReview> {
   //function to remove the review
   void _removeReview(
       String reviewId, String? gameId, BuildContext context) async {
-    print(gameId);
     final success =
         await ReviewService.removeReview(reviewId: reviewId, gameId: gameId);
 

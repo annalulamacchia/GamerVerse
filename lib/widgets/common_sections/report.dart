@@ -21,6 +21,7 @@ class ReportWidget extends StatefulWidget {
 class ReportWidgetState extends State<ReportWidget> {
   String? _selectedOption;
   bool _isSubmitting = false;
+  String reportType = '';
 
   Future<void> _submitReport() async {
     if (_selectedOption == null) {
@@ -30,11 +31,17 @@ class ReportWidgetState extends State<ReportWidget> {
         _isSubmitting = true;
       });
 
+      if (widget.type == 'Comment') {
+        reportType = 'Post';
+      } else {
+        reportType = widget.type;
+      }
+
       final result = await ReportService.addReport(
         reporterId: widget.reporterId!,
         reportedId: widget.reportedId!,
         reason: _selectedOption!,
-        type: widget.type,
+        type: reportType,
       );
 
       setState(() {
@@ -81,7 +88,9 @@ class ReportWidgetState extends State<ReportWidget> {
                 });
               },
             ),
-          if (widget.type == 'Review' || widget.type == 'Post')
+          if (widget.type == 'Review' ||
+              widget.type == 'Post' ||
+              widget.type == 'Comment')
             RadioListTile<String>(
               title: const Text('Spoiler'),
               value: 'Spoiler',

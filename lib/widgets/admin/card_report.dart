@@ -237,8 +237,8 @@ class ReportCardWidget extends StatelessWidget {
                           color: Colors.teal,
                           child: Center(
                             child: Icon(
-                              Icons.image_not_supported,
-                              size: 40,
+                              Icons.account_box,
+                              size: 50,
                               color: Colors.grey[700],
                             ),
                           ),
@@ -252,11 +252,16 @@ class ReportCardWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      report.username,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    Container(
+                      width: 125,
+                      alignment: Alignment.center,
+                      child: Text(
+                        report.username,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],

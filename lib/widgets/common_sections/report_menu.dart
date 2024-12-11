@@ -42,16 +42,10 @@ class ReportMenu extends StatelessWidget {
         }
       },
       itemBuilder: (context) => [
-        if (type == 'Review')
-          const PopupMenuItem(
-            value: 'Report_Review',
-            child: Text('Report Review'),
-          ),
-        if (type == 'Post')
-          const PopupMenuItem(
-            value: 'Report_Post',
-            child: Text('Report Post'),
-          ),
+        PopupMenuItem(
+          value: 'Report_$type',
+          child: Text('Report $type'),
+        ),
         const PopupMenuItem(
           value: 'Report_User',
           child: Text('Report User'),

@@ -3,6 +3,7 @@ import 'package:gamerverse/services/Community/post_service.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/posts/comments.dart';
 import 'package:gamerverse/models/comment.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 
 class CommentsPage extends StatefulWidget {
   final String postId;
@@ -89,17 +90,32 @@ class CommentsPageState extends State<CommentsPage> {
         children: [
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                    child: CircularProgressIndicator(
+                    color: Colors.teal,
+                  ))
                 : ListView.builder(
                     padding: const EdgeInsets.only(
                         left: 10, right: 10, top: 10, bottom: 10),
-                    itemCount: _comments.length,
+                    itemCount: _comments.isEmpty ? 1 : _comments.length,
                     itemBuilder: (context, index) {
-                      final comment = _comments[index];
-                      return CommentCard(
+                      if (_comments.isEmpty) {
+                        return NoDataList(
+                          textColor: Colors.grey,
+                          icon: Icons.comment_outlined,
+                          message: 'No comments yet!',
+                          subMessage: 'Be the first to share your thoughts.',
+                          color: Colors.white,
+                        );
+                      } else {
+                        final comment = _comments[index];
+                        return CommentCard(
                           comment: comment,
                           currentUser: widget.currentUser,
-                          parentContext: parentContext);
+                          parentContext: parentContext,
+                          onCommentRemoved: _loadComments,
+                        );
+                      }
                     },
                   ),
           ),

@@ -18,7 +18,6 @@ class ProfilePosts extends StatefulWidget {
     required this.currentUser,
   });
 
-
   @override
   _ProfilePostsState createState() => _ProfilePostsState();
 }
@@ -102,34 +101,34 @@ class _ProfilePostsState extends State<ProfilePosts> {
       backgroundColor: const Color(0xff051f20),
       body: Posts.isEmpty
           ? const Center(
-        child: CircularProgressIndicator(),
-      )
+              child: CircularProgressIndicator(color: Colors.teal),
+            )
           : ListView.builder(
-        itemCount: Posts.length,
-        itemBuilder: (context, index) {
-          final post = Posts[index];
-          final username = Usernames[index];
-          final gameName = Games_Names[index];
-          final cover = Games_Covers[index];
-          return PostCard(
-            postId: post.id,
-            gameId: post.gameId,
-            userId: post.writerId,
-            content: post.description,
-            imageUrl: cover,
-            timestamp: post.timestamp,
-            likeCount: post.likes,
-            commentCount: 5,
-            onLikePressed: () {
-              print('Liked Post: ${post.id}');
-            },
-            currentUser: currentUser,
-            username: username,
-            gameName: gameName,
-            gameCover: cover,
-          );
-        },
-      ),
+              itemCount: Posts.length,
+              itemBuilder: (context, index) {
+                final post = Posts[index];
+                final username = Usernames[index];
+                final gameName = Games_Names[index];
+                final cover = Games_Covers[index];
+                return PostCard(
+                  postId: post.id,
+                  gameId: post.gameId,
+                  userId: post.writerId,
+                  content: post.description,
+                  imageUrl: cover,
+                  timestamp: post.timestamp,
+                  likeCount: post.likes,
+                  commentCount: 5,
+                  onLikePressed: () {
+                    print('Liked Post: ${post.id}');
+                  },
+                  currentUser: currentUser,
+                  username: username,
+                  gameName: gameName,
+                  gameCover: cover,
+                );
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showNewPostBottomSheet(context);

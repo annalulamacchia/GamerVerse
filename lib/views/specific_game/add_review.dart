@@ -60,9 +60,10 @@ class _AddReviewState extends State<AddReview> {
     setState(() {
       _isLoading = true;
     });
+    print(review?['review_id']);
 
     bool success = await ReviewService.addReview(
-        reviewId: review?['review_id'] ?? '',
+        reviewId: review?['review_id'],
         userId: widget.userId,
         gameId: widget.gameId,
         description: _reviewController.text,
