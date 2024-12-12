@@ -64,6 +64,39 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   }
 
 //Function for the deleting of the account
+
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Account'),
+          content: const Text(
+              'Are you sure you want to delete your Account? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                  deleteUserAccount();
+              },
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   Future<void> deleteUserAccount() async {
     final prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString('user_uid');
@@ -331,7 +364,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 // Pulsante Elimina Account
             Center(
               child: ElevatedButton(
-                onPressed: () => deleteUserAccount(),
+                onPressed: () => _showDeleteConfirmation(),
                 // Funzione per eliminare l'account
                 style: ElevatedButton.styleFrom(
                   padding:

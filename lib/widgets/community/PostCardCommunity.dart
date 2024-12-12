@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/report_menu.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:gamerverse/services/Community/post_service.dart'; // Assicurati di avere il percorso corretto
 
 class PostCard extends StatefulWidget {
   final String postId;
@@ -16,6 +18,7 @@ class PostCard extends StatefulWidget {
   final String username; // Nuovo parametro
   final String gameName; // Nuovo parametro
   final String gameCover; // Nuovo parametro
+  final VoidCallback? onPostDeleted;
 
   const PostCard({
     super.key,
@@ -32,6 +35,7 @@ class PostCard extends StatefulWidget {
     required this.username,
     required this.gameName,
     required this.gameCover,
+    this.onPostDeleted,
   });
 
   @override
@@ -40,6 +44,84 @@ class PostCard extends StatefulWidget {
 
 class PostCardState extends State<PostCard> {
   bool _isExpanded = false;
+  bool _isDeleting = false;
+
+  void _deletePost() async {
+    setState(() {
+      _isDeleting = true;
+    });
+
+    try {
+      await PostService.deletePost(widget.postId);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Post deleted successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        // Assicurati che la callback venga chiamata per rimuovere il post dal genitore
+        if (widget.onPostDeleted != null) {
+          widget.onPostDeleted!();
+        }
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to delete post: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeleting = false;
+        });
+      }
+    }
+  }
+
+
+  String _getRelativeTime(String timestamp) {
+    final postTime = DateTime.parse(timestamp); // Assicurati che il formato sia ISO8601
+    final currentTime = DateTime.now();
+    return timeago.format(postTime, locale: 'en');
+  }
+
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Post'),
+          content: const Text(
+              'Are you sure you want to delete this post? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (widget.postId != null) {
+                  _deletePost();
+                }
+              },
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +129,7 @@ class PostCardState extends State<PostCard> {
       children: [
         Card(
           color: const Color(0xfff0f9f1),
-          margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          margin: const EdgeInsets.only(left: 20, right: 20,top:20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -151,7 +233,7 @@ class PostCardState extends State<PostCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      widget.timestamp,
+                      _getRelativeTime(widget.timestamp),
                       style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 14,
@@ -204,7 +286,7 @@ class PostCardState extends State<PostCard> {
           ),
         ),
         Positioned(
-          top: 20,
+          top: 25,
           right: 20,
           child: Row(
             children: [
@@ -218,11 +300,13 @@ class PostCardState extends State<PostCard> {
                 ),
               if (widget.currentUser == widget.userId)
                 IconButton(
-                  icon: const Icon(
+                  icon: _isDeleting
+                      ? const CircularProgressIndicator()
+                      : const Icon(
                     Icons.delete_outline,
                     color: Colors.black54,
                   ),
-                  onPressed: () => {},
+                  onPressed: _isDeleting ? null : _showDeleteConfirmation,
                 ),
             ],
           ),

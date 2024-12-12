@@ -26,12 +26,13 @@ class _UserPostsState extends State<UserPosts> {
   List<String> gamesNames = [];
   List<String> gamesCovers = [];
   String? currentUser;
+  bool isLoading = true; // Variabile per gestire il caricamento
 
   // Metodo per recuperare i post dell'utente specifico
   Future<void> _getUserPosts() async {
     try {
       Map<String, dynamic> result =
-          await PostService.GetPosts(false, widget.userId);
+      await PostService.GetPosts(false, widget.userId);
 
       if (result["success"] == true) {
         List<Post> postsList = (result["posts"] as List)
@@ -55,12 +56,19 @@ class _UserPostsState extends State<UserPosts> {
           usernames = usernamesList;
           gamesNames = gamesNamesList;
           gamesCovers = gamesCoversList;
+          isLoading = false; // Impostiamo isLoading a false quando i dati sono caricati
         });
       } else {
         print("Failed to fetch posts: ${result["message"]}");
+        setState(() {
+          isLoading = false; // Impostiamo isLoading a false se si verifica un errore
+        });
       }
     } catch (e) {
       print("Error fetching user posts: $e");
+      setState(() {
+        isLoading = false; // Impostiamo isLoading a false in caso di errore
+      });
     }
   }
 
@@ -74,40 +82,58 @@ class _UserPostsState extends State<UserPosts> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
-      body: posts.isEmpty
+      body: isLoading
           ? const Center(
-              child: CircularProgressIndicator(color: Colors.teal),
-            )
-          : ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                final post = posts[index];
-                final username = usernames[index];
-                final gameName = gamesNames[index];
-                final cover = gamesCovers[index];
-                return PostCard(
-                  postId: post.id,
-                  gameId: post.gameId,
-                  userId: post.writerId,
-                  content: post.description,
-                  imageUrl: cover,
-                  timestamp: post.timestamp,
-                  likeCount: post.likes,
-                  commentCount: 5,
-                  onLikePressed: () {
-                    print('Liked Post: ${post.id}');
-                  },
-                  currentUser: widget.currentUser,
-                  username: username,
-                  gameName: gameName,
-                  gameCover: cover,
-                );
-              },
+        child: CircularProgressIndicator(color: Colors.teal),
+      )
+          : posts.isEmpty
+          ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.insert_drive_file, // Icona di una pagina o un documento
+              size: 50,
+              color: Colors.white,
             ),
+            const SizedBox(height: 20),
+            const Text(
+              'This user has not submitted any post',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      )
+          : ListView.builder(
+        itemCount: posts.length,
+        itemBuilder: (context, index) {
+          final post = posts[index];
+          final username = usernames[index];
+          final gameName = gamesNames[index];
+          final cover = gamesCovers[index];
+          return PostCard(
+            postId: post.id,
+            gameId: post.gameId,
+            userId: post.writerId,
+            content: post.description,
+            imageUrl: cover,
+            timestamp: post.timestamp,
+            likeCount: post.likes,
+            commentCount: 5,
+            onLikePressed: () {
+              print('Liked Post: ${post.id}');
+            },
+            currentUser: widget.currentUser,
+            username: username,
+            gameName: gameName,
+            gameCover: cover,
+          );
+        },
+      ),
     );
   }
-
-// Funzione per mostrare il Modal Bottom Sheet per creare un nuovo post
-
-// Funzione per inviare i dati del post al backend
 }

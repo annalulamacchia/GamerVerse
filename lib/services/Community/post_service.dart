@@ -204,4 +204,41 @@ class PostService {
       return false;
     }
   }
+
+  static Future<bool> deletePost(String postId) async {
+    final url = Uri.parse('$_baseUrl/delete_post');
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'postId': postId}),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        if (responseBody['success'] == true) {
+          if (kDebugMode) {
+            print('Post deleted successfully');
+          }
+          return true;
+        } else {
+          if (kDebugMode) {
+            print('Failed to delete post: ${responseBody['message']}');
+          }
+          return false;
+        }
+      } else {
+        if (kDebugMode) {
+          print('Failed to delete post: ${response.reasonPhrase}');
+        }
+        return false;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error deleting post: $e');
+      }
+      return false;
+    }
+  }
+
 }

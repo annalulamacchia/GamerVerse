@@ -17,26 +17,24 @@ class CommunityPage extends StatefulWidget {
 
 class _CommunityPageState extends State<CommunityPage> {
   WishlistService wishlistService = WishlistService();
-  List<GameProfile> wishlistGames = []; // Lista di giochi nella wishlist
+  List<GameProfile> wishlistGames = [];
   List<Post> Posts = [];
   List<String> Usernames = [];
   List<String> Games_Names = [];
   List<String> Games_Covers = [];
   String? currentUser;
+  bool isLoading = true; // Variabile per il caricamento
 
   // Metodo per recuperare la wishlist
   Future<void> _getUserWishlist() async {
     try {
-      // Recupera l'ID utente da SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? userId = prefs.getString('user_uid'); // Recupera l'ID dell'utente
+      final String? userId = prefs.getString('user_uid');
 
       if (userId != null) {
-        // Recupera la lista dei giochi dalla wishlist usando il servizio
         List<GameProfile> games = await WishlistService.getWishlist(userId);
         currentUser = userId;
         if (mounted) {
-          // Controlla che il widget sia ancora montato
           setState(() {
             wishlistGames = games;
           });
@@ -53,47 +51,60 @@ class _CommunityPageState extends State<CommunityPage> {
   // Metodo per recuperare tutti i post
   Future<void> _getPosts() async {
     try {
-      // Chiama la funzione GetPosts dal servizio
       Map<String, dynamic> result = await PostService.GetPosts(true);
       print(result);
 
-      // Verifica se la risposta è positiva
       if (result["success"] == true) {
-        // Mappa i post in oggetti Post
         List<Post> postsList = (result["posts"] as List)
-            .map((postJson) => Post.fromJson(postJson))
-            .toList();
-        List<String> UsernamesList = (result["usernames"] as List<dynamic>)
-            .map((username) => username as String? ?? "Deleted Account")
-            .toList();
-
-        List<String> gamesNameslist = (result["game_names"] as List<dynamic>)
-            .map((gameName) => gameName as String? ?? "Unknown Game")
+            .map((postJson) => postJson != null ? Post.fromJson(postJson) : null)
+            .where((post) => post != null) // Remove null values
+            .cast<Post>() // Cast the list back to List<Post>
             .toList();
 
-        List<String> gamesCoverslist = (result["game_covers"] as List<dynamic>)
-            .map((cover) => cover as String? ?? "")
-            .toList();
+
+        List<String> UsernamesList = (result["usernames"] as List<dynamic>?)
+            ?.map((username) => username != null && username is String ? username : "Deleted Account")
+            .toList() ?? []; // Returns an empty list if result["usernames"] is null
+
+        List<String> gamesNameslist = (result["game_names"] as List<dynamic>?)
+            ?.map((gameName) => gameName != null && gameName is String ? gameName : "Unknown Game")
+            .toList() ?? []; // Returns an empty list if result["game_names"] is null
+
+        List<String> gamesCoverslist = (result["game_covers"] as List<dynamic>?)
+            ?.map((cover) => cover != null && cover is String ? cover : "")
+            .toList() ?? []; // Returns an empty list if result["game_covers"] is null
+
 
         setState(() {
-          Posts = postsList; // Aggiorna la lista di post
-          Usernames = UsernamesList; // Aggiorna gli username
-          Games_Names = gamesNameslist; // Aggiorna i nomi dei giochi
-          Games_Covers = gamesCoverslist; // Aggiorna le copertine
+          Posts = postsList;
+          Usernames = UsernamesList;
+          Games_Names = gamesNameslist;
+          Games_Covers = gamesCoverslist;
+          isLoading = false; // Imposta isLoading a false quando i dati sono stati caricati
         });
       } else {
         print("Failed to fetch posts: ${result["message"]}");
+        setState(() {
+          isLoading = false; // Anche se la chiamata fallisce, imposta isLoading a false
+        });
       }
     } catch (e) {
       print("Error fetching posts: $e");
+      setState(() {
+        isLoading = false; // Imposta isLoading a false in caso di errore
+      });
     }
+  }
+
+  void _updatePosts() {
+    _getPosts(); // Ricarica i post
   }
 
   @override
   void initState() {
     super.initState();
     _getUserWishlist();
-    _getPosts(); // Recupera i post al momento dell'inizializzazione
+    _getPosts();
   }
 
   @override
@@ -104,45 +115,65 @@ class _CommunityPageState extends State<CommunityPage> {
         title: const Text('Community', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xff163832),
       ),
-      body: Posts.isEmpty
+      body: isLoading
           ? const Center(
-        child: CircularProgressIndicator(),
-      ) // Mostra un caricamento finché i post non sono disponibili
+        child: CircularProgressIndicator(), // Mostra il caricamento durante il recupero dei post
+      )
+          : Posts.isEmpty
+          ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.info_outline, // Icona di avviso
+              size: 50,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'There are no posts to visualize, follow new users or add yourself a post for your followers.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+          ],
+        ),
+      )
           : ListView.builder(
-        itemCount: Posts.length, // Numero di post
+        itemCount: Posts.length,
         itemBuilder: (context, index) {
           final post = Posts[index];
-          final username = Usernames[index]; // Associazione per index
+          final username = Usernames[index];
           final gameName = Games_Names[index];
           final cover = Games_Covers[index];
-          print(post.id);
           return PostCard(
             postId: post.id,
             gameId: post.gameId,
             userId: post.writerId,
             content: post.description,
-            imageUrl: cover, // Passa la copertina come immagine URL
+            imageUrl: cover,
             timestamp: post.timestamp,
             likeCount: post.likes,
-            commentCount: 5, // Aggiorna il conteggio commenti se necessario
+            commentCount: 5,
             onLikePressed: () {
-              // Logica per il like
               print('Liked Post: ${post.id}');
             },
             currentUser: currentUser,
-            username: username, // Passa l'username
-            gameName: gameName, // Passa il nome del gioco
-            gameCover: cover, // Passa la cover del gioco
+            username: username,
+            gameName: gameName,
+            gameCover: cover,
+            onPostDeleted: _updatePosts,
           );
         },
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 0, // Seleziona 'Home' per questa pagina
+        currentIndex: 0,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showNewPostBottomSheet(
-              context); // Mostra il bottom sheet per il nuovo post
+          _showNewPostBottomSheet(context);
         },
         backgroundColor: const Color(0xff3e6259),
         child: const Icon(Icons.add, color: Colors.white),
@@ -150,7 +181,6 @@ class _CommunityPageState extends State<CommunityPage> {
     );
   }
 
-  // Funzione per mostrare il Modal Bottom Sheet per creare un nuovo post
   void _showNewPostBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -162,23 +192,19 @@ class _CommunityPageState extends State<CommunityPage> {
       builder: (BuildContext context) {
         return NewPostBottomSheet(
           wishlistGames: wishlistGames,
-          // Passa la lista di giochi alla bottom sheet
           onPostCreated: (description, gameId) {
-            _createPost(
-                context, description, gameId); // Gestisci la creazione del post
+            _createPost(context, description, gameId);
           },
         );
       },
     );
   }
 
-  // Funzione per inviare i dati del post al backend
-  Future<void> _createPost(
-      BuildContext context, String description, String gameId) async {
-    // Logica per inviare il nuovo post
+  Future<void> _createPost(BuildContext context, String description, String gameId) async {
     print('Creating post with description: $description and game ID: $gameId');
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Post creato con successo')),
     );
   }
 }
+
