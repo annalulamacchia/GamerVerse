@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/report_menu.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:gamerverse/services/Community/post_service.dart'; // Assicurati di avere il percorso corretto
+import 'package:gamerverse/services/Community/post_service.dart';
+import 'package:gamerverse/widgets/community/likeButton.dart';
 
 class PostCard extends StatefulWidget {
   final String postId;
@@ -13,11 +14,11 @@ class PostCard extends StatefulWidget {
   final String timestamp;
   final int likeCount;
   final int commentCount;
-  final VoidCallback onLikePressed;
+  final List<dynamic> likedBy; // Lista degli utenti che hanno messo like
   final String? currentUser;
-  final String username; // Nuovo parametro
-  final String gameName; // Nuovo parametro
-  final String gameCover; // Nuovo parametro
+  final String username;
+  final String gameName;
+  final String gameCover;
   final VoidCallback? onPostDeleted;
 
   const PostCard({
@@ -30,7 +31,7 @@ class PostCard extends StatefulWidget {
     required this.timestamp,
     required this.likeCount,
     required this.commentCount,
-    required this.onLikePressed,
+    required this.likedBy, // Passa likedBy qui
     required this.currentUser,
     required this.username,
     required this.gameName,
@@ -60,7 +61,6 @@ class PostCardState extends State<PostCard> {
             backgroundColor: Colors.green,
           ),
         );
-        // Assicurati che la callback venga chiamata per rimuovere il post dal genitore
         if (widget.onPostDeleted != null) {
           widget.onPostDeleted!();
         }
@@ -83,9 +83,8 @@ class PostCardState extends State<PostCard> {
     }
   }
 
-
   String _getRelativeTime(String timestamp) {
-    final postTime = DateTime.parse(timestamp); // Assicurati che il formato sia ISO8601
+    final postTime = DateTime.parse(timestamp);
     final currentTime = DateTime.now();
     return timeago.format(postTime, locale: 'en');
   }
@@ -96,8 +95,7 @@ class PostCardState extends State<PostCard> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Delete Post'),
-          content: const Text(
-              'Are you sure you want to delete this post? This action cannot be undone.'),
+          content: const Text('Are you sure you want to delete this post? This action cannot be undone.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -129,7 +127,7 @@ class PostCardState extends State<PostCard> {
       children: [
         Card(
           color: const Color(0xfff0f9f1),
-          margin: const EdgeInsets.only(left: 20, right: 20,top:20),
+          margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -163,8 +161,7 @@ class PostCardState extends State<PostCard> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, '/game',
-                                  arguments: int.parse(widget.gameId));
+                              Navigator.pushNamed(context, '/game', arguments: int.parse(widget.gameId));
                             },
                             child: Container(
                               width: 240,
@@ -181,11 +178,9 @@ class PostCardState extends State<PostCard> {
                           GestureDetector(
                             onTap: () {
                               if (widget.userId == widget.currentUser) {
-                                Navigator.pushNamed(context, '/profile',
-                                    arguments: widget.userId);
+                                Navigator.pushNamed(context, '/profile', arguments: widget.userId);
                               } else {
-                                Navigator.pushNamed(context, '/userProfile',
-                                    arguments: widget.userId);
+                                Navigator.pushNamed(context, '/userProfile', arguments: widget.userId);
                               }
                             },
                             child: Container(
@@ -241,16 +236,11 @@ class PostCardState extends State<PostCard> {
                     ),
                     Row(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.thumb_up, color: Colors.grey[700]),
-                          onPressed: widget.onLikePressed,
-                        ),
-                        Text(
-                          "${widget.likeCount}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
+                        LikeButton(
+                          postId: widget.postId,
+                          currentUser: widget.currentUser ?? '',
+                          initialLikeCount: widget.likeCount,
+                          initialLikedUsers: widget.likedBy,
                         ),
                         const SizedBox(width: 20),
                         IconButton(

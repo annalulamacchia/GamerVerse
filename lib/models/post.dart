@@ -3,7 +3,8 @@ class Post {
   final String writerId; // L'ID dello scrittore del post
   final String gameId; // L'ID del gioco associato al post
   final String description; // La descrizione del post
-  final int likes; // Il numero di like del post
+  final List<String> likedBy; // Lista di utenti che hanno messo like
+  final int commentCount; // Numero di commenti
   final String timestamp;
   final String father; // Rappresenta il padre del post (0 se è un post principale)
 
@@ -12,7 +13,8 @@ class Post {
     required this.writerId,
     required this.gameId,
     required this.description,
-    required this.likes,
+    required this.likedBy,
+    required this.commentCount,
     required this.timestamp,
     required this.father,
   });
@@ -24,7 +26,8 @@ class Post {
       writerId: json['writer_id'] ?? '',
       gameId: json['game_id'] ?? '',
       description: json['description'] ?? '',
-      likes: json['likes'] ?? 0,
+      likedBy: List<String>.from(json['liked_by'] ?? []), // Lista di utenti che hanno messo like
+      commentCount: json['comment_count'] ?? 0, // Numero di commenti
       father: json['father'] ?? '0',
       timestamp: json['timestamp'] ?? '0',
     );
@@ -37,12 +40,13 @@ class Post {
       'writer_id': writerId,
       'game_id': gameId,
       'description': description,
-      'likes': likes,
-      'timestamp':timestamp,
+      'liked_by': likedBy,
+      'comment_count': commentCount,
+      'timestamp': timestamp,
       'father': father,
-
     };
   }
+
 
   // Metodo di utilità per verificare se il post è un commento
   bool isComment() {

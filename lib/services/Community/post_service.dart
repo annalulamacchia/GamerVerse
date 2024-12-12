@@ -205,6 +205,31 @@ class PostService {
     }
   }
 
+  static Future<Map<String, dynamic>> toggleLike(String postId, String userId, bool isLiked) async {
+    try {
+      final url = Uri.parse("$_baseUrl/toggle-like");
+
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          "postId": postId,
+          "userId": userId,
+          "action": isLiked ? "unlike" : "like",
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body); // Risposta corretta
+      } else {
+        return {"success": false, "message": "Failed to update like"};
+      }
+    } catch (e) {
+      return {"success": false, "message": e.toString()};
+    }
+  }
+
+
   static Future<bool> deletePost(String postId) async {
     final url = Uri.parse('$_baseUrl/delete_post');
     try {

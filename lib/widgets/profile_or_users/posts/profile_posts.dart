@@ -25,12 +25,17 @@ class ProfilePosts extends StatefulWidget {
 class _ProfilePostsState extends State<ProfilePosts> {
   WishlistService wishlistService = WishlistService();
   List<GameProfile> wishlistGames = [];
-  List<Post> Posts = [];
-  List<String> Usernames = [];
-  List<String> Games_Names = [];
-  List<String> Games_Covers = [];
+  List<Post> posts = [];
+  List<String> usernames = [];
+  List<String> gamesNames = [];
+  List<String> gamesCovers = [];
   String? currentUser;
   bool isLoading = true; // Variabile per gestire il caricamento
+  List<int> likeCounts = [];
+  List<int> commentCounts = [];
+  List<List<String>> likeUsersList = [];
+
+
 
   Future<void> _getUserWishlist() async {
     try {
@@ -58,48 +63,70 @@ class _ProfilePostsState extends State<ProfilePosts> {
     try {
       Map<String, dynamic> result = await PostService.GetPosts(false);
       print(result);
-      if (result["success"] == true) {
 
+      if (result["success"] == true) {
         List<Post> postsList = (result["posts"] as List)
             .map((postJson) => postJson != null ? Post.fromJson(postJson) : null)
-            .where((post) => post != null) // Remove null values
-            .cast<Post>() // Cast the list back to List<Post>
+            .where((post) => post != null)
+            .cast<Post>()
             .toList();
 
-
-        List<String> UsernamesList = (result["usernames"] as List<dynamic>?)
+        List<String> usernamesList = (result["usernames"] as List<dynamic>?)
             ?.map((username) => username != null && username is String ? username : "Deleted Account")
-            .toList() ?? []; // Returns an empty list if result["usernames"] is null
+            .toList() ?? [];
 
-        List<String> Games_NamesList = (result["game_names"] as List<dynamic>?)
+        List<String> gamesNamesList = (result["game_names"] as List<dynamic>?)
             ?.map((gameName) => gameName != null && gameName is String ? gameName : "Unknown Game")
-            .toList() ?? []; // Returns an empty list if result["game_names"] is null
+            .toList() ?? [];
 
-        List<String> Games_CoversList = (result["game_covers"] as List<dynamic>?)
+        List<String> gamesCoversList = (result["game_covers"] as List<dynamic>?)
             ?.map((cover) => cover != null && cover is String ? cover : "")
-            .toList() ?? []; // Returns an empty list if result["game_covers"] is null
+            .toList() ?? [];
 
+        // Aggiungi i dati relativi ai like, commenti e utenti che mettono like
+        List<List<String>> likeUsersListTemp = (result["like_users"] as List<dynamic>?)
+            ?.map((likeUsers) {
+          if (likeUsers is List<dynamic>) {
+            return likeUsers.map((user) {
+              return user is String ? user : '';
+            }).toList();
+          } else {
+            return <String>[]; // Restituisci una lista vuota se likeUsers non è una lista
+          }
+        }).toList() ?? [];
+
+        List<int> likeCountsTemp = (result["like_counts"] as List<dynamic>?)?.
+        map((likeCount) => likeCount != null && likeCount is int ? likeCount : 0)
+            .toList() ?? [];
+
+        List<int> commentCountsTemp = (result["comment_counts"] as List<dynamic>?)?.
+        map((commentCount) => commentCount != null && commentCount is int ? commentCount : 0)
+            .toList() ?? [];
 
         setState(() {
-          Posts = postsList;
-          Usernames = UsernamesList;
-          Games_Names = Games_NamesList;
-          Games_Covers = Games_CoversList;
-          isLoading = false; // Imposta isLoading a false quando i post sono stati caricati
+          posts = postsList;
+          usernames = usernamesList;
+          gamesNames = gamesNamesList;
+          gamesCovers = gamesCoversList;
+          likeCounts = likeCountsTemp;
+          commentCounts = commentCountsTemp;
+          likeUsersList = likeUsersListTemp;
+          isLoading = false;
         });
       } else {
         print("Failed to fetch posts: ${result["message"]}");
         setState(() {
-          isLoading = false; // Imposta isLoading a false in caso di errore
+          isLoading = false;
         });
       }
     } catch (e) {
       print("Error fetching posts: $e");
       setState(() {
-        isLoading = false; // Imposta isLoading a false in caso di errore
+        isLoading = false;
       });
     }
   }
+
 
   void _updatePosts() {
     _getPosts(); // Ricarica i post
@@ -123,7 +150,7 @@ class _ProfilePostsState extends State<ProfilePosts> {
           ? const Center(
         child: CircularProgressIndicator(color: Colors.teal),
       )
-          : Posts.isEmpty
+          : posts.isEmpty
           ? Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -147,12 +174,17 @@ class _ProfilePostsState extends State<ProfilePosts> {
         ),
       )
           : ListView.builder(
-        itemCount: Posts.length,
+        itemCount: posts.length,
         itemBuilder: (context, index) {
-          final post = Posts[index];
-          final username = Usernames[index];
-          final gameName = Games_Names[index];
-          final cover = Games_Covers[index];
+          final post = posts[index];
+          final username = usernames[index];
+          final gameName = gamesNames[index];
+          final cover = gamesCovers[index];
+
+          final commentCount = commentCounts.isNotEmpty ? commentCounts[index] : 0;
+          final likeCount = likeCounts.isNotEmpty ? likeCounts[index] : 0;
+          final likedBy = likeUsersList.isNotEmpty ? likeUsersList[index] : [];
+
           return PostCard(
             postId: post.id,
             gameId: post.gameId,
@@ -160,21 +192,18 @@ class _ProfilePostsState extends State<ProfilePosts> {
             content: post.description,
             imageUrl: cover,
             timestamp: post.timestamp,
-            likeCount: post.likes,
-            commentCount: 5,
-            onLikePressed: () {
-              print('Liked Post: ${post.id}');
-            },
+            likeCount: likeCount,
+            commentCount: commentCount,
+            likedBy: likedBy,
             currentUser: currentUser,
             username: username,
             gameName: gameName,
             gameCover: cover,
-            onPostDeleted: () {
-              _updatePosts(); // Chiamata alla funzione per eliminare il post
-            },
+            onPostDeleted: _updatePosts,
           );
         },
-      ),
+      )
+      ,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showNewPostBottomSheet(context); // Mostra il modal per creare un nuovo post
