@@ -37,6 +37,45 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
+  Future<void> _pickImageFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _showImageSourceOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Take a Photo'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImageFromCamera();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Choose from Gallery'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImageFromGallery();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _handleSignup() async {
     final email = _emailController.text;
     final username = _usernameController.text;
@@ -80,7 +119,6 @@ class _SignupPageState extends State<SignupPage> {
       Navigator.pushNamed(context, '/home');
     }
   }
-
 
   void _showError(String message) {
     showDialog(
@@ -156,7 +194,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: _pickImageFromCamera,
+                onTap: _showImageSourceOptions,
                 child: CircleAvatar(
                   radius: 40,
                   backgroundColor: AppColors.lightestGreen,
