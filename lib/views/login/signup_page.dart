@@ -55,9 +55,13 @@ class _SignupPageState extends State<SignupPage> {
       return;
     }
 
-    String? profilePictureUrl = "";
+    String? profilePictureUrl;
     if (_selectedImage != null) {
-      profilePictureUrl = "your-storage-url-path";
+      profilePictureUrl = await _signupService.uploadImage(_selectedImage!);
+      if (profilePictureUrl == null) {
+        _showError("Failed to upload the profile picture. Please try again.");
+        return;
+      }
     }
 
     final result = await _signupService.registerUser(
@@ -67,7 +71,7 @@ class _SignupPageState extends State<SignupPage> {
       password: password,
       question: _selectedQuestion!,
       answer: resetAnswer,
-      profilePictureUrl: profilePictureUrl,
+      profilePictureUrl: profilePictureUrl ?? "",
     );
 
     if (result != null) {
@@ -76,6 +80,7 @@ class _SignupPageState extends State<SignupPage> {
       Navigator.pushNamed(context, '/home');
     }
   }
+
 
   void _showError(String message) {
     showDialog(

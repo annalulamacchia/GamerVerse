@@ -1,10 +1,30 @@
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:gamerverse/utils/firebase_auth_helper.dart';
 
 class SignupService {
-  final String apiUrl =
-      'https://gamerversemobile.pythonanywhere.com/register'; // Replace with your Flask API URL
+  final String apiUrl = 'https://gamerversemobile.pythonanywhere.com/register'; // Replace with your Flask API URL
+  final String imgbbApiUrl = 'https://api.imgbb.com/1/upload';
+  final String imgbbApiKey = 'ce85b3ddd83772dbecd1556c90f86d3e'; // Replace with your ImgBB API key
+
+  Future<String?> uploadImage(File imageFile) async {
+    try {
+      final request = http.MultipartRequest('POST', Uri.parse('$imgbbApiUrl?key=$imgbbApiKey'));
+      request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+
+      final response = await request.send();
+      if (response.statusCode == 200) {
+        final responseData = await http.Response.fromStream(response);
+        final decodedResponse = json.decode(responseData.body);
+        return decodedResponse['data']['url']; // The public URL of the uploaded image
+      } else {
+        return null; // Error handling: null if the upload fails
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 
   Future<String?> registerUser({
     required String email,
@@ -16,7 +36,6 @@ class SignupService {
     required String profilePictureUrl,
   }) async {
     try {
-      // Send registration data to the Flask API
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},
@@ -31,11 +50,9 @@ class SignupService {
         }),
       );
 
-      print(response.statusCode);
       if (response.statusCode == 200) {
-        // Parse the response
         final responseData = json.decode(response.body);
-        final String customToken = responseData['token']; // Retrieve custom token
+        final String customToken = responseData['token'];
         final String uid = responseData["uid"];
 
         // Exchange the custom token for an ID token
@@ -53,5 +70,6 @@ class SignupService {
       return 'Error: $e';
     }
   }
-
 }
+
+
