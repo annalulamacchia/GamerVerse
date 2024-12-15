@@ -26,7 +26,8 @@ class _HomePageState extends State<HomePage> {
     try {
       final all = await GameApiService.fetchGameDataList();
       final popular = await GameApiService.fetchPopularGames();
-      final releasedThisMonth = await GameApiService.fetchReleasedThisMonthGames();
+      final releasedThisMonth =
+          await GameApiService.fetchReleasedThisMonthGames();
       final upcoming = await GameApiService.fetchUpcomingGames();
 
       setState(() {
@@ -43,11 +44,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
         title: const Text('Home', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xff163832),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.search, color: Colors.white,),
             onPressed: () {
               Navigator.pushNamed(context, '/search');
             },

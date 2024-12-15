@@ -3,9 +3,11 @@ import 'package:gamerverse/views/profile/followers_or_following_page.dart';
 import 'package:gamerverse/services/user/Get_user_info.dart';
 
 class ProfileInfoCard extends StatefulWidget {
-  final int games_counter;
+  final int gamesCounter;
+  final String currentUser;
 
-  const ProfileInfoCard({super.key, required this.games_counter});
+  const ProfileInfoCard(
+      {super.key, required this.gamesCounter, required this.currentUser});
 
   @override
   State<ProfileInfoCard> createState() => _ProfileInfoCardState();
@@ -15,6 +17,8 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
   Map<String, dynamic>? userData;
   bool isLoading = true;
   String errorMessage = '';
+  List<dynamic> followers = [];
+  List<dynamic> followed = [];
 
   @override
   void initState() {
@@ -29,15 +33,21 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
         userData = response;
         isLoading = false;
 
-        List<dynamic> followers = userData!['data']['followers'] ?? [];
-        List<dynamic> followed = userData!['data']['followed'] ?? [];
-        userData!['data']['followers_count'] = followers.where((follower) {
+        List<dynamic> followersList = userData!['data']['followers'] ?? [];
+        List<dynamic> followedList = userData!['data']['followed'] ?? [];
+
+        userData!['data']['followers_count'] = followersList.where((follower) {
           return follower['isBlocked'] == false && follower['isFriend'];
         }).length;
 
-        userData!['data']['followed_count'] = followed.where((followedUser) {
+        userData!['data']['followed_count'] =
+            followedList.where((followedUser) {
           return followedUser['isBlocked'] == false && followedUser['isFriend'];
         }).length;
+
+        followed = followedList.where((followedUser) {
+          return followedUser['isBlocked'] == false && followedUser['isFriend'];
+        }).toList();
       });
     } else {
       setState(() {
@@ -66,7 +76,8 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
       child: Container(
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xff163832), Color(0xff3e6259)], // Gradiente della card precedente
+            colors: [Color(0xff163832), Color(0xff3e6259)],
+            // Gradiente della card precedente
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -83,49 +94,71 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Profile picture + statistics on the same row
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildAvatarWithName(
                   userData!['data']!['profile_picture'],
-                  userData!['data']!['name'],
-                  userData!['data']!['surname'],
+                  userData!['data']!['username'],
                 ),
-                const SizedBox(width: 16), // Spazio tra l'immagine e le statistiche
+                const SizedBox(width: 16),
+                // Space between the avatar and the stats
                 Expanded(
                   child: Column(
                     children: [
-                      // Righe per le statistiche (Games, Followed, Followers)
+                      // Row for statistics (Games, Followed, Followers)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildStatColumn(
                             context,
-                            (widget.games_counter).toString(),
+                            (widget.gamesCounter).toString(),
                             'Games   ',
                             Icons.videogame_asset,
                           ),
                           _buildClickableStatColumn(
                             context,
-                            userData!['data']['followed_count']?.toString() ?? '0',
+                            userData!['data']['followed_count']?.toString() ??
+                                '0',
                             'Followed ',
                             Icons.person_search,
-                            const FollowersPage(),
+                            FollowersPage(
+                                users: followed,
+                                currentUser: widget.currentUser,
+                                currentFollowed: followed),
                           ),
                           _buildClickableStatColumn(
                             context,
-                            userData!['data']['followers_count']?.toString() ?? '0',
+                            userData!['data']['followers_count']?.toString() ??
+                                '0',
                             'Followers',
                             Icons.group,
-                            const FollowersPage(),
+                            FollowersPage(
+                              users: followers,
+                              currentUser: widget.currentUser,
+                              currentFollowed: followed,
+                            ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12), // Distanza tra le statistiche e il nome
                     ],
                   ),
                 ),
               ],
+            ),
+
+            // Username in a separate row
+            const SizedBox(height: 12.5), // Space between stats and username
+            Text(
+              userData!['data']!['username'] ?? 'Unknown User',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.start,
+              softWrap: true,
             ),
           ],
         ),
@@ -133,10 +166,10 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
     );
   }
 
-  Widget _buildAvatarWithName(String? profilePictureUrl, String name, String surname) {
+  Widget _buildAvatarWithName(String? profilePictureUrl, String username) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center, // Centra l'immagine e il testo
-      crossAxisAlignment: CrossAxisAlignment.center, // Allinea al centro
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
           width: 80,
@@ -144,29 +177,21 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white, width: 3),
-            image: profilePictureUrl != null
+            image: profilePictureUrl != null && profilePictureUrl != ''
                 ? DecorationImage(
-                image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
+                    image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
                 : null,
           ),
-          child: profilePictureUrl == null
+          child: profilePictureUrl != null && profilePictureUrl == ''
               ? const Icon(Icons.person, size: 40, color: Colors.white)
               : null,
-        ),
-        const SizedBox(height: 16),  // Spazio tra immagine e testo
-        Text(
-          '$name $surname',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
         ),
       ],
     );
   }
 
-  Widget _buildStatColumn(BuildContext context, String count, String label, IconData icon) {
+  Widget _buildStatColumn(
+      BuildContext context, String count, String label, IconData icon) {
     return Column(
       children: [
         Icon(icon, color: Colors.white, size: 28),
@@ -195,4 +220,3 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
     );
   }
 }
-

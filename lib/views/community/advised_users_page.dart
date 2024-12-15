@@ -34,6 +34,12 @@ class _AdvisedUsersPageState extends State<AdvisedUsersPage> {
           'Advised Users',
           style: TextStyle(color: Colors.white),
         ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         backgroundColor: const Color(0xff163832), // Verde scuro per l'app bar
       ),
       body: Column(
@@ -48,8 +54,10 @@ class _AdvisedUsersPageState extends State<AdvisedUsersPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildTabButton(context, 'Users Near You', Near_you, 'Near_you'),
-                _buildTabButton(context, 'Users with Same Game', Same_game, 'Same_game'),
+                _buildTabButton(
+                    context, 'Users Near You', Near_you, 'Near_you'),
+                _buildTabButton(
+                    context, 'Users with Same Game', Same_game, 'Same_game'),
               ],
             ),
           ),
@@ -92,6 +100,9 @@ class _AdvisedUsersPageState extends State<AdvisedUsersPage> {
                     // Quando la card viene cliccata, naviga alla pagina del profilo utente
                     Navigator.pushNamed(context, '/userProfile');
                   },
+                  isFollowed: false,
+                  isBlocked: false,
+                  parentContext: context,
                 ); // Passa la funzione onTap per ogni card
               },
             ),
@@ -101,7 +112,8 @@ class _AdvisedUsersPageState extends State<AdvisedUsersPage> {
     );
   }
 
-  Widget _buildTabButton(BuildContext context, String text, bool isActive, String tab) {
+  Widget _buildTabButton(
+      BuildContext context, String text, bool isActive, String tab) {
     return Expanded(
       child: GestureDetector(
         onTap: () {

@@ -8,9 +8,13 @@ import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 class CommentsPage extends StatefulWidget {
   final String postId;
   final String? currentUser;
+  final ValueNotifier<int> commentNotifier;
 
   const CommentsPage(
-      {super.key, required this.postId, required this.currentUser});
+      {super.key,
+      required this.postId,
+      required this.currentUser,
+      required this.commentNotifier});
 
   @override
   CommentsPageState createState() => CommentsPageState();
@@ -68,7 +72,8 @@ class CommentsPageState extends State<CommentsPage> {
         const SnackBar(content: Text('Comment added successfully!')),
       );
       _commentController.clear();
-      _loadComments(); // Ricarica i commenti dopo averne aggiunto uno nuovo
+      _loadComments();
+      widget.commentNotifier.value++;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to add comment.')),
@@ -83,6 +88,12 @@ class CommentsPageState extends State<CommentsPage> {
       backgroundColor: const Color(0xff051f20), // Sfondo scuro per uniformità
       appBar: AppBar(
         title: const Text('Comments', style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         backgroundColor:
             const Color(0xff163832), // Colore verde scuro per l'AppBar
       ),
@@ -96,7 +107,7 @@ class CommentsPageState extends State<CommentsPage> {
                   ))
                 : ListView.builder(
                     padding: const EdgeInsets.only(
-                        left: 10, right: 10, top: 10, bottom: 10),
+                        left: 10, right: 10, top: 17.5, bottom: 17.5),
                     itemCount: _comments.isEmpty ? 1 : _comments.length,
                     itemBuilder: (context, index) {
                       if (_comments.isEmpty) {
@@ -110,11 +121,11 @@ class CommentsPageState extends State<CommentsPage> {
                       } else {
                         final comment = _comments[index];
                         return CommentCard(
-                          comment: comment,
-                          currentUser: widget.currentUser,
-                          parentContext: parentContext,
-                          onCommentRemoved: _loadComments,
-                        );
+                            comment: comment,
+                            currentUser: widget.currentUser,
+                            parentContext: parentContext,
+                            onCommentRemoved: _loadComments,
+                            commentNotifier: widget.commentNotifier);
                       }
                     },
                   ),

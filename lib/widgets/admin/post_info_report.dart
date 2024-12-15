@@ -96,12 +96,16 @@ class PostInfoReportState extends State<PostInfoReport> {
                             arguments: int.parse(additionalPostInfo.gameId),
                           );
                         },
-                        child: Text(
-                          additionalPostInfo.gameName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Colors.white,
+                        child: SizedBox(
+                          width: 220,
+                          child: Text(
+                            additionalPostInfo.gameName,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
@@ -118,7 +122,7 @@ class PostInfoReportState extends State<PostInfoReport> {
                         child: Row(
                           children: [
                             Container(
-                              width: 175,
+                              width: 220,
                               alignment: Alignment.bottomLeft,
                               child: Text(
                                 'Author: ${widget.report.username}',

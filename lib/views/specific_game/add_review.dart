@@ -104,7 +104,7 @@ class _AddReviewState extends State<AddReview> {
               ? Center(
                   child: Opacity(
                     opacity: 0,
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Colors.teal),
                   ),
                 )
               : Row(

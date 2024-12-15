@@ -72,11 +72,14 @@ class GameListSectionState extends State<GameListSection> {
                             color: Colors.grey[500]!,
                           ),
                         if (liked.isNotEmpty)
-                          _buildGameSection(context, 'Wishlist', liked),
+                          _buildGameSection(context, 'Wishlist', liked,
+                              Icons.favorite_outline),
                         if (playing.isNotEmpty)
-                          _buildGameSection(context, 'Playing', playing),
+                          _buildGameSection(context, 'Playing', playing,
+                              Icons.videogame_asset_outlined),
                         if (completed.isNotEmpty)
-                          _buildGameSection(context, 'Completed', completed),
+                          _buildGameSection(context, 'Completed', completed,
+                              Icons.check_circle_outline),
                         const SizedBox(height: 20),
                       ],
                     );
@@ -96,18 +99,21 @@ class GameListSectionState extends State<GameListSection> {
                       color: Colors.grey[500]!,
                     ),
                   if (liked.isNotEmpty)
-                    _buildGameSection(context, 'Wishlist', liked),
+                    _buildGameSection(
+                        context, 'Wishlist', liked, Icons.favorite_outline),
                   if (playing.isNotEmpty)
-                    _buildGameSection(context, 'Playing', playing),
+                    _buildGameSection(context, 'Playing', playing,
+                        Icons.videogame_asset_outlined),
                   if (completed.isNotEmpty)
-                    _buildGameSection(context, 'Completed', completed),
+                    _buildGameSection(context, 'Completed', completed,
+                        Icons.check_circle_outline),
                   const SizedBox(height: 20),
                 ],
               );
   }
 
-  Widget _buildGameSection(
-      BuildContext context, String title, List<GameProfile> games) {
+  Widget _buildGameSection(BuildContext context, String title,
+      List<GameProfile> games, IconData icon) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -116,16 +122,30 @@ class GameListSectionState extends State<GameListSection> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 22.5,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              Row(
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 22.5,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Icon(
+                    icon,
+                    size: 24,
+                    color: Colors.white,
+                  ),
+                ],
               ),
               IconButton(
-                icon: const Icon(Icons.keyboard_arrow_right, size: 40),
+                icon: const Icon(
+                  Icons.keyboard_arrow_right,
+                  size: 40,
+                  color: Colors.white,
+                ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/userAllGames', arguments: {
                     'games': games,

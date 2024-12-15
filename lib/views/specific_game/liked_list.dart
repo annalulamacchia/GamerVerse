@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/user.dart';
+import 'package:gamerverse/services/user/Get_user_info.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/info/user_follower_card.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 
 class LikedList extends StatefulWidget {
   final List<User> users;
+  final String? currentUser;
+  final String gameName;
 
-  const LikedList({super.key, required this.users});
+  const LikedList(
+      {super.key,
+      required this.users,
+      this.currentUser,
+      required this.gameName});
 
   @override
   LikedListState createState() => LikedListState();
@@ -15,11 +22,41 @@ class LikedList extends StatefulWidget {
 
 class LikedListState extends State<LikedList> {
   int itemCount = 0;
+  Map<String, dynamic>? currentUserData;
+  bool isLoadingCurrentUser = true;
+  String errorMessage = '';
+  List<dynamic> currentUserFollowed = [];
 
   @override
   void initState() {
     super.initState();
     itemCount = widget.users.length;
+    fetchCurrentUserData();
+  }
+
+  Future<void> fetchCurrentUserData() async {
+    try {
+      final response =
+          await UserProfileService.getUserByUid(widget.currentUser);
+      if (response['success']) {
+        setState(() {
+          currentUserData = response['data'];
+          isLoadingCurrentUser = false;
+
+          currentUserFollowed = currentUserData!['followed'] ?? [];
+        });
+      } else {
+        setState(() {
+          errorMessage = response['message'] ?? 'Error fetching user data';
+          isLoadingCurrentUser = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'An unexpected error occurred: $e';
+        isLoadingCurrentUser = false;
+      });
+    }
   }
 
   @override
@@ -34,7 +71,7 @@ class LikedListState extends State<LikedList> {
             Navigator.pop(context);
           },
         ),
-        title: const Text('Game Name', style: TextStyle(color: Colors.white)),
+        title: Text(widget.gameName, style: TextStyle(color: Colors.white)),
       ),
 
       //list of all the users that liked a specific game
@@ -50,13 +87,35 @@ class LikedListState extends State<LikedList> {
           : ListView.builder(
               itemCount: itemCount,
               itemBuilder: (context, index) {
+                bool isIdInFollowed = false;
+                bool isBlocked = false;
+                final user = (widget.users)[index];
+
+                isIdInFollowed = currentUserFollowed.any((followed) =>
+                    followed['id'] == user.userId &&
+                    followed['isFriend'] == true &&
+                    followed['isBlocked'] == false);
+                isBlocked = currentUserFollowed.any((followed) =>
+                    followed['id'] == user.userId &&
+                    followed['isBlocked'] == true);
+
                 return UserCard(
-                  index: (widget.users)[index].userId,
-                  username: (widget.users)[index].username,
-                  profilePicture: (widget.users)[index].profilePicture ?? '',
+                  index: user.userId,
+                  username: user.username,
+                  profilePicture: user.profilePicture ?? '',
                   onTap: () {
-                    Navigator.pushNamed(context, '/userProfile');
+                    if (user.userId != widget.currentUser) {
+                      Navigator.pushNamed(context, '/userProfile',
+                          arguments: user.userId);
+                    } else {
+                      Navigator.pushNamed(context, '/profile',
+                          arguments: user.userId);
+                    }
                   },
+                  isBlocked: isBlocked,
+                  isFollowed: isIdInFollowed,
+                  parentContext: context,
+                  currentUser: widget.currentUser,
                 );
               },
             ),

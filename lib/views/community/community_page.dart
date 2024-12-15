@@ -6,6 +6,7 @@ import 'package:gamerverse/widgets/community/PostCardCommunity.dart';
 import 'package:gamerverse/services/specific_game/wishlist_service.dart';
 import 'package:gamerverse/services/Community/post_service.dart';
 import 'package:gamerverse/models/post.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommunityPage extends StatefulWidget {
@@ -61,44 +62,59 @@ class _CommunityPageState extends State<CommunityPage> {
 
       if (result["success"] == true) {
         List<Post> postsList = (result["posts"] as List)
-            .map((postJson) => postJson != null ? Post.fromJson(postJson) : null)
+            .map(
+                (postJson) => postJson != null ? Post.fromJson(postJson) : null)
             .where((post) => post != null)
             .cast<Post>()
             .toList();
 
         List<String> usernamesList = (result["usernames"] as List<dynamic>?)
-            ?.map((username) => username != null && username is String ? username : "Deleted Account")
-            .toList() ?? [];
+                ?.map((username) => username != null && username is String
+                    ? username
+                    : "Deleted Account")
+                .toList() ??
+            [];
 
         List<String> gamesNamesList = (result["game_names"] as List<dynamic>?)
-            ?.map((gameName) => gameName != null && gameName is String ? gameName : "Unknown Game")
-            .toList() ?? [];
+                ?.map((gameName) => gameName != null && gameName is String
+                    ? gameName
+                    : "Unknown Game")
+                .toList() ??
+            [];
 
         List<String> gamesCoversList = (result["game_covers"] as List<dynamic>?)
-            ?.map((cover) => cover != null && cover is String ? cover : "")
-            .toList() ?? [];
+                ?.map((cover) => cover != null && cover is String ? cover : "")
+                .toList() ??
+            [];
 
         // Otteniamo i like, commenti e gli utenti che mettono like
-        List<List<String>> likeUsersListTemp = (result["like_users"] as List<dynamic>?)
-            ?.map((likeUsers) {
-          if (likeUsers is List<dynamic>) {
-            return likeUsers.map((user) {
-              // Verifica se user è una stringa, altrimenti metti una stringa vuota
-              return user is String ? user : '';
-            }).toList();
-          } else {
-            return <String>[]; // Restituisci una lista vuota se likeUsers non è una lista
-          }
-        }).toList() ?? [];
-
+        List<List<String>> likeUsersListTemp =
+            (result["like_users"] as List<dynamic>?)?.map((likeUsers) {
+                  if (likeUsers is List<dynamic>) {
+                    return likeUsers.map((user) {
+                      // Verifica se user è una stringa, altrimenti metti una stringa vuota
+                      return user is String ? user : '';
+                    }).toList();
+                  } else {
+                    return <String>[]; // Restituisci una lista vuota se likeUsers non è una lista
+                  }
+                }).toList() ??
+                [];
 
         List<int> likeCountsTemp = (result["like_counts"] as List<dynamic>?)
-            ?.map((likeCount) => likeCount != null && likeCount is int ? likeCount : 0)
-            .toList() ?? [];
+                ?.map((likeCount) =>
+                    likeCount != null && likeCount is int ? likeCount : 0)
+                .toList() ??
+            [];
 
-        List<int> commentCountsTemp = (result["comment_counts"] as List<dynamic>?)
-            ?.map((commentCount) => commentCount != null && commentCount is int ? commentCount : 0)
-            .toList() ?? [];
+        List<int> commentCountsTemp =
+            (result["comment_counts"] as List<dynamic>?)
+                    ?.map((commentCount) =>
+                        commentCount != null && commentCount is int
+                            ? commentCount
+                            : 0)
+                    .toList() ??
+                [];
 
         // Aggiorniamo lo stato con i dati recuperati
         setState(() {
@@ -143,55 +159,52 @@ class _CommunityPageState extends State<CommunityPage> {
       appBar: AppBar(
         title: const Text('Community', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xff163832),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator()) // Mostra il caricamento durante il recupero dei post
+          ? const Center(
+              child: CircularProgressIndicator(
+                  color: Colors
+                      .teal)) // Mostra il caricamento durante il recupero dei post
           : posts.isEmpty
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.info_outline, size: 50, color: Colors.white),
-            const SizedBox(height: 20),
-            const Text(
-              'There are no posts to visualize, follow new users or add yourself a post for your followers.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          ],
-        ),
-      )
-          : ListView.builder(
-        itemCount: posts.length,
-        itemBuilder: (context, index) {
-          final post = posts[index];
-          final username = usernames[index];
-          final gameName = gamesNames[index];
-          final cover = gamesCovers[index];
+              ? NoDataList(
+                  textColor: Colors.white,
+                  icon: Icons.notifications_off,
+                  message: 'No posts available!',
+                  subMessage: 'Come back later for new updates.',
+                  color: Colors.grey,
+                )
+              : ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    final username = usernames[index];
+                    final gameName = gamesNames[index];
+                    final cover = gamesCovers[index];
 
-          // Recupera i dati specifici per il post corrente
-          final commentCount = commentCounts.isNotEmpty ? commentCounts[index] : 0;
-          final likeCount = likeCounts.isNotEmpty ? likeCounts[index] : 0;
-          final likedBy = likeUsersList.isNotEmpty ? likeUsersList[index] : [];
-
-          return PostCard(
-            postId: post.id,
-            gameId: post.gameId,
-            userId: post.writerId,
-            content: post.description,
-            imageUrl: cover,
-            timestamp: post.timestamp,
-            likeCount: likeCount,
-            commentCount: commentCount,
-            likedBy: likedBy,
-            currentUser: currentUser,
-            username: username,
-            gameName: gameName,
-            gameCover: cover,
-            onPostDeleted: _updatePosts,
-          );
-        },
-      ),
+                    return PostCard(
+                      postId: post.id,
+                      gameId: post.gameId,
+                      userId: post.writerId,
+                      content: post.description,
+                      imageUrl: cover,
+                      timestamp: post.timestamp,
+                      likeCount: likeCounts[index],
+                      commentCount: commentCounts[index],
+                      likedBy: likeUsersList[index],
+                      currentUser: currentUser,
+                      username: username,
+                      gameName: gameName,
+                      gameCover: cover,
+                      onPostDeleted: _updatePosts,
+                    );
+                  },
+                ),
       bottomNavigationBar: const CustomBottomNavBar(currentIndex: 0),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -217,12 +230,14 @@ class _CommunityPageState extends State<CommunityPage> {
           onPostCreated: (description, gameId) {
             _createPost(context, description, gameId);
           },
+          onCreated: _updatePosts,
         );
       },
     );
   }
 
-  Future<void> _createPost(BuildContext context, String description, String gameId) async {
+  Future<void> _createPost(
+      BuildContext context, String description, String gameId) async {
     print('Creating post with description: $description and game ID: $gameId');
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Post creato con successo')),

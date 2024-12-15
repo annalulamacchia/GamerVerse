@@ -9,6 +9,7 @@ class CommentCard extends StatefulWidget {
   final String? currentUser;
   final BuildContext parentContext;
   final VoidCallback onCommentRemoved;
+  final ValueNotifier<int> commentNotifier;
 
   const CommentCard({
     super.key,
@@ -16,6 +17,7 @@ class CommentCard extends StatefulWidget {
     required this.currentUser,
     required this.parentContext,
     required this.onCommentRemoved,
+    required this.commentNotifier,
   });
 
   @override
@@ -33,6 +35,7 @@ class CommentCardState extends State<CommentCard> {
     if (success) {
       DialogHelper.showSuccessDialog(context, 'Review removed succesfully!');
       widget.onCommentRemoved();
+      widget.commentNotifier.value--;
     } else {
       DialogHelper.showErrorDialog(
           context, 'Error in removing the review. Please try again.');
@@ -80,7 +83,7 @@ class CommentCardState extends State<CommentCard> {
       children: [
         Card(
           color: const Color(0xfff0f9f1),
-          margin: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 16.0),
+          margin: const EdgeInsets.only(left: 15, right: 15, bottom: 17.5),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),

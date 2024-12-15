@@ -5,11 +5,13 @@ import 'package:gamerverse/services/Community/post_service.dart'; // Importa il 
 class NewPostBottomSheet extends StatefulWidget {
   final Function(String description, String gameId) onPostCreated;
   final List<GameProfile> wishlistGames;
+  final VoidCallback? onCreated;
 
   const NewPostBottomSheet({
     super.key,
     required this.onPostCreated,
     required this.wishlistGames,
+    required this.onCreated,
   });
 
   @override
@@ -107,20 +109,24 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
                   },
                 );
                 // Chiama il servizio per inviare il post
-                final result = await PostService.sendPost(description, selectedGameId!);
+                final result =
+                    await PostService.sendPost(description, selectedGameId!);
 
                 // Chiudi l'indicatore di caricamento
                 Navigator.of(context).pop();
 
                 // Controlla il risultato
                 if (result['success'] == true) {
+                  widget.onCreated!();
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Post created successfully!')),
                   );
                   Navigator.of(context).pop(); // Chiudi il bottom sheet
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to create post: ${result["message"]}')),
+                    SnackBar(
+                        content: Text(
+                            'Failed to create post: ${result["message"]}')),
                   );
                 }
               } else {
@@ -134,7 +140,6 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
               style: TextStyle(color: Colors.white, fontSize: 18),
             ),
           ),
-
         ],
       ),
     );

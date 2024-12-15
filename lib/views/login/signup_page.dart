@@ -21,7 +21,8 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _repeatPasswordController = TextEditingController();
+  final TextEditingController _repeatPasswordController =
+      TextEditingController();
   final TextEditingController _resetAnswerController = TextEditingController();
 
   String? _selectedQuestion;
@@ -146,6 +147,12 @@ class _SignupPageState extends State<SignupPage> {
       backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         backgroundColor: AppColors.darkGreen,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text(
           'GamerVerse',
           style: TextStyle(color: AppColors.lightestGreen),
@@ -203,10 +210,10 @@ class _SignupPageState extends State<SignupPage> {
                       : null,
                   child: _selectedImage == null
                       ? const Icon(
-                    Icons.add,
-                    color: AppColors.darkGreen,
-                    size: 32,
-                  )
+                          Icons.add,
+                          color: AppColors.darkGreen,
+                          size: 32,
+                        )
                       : null,
                 ),
               ),
@@ -219,14 +226,15 @@ class _SignupPageState extends State<SignupPage> {
               const SizedBox(height: 10),
               _buildTextField('Password', _passwordController, true),
               const SizedBox(height: 10),
-              _buildTextField('Repeat Password', _repeatPasswordController, true),
+              _buildTextField(
+                  'Repeat Password', _repeatPasswordController, true),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: AppColors.lightGreen,
                   contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                     borderSide: BorderSide.none,
@@ -254,7 +262,8 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              _buildTextField('Reset Password Answer', _resetAnswerController, false),
+              _buildTextField(
+                  'Reset Password Answer', _resetAnswerController, false),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _handleSignup,
@@ -272,7 +281,8 @@ class _SignupPageState extends State<SignupPage> {
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(currentIndex: 2), // Pass currentIndex here
+      bottomNavigationBar:
+          CustomBottomNavBar(currentIndex: 2), // Pass currentIndex here
     );
   }
 
@@ -286,7 +296,7 @@ class _SignupPageState extends State<SignupPage> {
         filled: true,
         fillColor: AppColors.lightGreen,
         contentPadding:
-        const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
           borderSide: BorderSide.none,

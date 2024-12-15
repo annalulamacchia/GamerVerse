@@ -291,7 +291,9 @@ class SpecificGameState extends State<SpecificGame> {
               const Text('Loading...', style: TextStyle(color: Colors.white)),
         ),
         body: const Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: Colors.teal,
+          ),
         ),
       );
     }
@@ -467,6 +469,8 @@ class SpecificGameState extends State<SpecificGame> {
                   gameId: gameData!['id'].toString(),
                   likedCountNotifier: likedCountNotifier,
                   users: users,
+                  currentUser: userId,
+                  gameName: gameData!['name'],
                 ),
                 const SizedBox(width: 20),
 
@@ -529,7 +533,7 @@ class SpecificGameState extends State<SpecificGame> {
                     }),
             if (latestReview == null && isLoadingReview == true)
               const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: Colors.teal),
               ),
             if (gameData?['first_release_date'] != null &&
                 gameData?['first_release_date'] * 1000 <

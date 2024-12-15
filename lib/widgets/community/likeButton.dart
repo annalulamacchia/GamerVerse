@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/services/Community/post_service.dart'; // Assicurati di importare il PostService
-import 'dart:convert';
+import 'package:gamerverse/services/Community/post_service.dart';
 
 class LikeButton extends StatefulWidget {
   final String postId;
@@ -9,18 +8,18 @@ class LikeButton extends StatefulWidget {
   final List<dynamic> initialLikedUsers;
 
   const LikeButton({
-    Key? key,
+    super.key,
     required this.postId,
     required this.currentUser,
     required this.initialLikeCount,
     required this.initialLikedUsers,
-  }) : super(key: key);
+  });
 
   @override
-  _LikeButtonState createState() => _LikeButtonState();
+  LikeButtonState createState() => LikeButtonState();
 }
 
-class _LikeButtonState extends State<LikeButton> {
+class LikeButtonState extends State<LikeButton> {
   late int likeCount;
   late bool isLiked;
 
@@ -33,7 +32,8 @@ class _LikeButtonState extends State<LikeButton> {
 
   Future<void> _toggleLike() async {
     // Chiamata al servizio per cambiare lo stato del like
-    final result = await PostService.toggleLike(widget.postId, widget.currentUser, isLiked);
+    final result = await PostService.toggleLike(
+        widget.postId, widget.currentUser, isLiked);
 
     if (result['success']) {
       setState(() {
@@ -58,7 +58,7 @@ class _LikeButtonState extends State<LikeButton> {
         IconButton(
           icon: Icon(
             isLiked ? Icons.thumb_up : Icons.thumb_up_outlined,
-            color: isLiked ? Colors.blue : Colors.grey,
+            color: isLiked ? Colors.black : Colors.grey,
           ),
           onPressed: _toggleLike,
         ),

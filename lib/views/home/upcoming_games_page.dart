@@ -258,14 +258,21 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
         title:
-            const Text('Upcoming Games', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.grey[200],
+            const Text('Upcoming Games', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xff163832),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.black),
+            icon: const Icon(Icons.filter_list, color: Colors.white),
             onPressed: _showFilterPopup,
           ),
         ],
