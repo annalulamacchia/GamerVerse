@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/Community/post_service.dart'; // Assicurati di importare il PostService
+import 'dart:convert';
 
 class LikeButton extends StatefulWidget {
   final String postId;
@@ -8,12 +9,12 @@ class LikeButton extends StatefulWidget {
   final List<dynamic> initialLikedUsers;
 
   const LikeButton({
-    super.key,
+    Key? key,
     required this.postId,
     required this.currentUser,
     required this.initialLikeCount,
     required this.initialLikedUsers,
-  });
+  }) : super(key: key);
 
   @override
   _LikeButtonState createState() => _LikeButtonState();
