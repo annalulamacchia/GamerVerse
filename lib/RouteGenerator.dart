@@ -25,6 +25,8 @@ import 'package:gamerverse/views/specific_game/series_games.dart';
 import 'package:gamerverse/views/specific_game/specific_game.dart';
 import 'package:gamerverse/views/profile/specific_user_game.dart';
 import 'package:gamerverse/views/home/upcoming_games_page.dart';
+import 'package:gamerverse/views/community/advised_users_page.dart';
+
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -35,6 +37,9 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/community':
         return MaterialPageRoute(builder: (context) => const CommunityPage());
+      case '/suggestedUsers':
+        return MaterialPageRoute(
+            builder: (context) => const AdvisedUsersPage());
       case '/profile':
         return MaterialPageRoute(
           builder: (context) => ProfilePage(),

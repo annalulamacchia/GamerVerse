@@ -7,6 +7,7 @@ import 'package:gamerverse/services/specific_game/wishlist_service.dart';
 import 'package:gamerverse/services/Community/post_service.dart';
 import 'package:gamerverse/models/post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:gamerverse/views/community/advised_users_page.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
@@ -143,7 +144,18 @@ class _CommunityPageState extends State<CommunityPage> {
       appBar: AppBar(
         title: const Text('Community', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xff163832),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_add, color: Colors.white),
+            onPressed: () {
+              // Reindirizza alla pagina "AdvisedUser"
+              Navigator.pushNamed(context, '/suggestedUsers');
+
+            },
+          ),
+        ],
       ),
+
       body: isLoading
           ? const Center(child: CircularProgressIndicator()) // Mostra il caricamento durante il recupero dei post
           : posts.isEmpty
