@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/user/Get_user_info.dart';
 import 'package:gamerverse/services/Friends/friend_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/utils/firebase_auth_helper.dart';
 import 'package:gamerverse/views/profile/followers_or_following_page.dart';
 import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
@@ -49,20 +50,22 @@ class _UserInfoCardState extends State<UserInfoCard> {
 
   Future<void> fetchCurrentUserData() async {
     try {
-      final response =
-          await UserProfileService.getUserByUid(widget.currentUser);
-      if (response['success']) {
-        setState(() {
-          currentUserData = response['data'];
-          isLoadingCurrentUser = false;
+      if (widget.currentUser != null) {
+        final response =
+            await UserProfileService.getUserByUid(widget.currentUser);
+        if (response['success']) {
+          setState(() {
+            currentUserData = response['data'];
+            isLoadingCurrentUser = false;
 
-          currentUserFollowed = currentUserData!['followed'] ?? [];
-        });
-      } else {
-        setState(() {
-          errorMessage = response['message'] ?? 'Error fetching user data';
-          isLoadingCurrentUser = false;
-        });
+            currentUserFollowed = currentUserData!['followed'] ?? [];
+          });
+        } else {
+          setState(() {
+            errorMessage = response['message'] ?? 'Error fetching user data';
+            isLoadingCurrentUser = false;
+          });
+        }
       }
     } catch (e) {
       setState(() {
@@ -108,16 +111,18 @@ class _UserInfoCardState extends State<UserInfoCard> {
                 followedUser['isFriend'];
           }).length;
 
-          widget.isFollowedNotifier!.value = followersList.any((follower) {
-            return follower['id'] == loggedInUserId &&
-                follower['isBlocked'] == false &&
-                follower['isFriend'];
-          });
+          if (loggedInUserId != null) {
+            widget.isFollowedNotifier!.value = followersList.any((follower) {
+              return follower['id'] == loggedInUserId &&
+                  follower['isBlocked'] == false &&
+                  follower['isFriend'];
+            });
 
-          widget.blockedNotifier!.value = followersList.any((follower) {
-            return follower['id'] == loggedInUserId &&
-                (follower['isBlocked'] ?? false);
-          });
+            widget.blockedNotifier!.value = followersList.any((follower) {
+              return follower['id'] == loggedInUserId &&
+                  (follower['isBlocked'] ?? false);
+            });
+          }
 
           followers = followersList.where((follower) {
             return follower['isBlocked'] == false &&
@@ -203,7 +208,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
   @override
   Widget build(BuildContext context) {
     BuildContext parentContext = context;
-    if (isLoading || isLoadingCurrentUser) {
+    if (isLoading && isLoadingCurrentUser) {
       return const Center(child: CircularProgressIndicator(color: Colors.teal));
     }
 
@@ -220,7 +225,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
       child: Container(
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xff163832), Color(0xff3e6259)],
+            colors: [AppColors.darkGreen, AppColors.mediumGreen],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),

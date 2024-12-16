@@ -4,7 +4,7 @@ import 'package:gamerverse/services/community/advised_user_service.dart'; // Imp
 
 
 class NearbyUsersWidget extends StatefulWidget {
-  const NearbyUsersWidget({Key? key}) : super(key: key);
+  const NearbyUsersWidget({super.key});
 
   @override
   _NearbyUsersWidgetState createState() => _NearbyUsersWidgetState();
@@ -39,7 +39,7 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
 
   Future<void> _fetchNearbyUsers() async {
     try {
-      final position = await AdvisedUsersService._getCurrentPosition();
+      final position = await AdvisedUsersService.getPosition();
       final latitude = position.latitude;
       final longitude = position.longitude;
       final users = await AdvisedUsersService.fetchUsersByLocation(latitude, longitude);      setState(() {

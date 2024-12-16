@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/services/user/logout.dart'; // Servizio logout
 import 'package:gamerverse/services/user/Get_user_info.dart'; // Servizio per ottenere dati utente
@@ -189,7 +190,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20), // Colore di sfondo
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         title: Text(
           userData?['username'] ?? 'Account Settings',
@@ -199,7 +200,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
       ),
       body: (isLoading)
           ? Center(child: CircularProgressIndicator(color: Colors.teal))

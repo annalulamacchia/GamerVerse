@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/report.dart';
 import 'package:gamerverse/services/report_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/admin/category_reports.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,9 +81,9 @@ class AdminReportPageState extends State<AdminReportPage> {
   Widget build(BuildContext context) {
     final parentContext = context;
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {

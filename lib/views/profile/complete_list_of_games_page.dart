@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_profile.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/profile_or_users/games/user_card_game.dart';
 
 class AllGamesUserPage extends StatelessWidget {
@@ -12,13 +13,13 @@ class AllGamesUserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         title: const Text(
           'All Games',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {

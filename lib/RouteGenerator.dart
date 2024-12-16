@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/models/user.dart';
 import 'package:gamerverse/views/admin_report_page.dart';
 import 'package:gamerverse/views/home/all_games_page.dart';
 import 'package:gamerverse/views/community/comment_page.dart';
@@ -25,7 +24,6 @@ import 'package:gamerverse/views/specific_game/series_games.dart';
 import 'package:gamerverse/views/specific_game/specific_game.dart';
 import 'package:gamerverse/views/profile/specific_user_game.dart';
 import 'package:gamerverse/views/home/upcoming_games_page.dart';
-import 'package:gamerverse/views/community/advised_users_page.dart';
 
 
 class RouteGenerator {

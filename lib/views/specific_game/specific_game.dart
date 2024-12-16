@@ -6,6 +6,7 @@ import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/services/specific_game/review_service.dart';
 import 'package:gamerverse/services/specific_game/status_game_service.dart';
 import 'package:gamerverse/services/specific_game/wishlist_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/utils/firebase_auth_helper.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
@@ -278,9 +279,9 @@ class SpecificGameState extends State<SpecificGame> {
     final parentContext = context;
     if (isLoading) {
       return Scaffold(
-        backgroundColor: const Color(0xff051f20),
+        backgroundColor: AppColors.darkestGreen,
         appBar: AppBar(
-          backgroundColor: const Color(0xff163832),
+          backgroundColor: AppColors.darkGreen,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
@@ -299,9 +300,9 @@ class SpecificGameState extends State<SpecificGame> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -560,7 +561,7 @@ class SpecificGameState extends State<SpecificGame> {
                 alignment: Alignment.center,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff3e6259),
+                      backgroundColor: AppColors.mediumGreen,
                     ),
                     onPressed: () {
                       Navigator.pushNamed(context, '/allReviews', arguments: {

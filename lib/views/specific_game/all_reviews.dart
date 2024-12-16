@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/models/review.dart';
 import 'package:gamerverse/services/specific_game/review_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/views/specific_game/add_review.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 import 'package:gamerverse/widgets/specific_game/single_review.dart';
@@ -83,9 +84,9 @@ class _ReviewPageState extends State<ReviewPage> {
   Widget build(BuildContext context) {
     final parentContext = context;
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -226,8 +227,8 @@ class _ReviewPageState extends State<ReviewPage> {
         onPressed: () => widget.userId != null
             ? _showAddReviewForm(context)
             : _toLoginForReview(context),
-        backgroundColor: const Color(0xff3e6259),
-        child: const Icon(Icons.add, color: Colors.white),
+        backgroundColor: AppColors.mediumGreen,
+        child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
   }

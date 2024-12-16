@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/report.dart';
 import 'package:gamerverse/services/report_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/admin/post_info_report.dart';
 import 'package:gamerverse/widgets/admin/review_info_report.dart';
 import 'package:gamerverse/widgets/admin/user_info_report.dart';
@@ -73,7 +74,7 @@ class ReportCardWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -120,7 +121,7 @@ class ReportCardWidget extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: const Color(0xff1c463f),
+                    color: AppColors.mediumMediumGreen,
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Text(

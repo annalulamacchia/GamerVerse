@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/utils/firebase_auth_helper.dart';
 import 'package:gamerverse/widgets/common_sections/report_block_menu.dart';
 import 'package:gamerverse/widgets/profile_or_users/info/user_info_card.dart';
@@ -58,9 +59,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     BuildContext parentContext = context;
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         title: const Text(
           'Profile',
           style: TextStyle(color: Colors.white),

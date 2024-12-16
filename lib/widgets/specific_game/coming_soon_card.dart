@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/colors.dart';
 
 class ComingSoonCard extends StatelessWidget {
   final String relaseDate;
@@ -16,7 +17,7 @@ class ComingSoonCard extends StatelessWidget {
         Expanded(
           child: Card(
             margin: const EdgeInsets.symmetric(horizontal: 15),
-            color: const Color(0xff3e6259),
+            color: AppColors.mediumGreen,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(100),
             ),

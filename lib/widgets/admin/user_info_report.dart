@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/report.dart';
 import 'package:gamerverse/services/report_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 
 class UserInfo extends StatefulWidget {
   final String title;
@@ -67,7 +68,7 @@ class UserInfoState extends State<UserInfo> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xff1c463f),
+        color: AppColors.mediumMediumGreen,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(

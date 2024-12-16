@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/views/profile/followers_or_following_page.dart';
 import 'package:gamerverse/services/user/Get_user_info.dart';
 
@@ -76,7 +77,7 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
       child: Container(
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xff163832), Color(0xff3e6259)],
+            colors: [AppColors.darkGreen, AppColors.mediumGreen],
             // Gradiente della card precedente
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,

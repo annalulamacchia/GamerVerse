@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_post.dart';
 import 'package:gamerverse/models/game_profile.dart';
 import 'package:gamerverse/services/Community/post_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/profile_or_users/posts/post_user_game.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
@@ -37,9 +38,9 @@ class SpecificUserGameState extends State<SpecificUserGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {

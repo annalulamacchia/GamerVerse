@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/specific_game/review_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:hugeicons/hugeicons.dart';
 
@@ -144,7 +145,7 @@ class _AddReviewState extends State<AddReview> {
               : Theme(
                   data: Theme.of(context).copyWith(
                     textSelectionTheme: const TextSelectionThemeData(
-                      selectionHandleColor: Color(0xff3e6259),
+                      selectionHandleColor: AppColors.mediumGreen,
                     ),
                   ),
                   //Text Area
@@ -158,7 +159,7 @@ class _AddReviewState extends State<AddReview> {
                         borderSide: BorderSide(color: Colors.white70),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xff3e6259)),
+                        borderSide: BorderSide(color: AppColors.mediumGreen),
                       ),
                     ),
                     maxLines: 4,
@@ -173,7 +174,7 @@ class _AddReviewState extends State<AddReview> {
             child: ElevatedButton(
               onPressed: _isLoading ? null : _submitReview,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xff3e6259),
+                backgroundColor: AppColors.mediumGreen,
               ),
               child: _isLoading
                   ? const CircularProgressIndicator(

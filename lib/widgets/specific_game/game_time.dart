@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/services/specific_game/playing_time_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:hugeicons/hugeicons.dart';
 
@@ -162,7 +163,7 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
                   _sendTime(hours);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff3e6259),
+                  backgroundColor: AppColors.mediumGreen,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -241,7 +242,7 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
                                   : _toLoginForTime(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff3e6259),
+                              backgroundColor: AppColors.mediumGreen,
                               shape: const CircleBorder(),
                             ),
                             child: const Icon(Icons.add,

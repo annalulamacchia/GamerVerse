@@ -16,13 +16,6 @@ class UserProfileService {
       // Recupera userId da SharedPreferences se non viene passato
       userId ??= prefs.getString('user_uid');
 
-      if (authToken == null || userId == null) {
-        return {
-          'success': false,
-          'message': 'No authentication token or user ID found. Please log in again.',
-        };
-      }
-
       // Costruisci l'URL per la richiesta
       final url = Uri.parse("$_baseUrl/user-get-info");
       final body = jsonEncode({'uid': userId});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_profile.dart';
-import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/profile_or_users/posts/NewPostBottomSheet.dart';
 import 'package:gamerverse/widgets/community/PostCardCommunity.dart';
 import 'package:gamerverse/services/specific_game/wishlist_service.dart';
@@ -158,18 +158,23 @@ class _ProfilePostsState extends State<ProfilePosts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       body: isLoading
           ? const Center(
               child: CircularProgressIndicator(color: Colors.teal),
             )
           : posts.isEmpty
-              ? NoDataList(
-                  textColor: Colors.white,
-                  icon: Icons.notifications_off,
-                  message: 'No posts available!',
-                  subMessage: 'Come back later for new updates.',
-                  color: Colors.grey,
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    NoDataList(
+                      textColor: Colors.white,
+                      icon: Icons.notifications_off_outlined,
+                      message: 'No posts available!',
+                      subMessage: 'Come back later for new updates.',
+                      color: Colors.grey,
+                    ),
+                  ],
                 )
               : ListView.builder(
                   itemCount: posts.length,
@@ -209,7 +214,7 @@ class _ProfilePostsState extends State<ProfilePosts> {
           _showNewPostBottomSheet(
               context); // Mostra il modal per creare un nuovo post
         },
-        backgroundColor: const Color(0xff3e6259),
+        backgroundColor: AppColors.mediumGreen,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );

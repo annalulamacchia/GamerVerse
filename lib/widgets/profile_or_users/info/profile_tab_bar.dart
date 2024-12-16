@@ -189,6 +189,7 @@ class TabBarSectionState extends State<TabBarSection> {
   Widget _buildUserPostsWidget() {
     return UserPosts(
         userId: widget.userId!,
-        currentUser: widget.currentUser); // Passa userId
+        currentUser: widget.currentUser,
+    blockedNotifier: widget.blockedNotifier,); // Passa userId
   }
 }
