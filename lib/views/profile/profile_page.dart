@@ -56,10 +56,19 @@ class ProfilePageState extends State<ProfilePage> {
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
         backgroundColor: const Color(0xff163832),
-        title: const Text('Profile', style: TextStyle(color: Colors.white)),
+        title: const Text('My Profile', style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
             onPressed: () {
               Navigator.pushNamed(context, '/profileSettings');
             },
@@ -97,7 +106,8 @@ class ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ProfileInfoCard(games_counter: gamesCounter),
+            child: ProfileInfoCard(
+                gamesCounter: gamesCounter, currentUser: userId),
           ),
           Expanded(
             child: TabBarSection(

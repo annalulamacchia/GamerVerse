@@ -58,7 +58,7 @@ class SeriesGameState extends State<SeriesGame> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator(color: Colors.teal))
             : GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,

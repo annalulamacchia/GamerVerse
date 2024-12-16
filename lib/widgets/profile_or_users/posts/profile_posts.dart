@@ -6,6 +6,7 @@ import 'package:gamerverse/widgets/community/PostCardCommunity.dart';
 import 'package:gamerverse/services/specific_game/wishlist_service.dart';
 import 'package:gamerverse/services/Community/post_service.dart';
 import 'package:gamerverse/models/post.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePosts extends StatefulWidget {
@@ -34,8 +35,6 @@ class _ProfilePostsState extends State<ProfilePosts> {
   List<int> likeCounts = [];
   List<int> commentCounts = [];
   List<List<String>> likeUsersList = [];
-
-
 
   Future<void> _getUserWishlist() async {
     try {
@@ -66,42 +65,58 @@ class _ProfilePostsState extends State<ProfilePosts> {
 
       if (result["success"] == true) {
         List<Post> postsList = (result["posts"] as List)
-            .map((postJson) => postJson != null ? Post.fromJson(postJson) : null)
+            .map(
+                (postJson) => postJson != null ? Post.fromJson(postJson) : null)
             .where((post) => post != null)
             .cast<Post>()
             .toList();
 
         List<String> usernamesList = (result["usernames"] as List<dynamic>?)
-            ?.map((username) => username != null && username is String ? username : "Deleted Account")
-            .toList() ?? [];
+                ?.map((username) => username != null && username is String
+                    ? username
+                    : "Deleted Account")
+                .toList() ??
+            [];
 
         List<String> gamesNamesList = (result["game_names"] as List<dynamic>?)
-            ?.map((gameName) => gameName != null && gameName is String ? gameName : "Unknown Game")
-            .toList() ?? [];
+                ?.map((gameName) => gameName != null && gameName is String
+                    ? gameName
+                    : "Unknown Game")
+                .toList() ??
+            [];
 
         List<String> gamesCoversList = (result["game_covers"] as List<dynamic>?)
-            ?.map((cover) => cover != null && cover is String ? cover : "")
-            .toList() ?? [];
+                ?.map((cover) => cover != null && cover is String ? cover : "")
+                .toList() ??
+            [];
 
         // Aggiungi i dati relativi ai like, commenti e utenti che mettono like
-        List<List<String>> likeUsersListTemp = (result["like_users"] as List<dynamic>?)
-            ?.map((likeUsers) {
-          if (likeUsers is List<dynamic>) {
-            return likeUsers.map((user) {
-              return user is String ? user : '';
-            }).toList();
-          } else {
-            return <String>[]; // Restituisci una lista vuota se likeUsers non è una lista
-          }
-        }).toList() ?? [];
+        List<List<String>> likeUsersListTemp =
+            (result["like_users"] as List<dynamic>?)?.map((likeUsers) {
+                  if (likeUsers is List<dynamic>) {
+                    return likeUsers.map((user) {
+                      return user is String ? user : '';
+                    }).toList();
+                  } else {
+                    return <String>[]; // Restituisci una lista vuota se likeUsers non è una lista
+                  }
+                }).toList() ??
+                [];
 
-        List<int> likeCountsTemp = (result["like_counts"] as List<dynamic>?)?.
-        map((likeCount) => likeCount != null && likeCount is int ? likeCount : 0)
-            .toList() ?? [];
+        List<int> likeCountsTemp = (result["like_counts"] as List<dynamic>?)
+                ?.map((likeCount) =>
+                    likeCount != null && likeCount is int ? likeCount : 0)
+                .toList() ??
+            [];
 
-        List<int> commentCountsTemp = (result["comment_counts"] as List<dynamic>?)?.
-        map((commentCount) => commentCount != null && commentCount is int ? commentCount : 0)
-            .toList() ?? [];
+        List<int> commentCountsTemp =
+            (result["comment_counts"] as List<dynamic>?)
+                    ?.map((commentCount) =>
+                        commentCount != null && commentCount is int
+                            ? commentCount
+                            : 0)
+                    .toList() ??
+                [];
 
         setState(() {
           posts = postsList;
@@ -127,13 +142,11 @@ class _ProfilePostsState extends State<ProfilePosts> {
     }
   }
 
-
   void _updatePosts() {
     _getPosts(); // Ricarica i post
   }
 
   // Funzione per eliminare un post
-
 
   @override
   void initState() {
@@ -148,65 +161,53 @@ class _ProfilePostsState extends State<ProfilePosts> {
       backgroundColor: const Color(0xff051f20),
       body: isLoading
           ? const Center(
-        child: CircularProgressIndicator(color: Colors.teal),
-      )
+              child: CircularProgressIndicator(color: Colors.teal),
+            )
           : posts.isEmpty
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Icon(
-              Icons.message_sharp, // Icona rappresentante il concetto di post
-              size: 50,
-              color: Colors.white,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'There are no submitted posts. It\'s time for the first one!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-              ),
-            ),
-          ],
-        ),
-      )
-          : ListView.builder(
-        itemCount: posts.length,
-        itemBuilder: (context, index) {
-          final post = posts[index];
-          final username = usernames[index];
-          final gameName = gamesNames[index];
-          final cover = gamesCovers[index];
+              ? NoDataList(
+                  textColor: Colors.white,
+                  icon: Icons.notifications_off,
+                  message: 'No posts available!',
+                  subMessage: 'Come back later for new updates.',
+                  color: Colors.grey,
+                )
+              : ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    final username = usernames[index];
+                    final gameName = gamesNames[index];
+                    final cover = gamesCovers[index];
 
-          final commentCount = commentCounts.isNotEmpty ? commentCounts[index] : 0;
-          final likeCount = likeCounts.isNotEmpty ? likeCounts[index] : 0;
-          final likedBy = likeUsersList.isNotEmpty ? likeUsersList[index] : [];
+                    final commentCount =
+                        commentCounts.isNotEmpty ? commentCounts[index] : 0;
+                    final likeCount =
+                        likeCounts.isNotEmpty ? likeCounts[index] : 0;
+                    final likedBy =
+                        likeUsersList.isNotEmpty ? likeUsersList[index] : [];
 
-          return PostCard(
-            postId: post.id,
-            gameId: post.gameId,
-            userId: post.writerId,
-            content: post.description,
-            imageUrl: cover,
-            timestamp: post.timestamp,
-            likeCount: likeCount,
-            commentCount: commentCount,
-            likedBy: likedBy,
-            currentUser: currentUser,
-            username: username,
-            gameName: gameName,
-            gameCover: cover,
-            onPostDeleted: _updatePosts,
-          );
-        },
-      )
-      ,
+                    return PostCard(
+                      postId: post.id,
+                      gameId: post.gameId,
+                      userId: post.writerId,
+                      content: post.description,
+                      imageUrl: cover,
+                      timestamp: post.timestamp,
+                      likeCount: likeCount,
+                      commentCount: commentCount,
+                      likedBy: likedBy,
+                      currentUser: currentUser,
+                      username: username,
+                      gameName: gameName,
+                      gameCover: cover,
+                      onPostDeleted: _updatePosts,
+                    );
+                  },
+                ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showNewPostBottomSheet(context); // Mostra il modal per creare un nuovo post
+          _showNewPostBottomSheet(
+              context); // Mostra il modal per creare un nuovo post
         },
         backgroundColor: const Color(0xff3e6259),
         child: const Icon(Icons.add, color: Colors.white),
@@ -228,18 +229,17 @@ class _ProfilePostsState extends State<ProfilePosts> {
           onPostCreated: (description, gameId) {
             _createPost(context, description, gameId);
           },
+          onCreated: _updatePosts,
         );
       },
     );
   }
 
-  Future<void> _createPost(BuildContext context, String description, String gameId) async {
+  Future<void> _createPost(
+      BuildContext context, String description, String gameId) async {
     print('Creating post with description: $description and game ID: $gameId');
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Post creato con successo')),
     );
   }
 }
-
-
-

@@ -1,29 +1,76 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/widgets/profile_or_users/info/user_follower_card.dart'; // Importa il widget UserCard
+import 'package:gamerverse/widgets/profile_or_users/info/user_follower_card.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 
 class FollowersPage extends StatelessWidget {
-  const FollowersPage({super.key});
+  final List<dynamic> users;
+  final String? currentUser;
+  final List<dynamic>? currentFollowed;
+
+  const FollowersPage(
+      {super.key,
+      required this.users,
+      required this.currentUser,
+      this.currentFollowed});
 
   @override
   Widget build(BuildContext context) {
+    BuildContext parentContext = context;
     return Scaffold(
       backgroundColor: const Color(0xff051f20),
       appBar: AppBar(
-        title: const Text('Followers', style: TextStyle(color: Colors.white)),
+        title: const Text('Friends', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xff163832),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: ListView.builder(
-        itemCount: 10,
+        itemCount: users.isEmpty ? 1 : users.length,
         itemBuilder: (context, index) {
-          return UserCard(
-            username: '',
-            profilePicture: '',
-            index: index.toString(),
-            onTap: () {
-              // Navigazione alla pagina del profilo utente
-              Navigator.pushNamed(context, '/userProfile');
-            },
-          );
+          if (users.isEmpty) {
+            return NoDataList(
+              textColor: Colors.grey,
+              icon: Icons.person_outline,
+              message: 'No users yet.',
+              subMessage: 'Looks like there’s nothing to show at the moment.',
+              color: Colors.white,
+            );
+          } else {
+            final user = users[index];
+            bool isIdInFollowed = false;
+            bool isBlocked = false;
+            if (currentFollowed != null) {
+              isIdInFollowed = currentFollowed!.any((followed) =>
+                  followed['id'] == user['id'] &&
+                  followed['isFriend'] == true &&
+                  followed['isBlocked'] == false);
+              isBlocked = currentFollowed!.any((followed) =>
+                  followed['id'] == user['id'] &&
+                  followed['isBlocked'] == true);
+            }
+            return UserCard(
+              username: user['username'],
+              profilePicture: user['profilePicture'],
+              index: user['id'],
+              currentUser: currentUser,
+              isFollowed: isIdInFollowed,
+              parentContext: parentContext,
+              onTap: () {
+                if (user['id'] != currentUser || currentUser == null) {
+                  Navigator.pushNamed(context, '/userProfile',
+                      arguments: user['id']);
+                } else {
+                  Navigator.pushNamed(context, '/profile',
+                      arguments: user['id']);
+                }
+              },
+              isBlocked: isBlocked,
+            );
+          }
         },
       ),
     );

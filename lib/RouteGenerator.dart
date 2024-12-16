@@ -76,11 +76,13 @@ class RouteGenerator {
       case '/comments':
         if (args is Map<String, dynamic> &&
             args.containsKey('postId') &&
-            args.containsKey('currentUser')) {
+            args.containsKey('currentUser') &&
+            args.containsKey('commentNotifier')) {
           return MaterialPageRoute(
               builder: (context) => CommentsPage(
                     postId: args['postId'],
                     currentUser: args['currentUser'],
+                    commentNotifier: args['commentNotifier'],
                   ));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
@@ -140,9 +142,16 @@ class RouteGenerator {
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/likedList':
-        if (args is List<User>) {
+        if (args is Map<String, dynamic> &&
+            args.containsKey('users') &&
+            args.containsKey('currentUser') &&
+            args.containsKey('gameName')) {
           return MaterialPageRoute(
-              builder: (context) => LikedList(users: args));
+              builder: (context) => LikedList(
+                    users: args['users'],
+                    currentUser: args['currentUser'],
+                    gameName: args['gameName'],
+                  ));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/playedList':

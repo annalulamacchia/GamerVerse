@@ -34,8 +34,10 @@ class _ReportBlockMenuState extends State<ReportBlockMenu> {
           widget.parentContext, "The User was blocked successfully!");
       setState(() {
         widget.blockedNotifier.value = true;
+        if (widget.isFollowedNotifier.value) {
+          widget.followersNotifier.value--;
+        }
         widget.isFollowedNotifier.value = false;
-        widget.followersNotifier.value--;
       });
     } else {
       DialogHelper.showErrorDialog(

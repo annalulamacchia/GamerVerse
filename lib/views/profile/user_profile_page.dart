@@ -19,9 +19,9 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   late Future<String> userIdFuture;
-  String? currentUser; // Identificativo dell'utente corrente
-  List<GameProfile> wishlist = []; // Lista dei giochi nella wishlist
-  int gamesCounter = 0; // Contatore dei giochi
+  String? currentUser;
+  List<GameProfile> wishlist = [];
+  int gamesCounter = 0;
   bool isLoading = true;
   ValueNotifier<bool> blockedNotifier = ValueNotifier<bool>(false);
   ValueNotifier<bool> isFollowedNotifier = ValueNotifier<bool>(false);
@@ -35,7 +35,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     _loadWishlist(widget.userId);
   }
 
-  // Carica i dati dell'utente corrente
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final String? uid = prefs.getString('user_uid');
@@ -46,12 +45,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
     });
   }
 
-  // Carica la wishlist dell'utente specificato e aggiorna il contatore
   Future<void> _loadWishlist(String userId) async {
     final games = await WishlistService.getWishlist(userId);
     setState(() {
       wishlist = games;
-      gamesCounter = games.length; // Calcolo del contatore
+      gamesCounter = games.length;
       isLoading = false;
     });
   }
@@ -64,19 +62,24 @@ class _UserProfilePageState extends State<UserProfilePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xff163832),
         title: const Text(
-          'User Profile',
+          'Profile',
           style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         actions: [
           FutureBuilder<String>(
-            future: userIdFuture, // Usa il futuro per ottenere userId
+            future: userIdFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else if (snapshot.hasData) {
-                // Passa lo userId e currentUser quando i dati sono disponibili
                 if (currentUser != null) {
                   return ReportBlockMenu(
                     userId: currentUser,
@@ -89,8 +92,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 }
                 return Container();
               } else {
-                return const SizedBox
-                    .shrink(); // Placeholder nel caso di dati non disponibili
+                return const SizedBox.shrink();
               }
             },
           ),
@@ -112,20 +114,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                // Card con informazioni dell'utente
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: UserInfoCard(
                       userId: userId,
-                      games_counter: gamesCounter,
+                      gamesCounter: gamesCounter,
                       blockedNotifier: blockedNotifier,
                       isFollowedNotifier: isFollowedNotifier,
                       followersNotifier: followersNotifier,
-                      currentUser: currentUser // Passaggio del contatore
-                      ),
+                      currentUser: currentUser),
                 ),
                 const SizedBox(height: 10),
-                // Tab Bar con contenuti
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
@@ -136,9 +135,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     ),
                     child: TabBarSection(
                       mode: 1,
-                      // Modalità specifica per il profilo utente
                       selected: 0,
-                      // Tab selezionato inizialmente
                       userId: userId,
                       currentUser: currentUser,
                       wishlist: wishlist,
@@ -156,7 +153,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         },
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1, // Indice per "Home" nella barra di navigazione
+        currentIndex: 1,
       ),
     );
   }

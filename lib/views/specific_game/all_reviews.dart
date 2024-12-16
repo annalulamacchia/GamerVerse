@@ -178,7 +178,8 @@ class _ReviewPageState extends State<ReviewPage> {
               future: _reviewsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: CircularProgressIndicator(color: Colors.teal));
                 }
 
                 if (snapshot.hasError) {

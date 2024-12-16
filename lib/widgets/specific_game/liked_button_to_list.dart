@@ -5,12 +5,16 @@ class LikedButtonToList extends StatelessWidget {
   final String gameId;
   final List<User>? users;
   final ValueNotifier<int> likedCountNotifier;
+  final String? currentUser;
+  final String gameName;
 
   const LikedButtonToList(
       {super.key,
       required this.gameId,
       required this.likedCountNotifier,
-      required this.users});
+      required this.users,
+      this.currentUser,
+      required this.gameName});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,11 @@ class LikedButtonToList extends StatelessWidget {
       builder: (context, likedCount, child) {
         return InkWell(
           onTap: () {
-            Navigator.pushNamed(context, '/likedList', arguments: users);
+            Navigator.pushNamed(context, '/likedList', arguments: {
+              'users': users,
+              'currentUser': currentUser,
+              'gameName': gameName
+            });
           },
           child: Column(
             children: [

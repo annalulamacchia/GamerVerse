@@ -77,6 +77,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       appBar: AppBar(
         title:
             const Text('Reset Password', style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         backgroundColor: AppColors.darkGreen,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -100,23 +106,23 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               controller: emailController,
               decoration: InputDecoration(
                 labelText: 'E-mail',
-                labelStyle: const TextStyle(color: AppColors.lightestGreen),
-                fillColor: AppColors.veryDarkGreen,
+                labelStyle: const TextStyle(color: AppColors.darkGreen),
+                fillColor: AppColors.lightGreen,
                 filled: true,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none),
               ),
-              style: const TextStyle(color: AppColors.lightestGreen),
+              style: const TextStyle(color: AppColors.darkGreen),
             ),
             const SizedBox(height: 15),
             DropdownButtonFormField<String>(
-              value: selectedQuestion,
+              value: null,
               items: securityQuestions.map((String question) {
                 return DropdownMenuItem<String>(
                   value: question,
                   child: Text(question,
-                      style: const TextStyle(color: AppColors.lightestGreen)),
+                      style: const TextStyle(color: AppColors.darkGreen)),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -125,29 +131,33 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 });
               },
               decoration: InputDecoration(
-                labelText: 'Reset Password Question',
-                labelStyle: const TextStyle(color: AppColors.lightestGreen),
-                fillColor: AppColors.veryDarkGreen,
+                fillColor: AppColors.lightGreen,
                 filled: true,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none),
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
               ),
-              dropdownColor: AppColors.veryDarkGreen,
+              dropdownColor: AppColors.lightestGreen,
+              hint: const Text(
+                'Select a question', // Testo visibile quando nulla è selezionato
+                style: TextStyle(color: AppColors.darkGreen),
+              ),
             ),
             const SizedBox(height: 15),
             TextField(
               controller: answerController,
               decoration: InputDecoration(
                 labelText: 'Reset Password Answer',
-                labelStyle: const TextStyle(color: AppColors.lightestGreen),
-                fillColor: AppColors.veryDarkGreen,
+                labelStyle: const TextStyle(color: AppColors.darkGreen),
+                fillColor: AppColors.lightGreen,
                 filled: true,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none),
               ),
-              style: const TextStyle(color: AppColors.lightestGreen),
+              style: const TextStyle(color: AppColors.darkGreen),
             ),
             const SizedBox(height: 20),
             isLoading
@@ -155,12 +165,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 : ElevatedButton(
                     onPressed: handleReset,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.mediumGreen,
+                      backgroundColor: AppColors.lightestGreen,
+                      foregroundColor: AppColors.darkGreen,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 32, vertical: 12),
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                     ),
-                    child: const Text('Reset',
-                        style: TextStyle(color: AppColors.lightestGreen)),
+                    child: const Text(
+                      'Reset',
+                      style: TextStyle(color: AppColors.darkGreen),
+                    ),
                   ),
           ],
         ),

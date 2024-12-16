@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/report_menu.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:gamerverse/services/Community/post_service.dart';
+import 'package:gamerverse/widgets/community/likeButton.dart';
 
 class UserPost extends StatefulWidget {
-  final String username;
-  final String commentText;
+  final String postId;
+  final String userId;
+  final String content;
+  final String imageUrl;
+  final String timestamp;
   final int likeCount;
   final int commentCount;
-  final String avatarUrl;
-  final String writerId;
-  final String currentUser;
-  final String postId;
+  final List<dynamic> likedBy;
+  final String? currentUser;
+  final String username;
+  final VoidCallback? onPostDeleted;
 
   const UserPost({
     super.key,
-    required this.username,
-    required this.commentText,
+    required this.postId,
+    required this.userId,
+    required this.content,
+    required this.imageUrl,
+    required this.timestamp,
     required this.likeCount,
     required this.commentCount,
-    required this.avatarUrl,
-    required this.writerId,
+    required this.likedBy,
     required this.currentUser,
-    required this.postId,
+    required this.username,
+    this.onPostDeleted,
   });
 
   @override
@@ -29,26 +37,92 @@ class UserPost extends StatefulWidget {
 }
 
 class UserPostState extends State<UserPost> {
-  bool isLiked = false;
-  late int currentLikeCount;
   bool _isExpanded = false;
+  bool _isDeleting = false;
+  final ValueNotifier<int> commentNotifier = ValueNotifier(0);
 
   @override
   void initState() {
     super.initState();
-    currentLikeCount = widget.likeCount;
+    commentNotifier.value = widget.commentCount;
   }
 
-  //function to handle liked and not liked
-  void _toggleLike() {
+  @override
+  void dispose() {
+    commentNotifier.dispose();
+    super.dispose();
+  }
+
+  void _deletePost() async {
     setState(() {
-      if (isLiked) {
-        currentLikeCount--;
-      } else {
-        currentLikeCount++;
-      }
-      isLiked = !isLiked;
+      _isDeleting = true;
     });
+
+    try {
+      await PostService.deletePost(widget.postId);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Post deleted successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        if (widget.onPostDeleted != null) {
+          widget.onPostDeleted!();
+        }
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to delete post: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeleting = false;
+        });
+      }
+    }
+  }
+
+  String _getRelativeTime(String timestamp) {
+    final postTime = DateTime.parse(timestamp);
+    return timeago.format(postTime, locale: 'en');
+  }
+
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Post'),
+          content: const Text(
+              'Are you sure you want to delete this post? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deletePost();
+              },
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -57,25 +131,31 @@ class UserPostState extends State<UserPost> {
       children: [
         Card(
           color: const Color(0xfff0f9f1),
-          margin: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 15),
+          margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(15),
           ),
           elevation: 8,
           shadowColor: Colors.black.withOpacity(0.5),
           child: Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.only(right: 15, left: 15, top: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Avatar, username, and timestamp
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Avatar
                     CircleAvatar(
-                      backgroundImage: NetworkImage(widget.avatarUrl),
+                      backgroundColor: Colors.grey[200],
+                      backgroundImage: widget.imageUrl != ''
+                          ? NetworkImage(widget.imageUrl)
+                          : null,
                       radius: 20,
+                      child: widget.imageUrl != ''
+                          ? null
+                          : Icon(Icons.person,
+                              color: Colors.grey[700], size: 30),
                     ),
                     const SizedBox(width: 8),
 
@@ -86,8 +166,13 @@ class UserPostState extends State<UserPost> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              // Navigate to a new page when the text is tapped
-                              Navigator.pushNamed(context, '/userProfile');
+                              if (widget.userId == widget.currentUser) {
+                                Navigator.pushNamed(context, '/profile',
+                                    arguments: widget.userId);
+                              } else {
+                                Navigator.pushNamed(context, '/userProfile',
+                                    arguments: widget.userId);
+                              }
                             },
                             child: Container(
                               width: 250,
@@ -104,11 +189,11 @@ class UserPostState extends State<UserPost> {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          const Text(
-                            '2 hours ago',
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 12,
+                          Text(
+                            _getRelativeTime(widget.timestamp),
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
                             ),
                           ),
                         ],
@@ -116,18 +201,15 @@ class UserPostState extends State<UserPost> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-
-                //Post
+                const SizedBox(height: 10),
+                // Descrizione
                 Text(
-                  widget.commentText,
-                  maxLines: _isExpanded ? widget.commentText.length : 2,
+                  widget.content,
+                  maxLines: _isExpanded ? widget.content.length : 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontSize: 14, color: Colors.black87),
                 ),
-
-                // View More / View Less
-                if (widget.commentText.toUpperCase().length > 74)
+                if (widget.content.length > 74)
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -142,42 +224,50 @@ class UserPostState extends State<UserPost> {
                       ),
                     ),
                   ),
-                const SizedBox(height: 12),
-
-                // Likes and Comments
+                const SizedBox(height: 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    // Comments
-                    TextButton.icon(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/comments');
-                      },
-                      icon: const Icon(
-                        Icons.comment_outlined,
-                        size: 18,
-                        color: Colors.black54,
-                      ),
-                      label: Text(
-                        widget.commentCount.toString(),
-                        style: const TextStyle(color: Colors.black54),
-                      ),
-                    ),
-
-                    // Likes
-                    TextButton.icon(
-                      onPressed: _toggleLike,
-                      icon: Icon(
-                        isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-                        size: 18,
-                        color: isLiked ? Colors.black : Colors.black54,
-                      ),
-                      label: Text(
-                        currentLikeCount.toString(),
-                        style: TextStyle(
-                          color: isLiked ? Colors.black : Colors.black54,
+                    Row(
+                      children: [
+                        LikeButton(
+                          postId: widget.postId,
+                          currentUser: widget.currentUser ?? '',
+                          initialLikeCount: widget.likeCount,
+                          initialLikedUsers: widget.likedBy,
                         ),
-                      ),
+                        const SizedBox(width: 20),
+                        IconButton(
+                          icon: Icon(
+                            Icons.comment_outlined,
+                            color: Colors.grey[700],
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/comments',
+                              arguments: {
+                                'postId': widget.postId,
+                                'currentUser': widget.currentUser,
+                                'commentNotifier': commentNotifier
+                              },
+                            );
+                          },
+                        ),
+                        ValueListenableBuilder<int>(
+                          valueListenable: commentNotifier,
+                          builder: (context, commentCount, child) {
+                            return Text(
+                              "$commentCount",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -186,27 +276,30 @@ class UserPostState extends State<UserPost> {
           ),
         ),
         Positioned(
-          top: 10,
-          right: 15,
+          top: 25,
+          right: 20,
           child: Row(
             children: [
-              // Toggle menu
-              if (widget.currentUser != widget.writerId)
+              if (widget.currentUser != widget.userId)
                 ReportMenu(
-                    userId: widget.currentUser,
-                    reportedId: widget.writerId,
-                    parentContext: context,
-                    writerId: widget.writerId,
-                    type: 'Post'),
-              //remove review
-              if (widget.currentUser == widget.writerId)
+                  userId: widget.currentUser,
+                  reportedId: widget.postId,
+                  parentContext: context,
+                  writerId: widget.userId,
+                  type: 'Post',
+                ),
+              if (widget.currentUser == widget.userId)
                 IconButton(
-                  icon: HugeIcon(
-                    icon: HugeIcons.strokeRoundedDelete02,
-                    color: Colors.black54,
-                    size: 20.0,
-                  ),
-                  onPressed: () => {},
+                  icon: _isDeleting
+                      ? const Opacity(
+                          opacity: 0,
+                          child: CircularProgressIndicator(),
+                        )
+                      : const Icon(
+                          Icons.delete_outline,
+                          color: Colors.black54,
+                        ),
+                  onPressed: _isDeleting ? null : _showDeleteConfirmation,
                 ),
             ],
           ),

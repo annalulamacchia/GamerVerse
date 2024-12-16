@@ -31,7 +31,8 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
       return;
     }
 
-    final response = await LoginWithEmailService.loginWithEmail(email, password);
+    final response =
+        await LoginWithEmailService.loginWithEmail(email, password);
 
     setState(() {
       _isLoading = false;
@@ -54,6 +55,15 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xff163832),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -122,9 +132,9 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
                   ),
                   child: _isLoading
                       ? const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.darkGreen),
-                  )
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.darkGreen),
+                        )
                       : const Text('Log-in'),
                 ),
                 const SizedBox(height: 20),

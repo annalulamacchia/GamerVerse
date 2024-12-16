@@ -66,6 +66,12 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
       appBar: AppBar(
         title:
             const Text('Reset Password', style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         backgroundColor: AppColors.veryDarkGreen,
         iconTheme: const IconThemeData(color: Colors.white),
       ),

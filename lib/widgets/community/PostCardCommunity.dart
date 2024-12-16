@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/common_sections/report_menu.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:gamerverse/services/Community/post_service.dart';
 import 'package:gamerverse/widgets/community/likeButton.dart';
@@ -46,6 +45,19 @@ class PostCard extends StatefulWidget {
 class PostCardState extends State<PostCard> {
   bool _isExpanded = false;
   bool _isDeleting = false;
+  final ValueNotifier<int> commentNotifier = ValueNotifier(0);
+
+  @override
+  void initState() {
+    super.initState();
+    commentNotifier.value = widget.commentCount;
+  }
+
+  @override
+  void dispose() {
+    commentNotifier.dispose();
+    super.dispose();
+  }
 
   void _deletePost() async {
     setState(() {
@@ -85,7 +97,6 @@ class PostCardState extends State<PostCard> {
 
   String _getRelativeTime(String timestamp) {
     final postTime = DateTime.parse(timestamp);
-    final currentTime = DateTime.now();
     return timeago.format(postTime, locale: 'en');
   }
 
@@ -95,7 +106,8 @@ class PostCardState extends State<PostCard> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Delete Post'),
-          content: const Text('Are you sure you want to delete this post? This action cannot be undone.'),
+          content: const Text(
+              'Are you sure you want to delete this post? This action cannot be undone.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -106,9 +118,7 @@ class PostCardState extends State<PostCard> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                if (widget.postId != null) {
-                  _deletePost();
-                }
+                _deletePost();
               },
               child: const Text(
                 'Delete',
@@ -161,7 +171,8 @@ class PostCardState extends State<PostCard> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, '/game', arguments: int.parse(widget.gameId));
+                              Navigator.pushNamed(context, '/game',
+                                  arguments: int.parse(widget.gameId));
                             },
                             child: Container(
                               width: 240,
@@ -178,9 +189,11 @@ class PostCardState extends State<PostCard> {
                           GestureDetector(
                             onTap: () {
                               if (widget.userId == widget.currentUser) {
-                                Navigator.pushNamed(context, '/profile', arguments: widget.userId);
+                                Navigator.pushNamed(context, '/profile',
+                                    arguments: widget.userId);
                               } else {
-                                Navigator.pushNamed(context, '/userProfile', arguments: widget.userId);
+                                Navigator.pushNamed(context, '/userProfile',
+                                    arguments: widget.userId);
                               }
                             },
                             child: Container(
@@ -255,17 +268,23 @@ class PostCardState extends State<PostCard> {
                               '/comments',
                               arguments: {
                                 'postId': widget.postId,
-                                'currentUser': widget.currentUser
+                                'currentUser': widget.currentUser,
+                                'commentNotifier': commentNotifier
                               },
                             );
                           },
                         ),
-                        Text(
-                          "${widget.commentCount}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
+                        ValueListenableBuilder<int>(
+                          valueListenable: commentNotifier,
+                          builder: (context, commentCount, child) {
+                            return Text(
+                              "$commentCount",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -291,11 +310,14 @@ class PostCardState extends State<PostCard> {
               if (widget.currentUser == widget.userId)
                 IconButton(
                   icon: _isDeleting
-                      ? const CircularProgressIndicator()
+                      ? const Opacity(
+                          opacity: 0,
+                          child: CircularProgressIndicator(),
+                        )
                       : const Icon(
-                    Icons.delete_outline,
-                    color: Colors.black54,
-                  ),
+                          Icons.delete_outline,
+                          color: Colors.black54,
+                        ),
                   onPressed: _isDeleting ? null : _showDeleteConfirmation,
                 ),
             ],

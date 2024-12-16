@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/user/Get_user_info.dart';
 import 'package:gamerverse/services/Friends/friend_service.dart';
+import 'package:gamerverse/utils/firebase_auth_helper.dart';
+import 'package:gamerverse/views/profile/followers_or_following_page.dart';
 import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInfoCard extends StatefulWidget {
   final String userId;
-  final int games_counter;
+  final int gamesCounter;
   final ValueNotifier<bool>? blockedNotifier;
   final ValueNotifier<bool>? isFollowedNotifier;
   final ValueNotifier<int>? followersNotifier;
@@ -15,7 +17,7 @@ class UserInfoCard extends StatefulWidget {
   const UserInfoCard({
     super.key,
     required this.userId,
-    required this.games_counter,
+    required this.gamesCounter,
     this.blockedNotifier,
     this.isFollowedNotifier,
     this.followersNotifier,
@@ -28,59 +30,109 @@ class UserInfoCard extends StatefulWidget {
 
 class _UserInfoCardState extends State<UserInfoCard> {
   Map<String, dynamic>? userData;
+  Map<String, dynamic>? currentUserData;
   bool isLoading = true;
+  bool isLoadingCurrentUser = true;
   String errorMessage = '';
   bool isButtonDisabled = false;
   String? loggedInUserId;
+  List<dynamic> followed = [];
+  List<dynamic> followers = [];
+  List<dynamic> currentUserFollowed = [];
 
   @override
   void initState() {
     super.initState();
     fetchUserData();
+    fetchCurrentUserData();
+  }
+
+  Future<void> fetchCurrentUserData() async {
+    try {
+      final response =
+          await UserProfileService.getUserByUid(widget.currentUser);
+      if (response['success']) {
+        setState(() {
+          currentUserData = response['data'];
+          isLoadingCurrentUser = false;
+
+          currentUserFollowed = currentUserData!['followed'] ?? [];
+        });
+      } else {
+        setState(() {
+          errorMessage = response['message'] ?? 'Error fetching user data';
+          isLoadingCurrentUser = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'An unexpected error occurred: $e';
+        isLoadingCurrentUser = false;
+      });
+    }
   }
 
   Future<void> fetchUserData() async {
     try {
       final response = await UserProfileService.getUserByUid(widget.userId);
       final prefs = await SharedPreferences.getInstance();
+      final String? uid = prefs.getString('user_uid');
+      final valid = await FirebaseAuthHelper.checkTokenValidity();
+      setState(() {
+        if (valid) {
+          loggedInUserId = uid;
+        } else {
+          loggedInUserId = null;
+        }
+      });
       if (response['success']) {
         setState(() {
           userData = response['data'];
           isLoading = false;
 
-          loggedInUserId = prefs.getString('user_uid');
-          List<dynamic> followers = userData!['followers'] ?? [];
-          List<dynamic> followed = userData!['followed'] ?? [];
+          List<dynamic> followersList = userData!['followers'] ?? [];
+          List<dynamic> followedList = userData!['followed'] ?? [];
 
-          userData!['followers_count'] = followers.where((follower) {
+          userData!['followers_count'] = followersList.where((follower) {
             return follower['isBlocked'] == false && follower['isFriend'];
           }).length;
 
           if (widget.followersNotifier != null) {
-            widget.followersNotifier!.value = followers.where((follower) {
+            widget.followersNotifier!.value = followersList.where((follower) {
               return follower['isBlocked'] == false && follower['isFriend'];
             }).length;
           }
 
-          userData!['followed_count'] = followed.where((followedUser) {
+          userData!['followed_count'] = followedList.where((followedUser) {
             return followedUser['isBlocked'] == false &&
                 followedUser['isFriend'];
           }).length;
 
-          widget.isFollowedNotifier!.value = followers.any((follower) {
+          widget.isFollowedNotifier!.value = followersList.any((follower) {
             return follower['id'] == loggedInUserId &&
                 follower['isBlocked'] == false &&
                 follower['isFriend'];
           });
 
-          widget.blockedNotifier!.value = followers.any((follower) {
+          widget.blockedNotifier!.value = followersList.any((follower) {
             return follower['id'] == loggedInUserId &&
                 (follower['isBlocked'] ?? false);
           });
+
+          followers = followersList.where((follower) {
+            return follower['isBlocked'] == false &&
+                follower['isFriend'] == true;
+          }).toList();
+
+          followed = followedList.where((followedUser) {
+            return followedUser['isBlocked'] == false &&
+                followedUser['isFriend'];
+          }).toList();
         });
       } else {
         setState(() {
-          errorMessage = response['message'] ?? 'Error fetching user data';
+          errorMessage =
+              response['message'] ?? 'Error fetching current user data';
           isLoading = false;
         });
       }
@@ -151,7 +203,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
   @override
   Widget build(BuildContext context) {
     BuildContext parentContext = context;
-    if (isLoading) {
+    if (isLoading || isLoadingCurrentUser) {
       return const Center(child: CircularProgressIndicator(color: Colors.teal));
     }
 
@@ -189,10 +241,33 @@ class _UserInfoCardState extends State<UserInfoCard> {
             Row(
               children: [
                 // Avatar on the left
-                _buildAvatarWithName(
-                  userData!['profile_picture'],
-                  userData!['name'],
-                  userData!['surname'],
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 8),
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 3),
+                        image: userData!['profilePicture'] != null &&
+                                userData!['profilePicture'] != ''
+                            ? DecorationImage(
+                                image:
+                                    NetworkImage(userData!['profilePicture']),
+                                fit: BoxFit.cover)
+                            : null,
+                      ),
+                      child: (userData!['profilePicture'] != null &&
+                                  userData!['profilePicture'] != '') ||
+                              userData!['profilePicture'] == null
+                          ? const Icon(Icons.person,
+                              size: 40, color: Colors.white)
+                          : null,
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 16),
                 // Expanded section for Stats
@@ -205,34 +280,47 @@ class _UserInfoCardState extends State<UserInfoCard> {
                         children: [
                           _buildStatColumn(
                             context,
-                            (widget.games_counter).toString(),
+                            (widget.gamesCounter).toString(),
                             'Games   ',
                             Icons.videogame_asset,
                           ),
-                          _buildStatColumn(
+                          _buildClickableStatColumn(
                             context,
                             userData!['followed_count']?.toString() ?? '0',
                             'Followed ',
                             Icons.person_search,
+                            FollowersPage(
+                                users: followed,
+                                currentUser: widget.currentUser,
+                                currentFollowed: currentUserFollowed),
                           ),
                           if (widget.followersNotifier != null)
                             ValueListenableBuilder<int>(
                               valueListenable: widget.followersNotifier!,
                               builder: (context, followersCount, child) {
-                                return _buildStatColumn(
-                                    context,
-                                    followersCount.toString(),
-                                    'Followers',
-                                    Icons.group);
+                                return _buildClickableStatColumn(
+                                  context,
+                                  followersCount.toString(),
+                                  'Followers',
+                                  Icons.group,
+                                  FollowersPage(
+                                      users: followers,
+                                      currentUser: widget.currentUser,
+                                      currentFollowed: currentUserFollowed),
+                                );
                               },
                             ),
                           if (widget.followersNotifier == null)
-                            _buildStatColumn(
+                            _buildClickableStatColumn(
                               context,
                               userData!['followers_count']?.toString() ?? '0',
                               'Followers',
                               Icons.group,
-                            ),
+                              FollowersPage(
+                                  users: followers,
+                                  currentUser: widget.currentUser,
+                                  currentFollowed: currentUserFollowed),
+                            )
                         ],
                       ),
                     ],
@@ -248,97 +336,75 @@ class _UserInfoCardState extends State<UserInfoCard> {
               children: [
                 // Name and Surname on the left, starting more to the right
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    // Aggiungi margine sinistro per spostare il nome più a destra
-                    child: Text(
-                      '${userData!['name']} ${userData!['surname']}',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.start, // Align the text to the left
-                    ),
-                  ),
-                ),
-                // Follow/Unfollow Button on the right with added padding
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  // Add space around the button
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: widget.blockedNotifier!,
-                    builder: (context, isBlocked, child) {
-                      return TextButton(
-                        onPressed: isButtonDisabled
-                            ? null
-                            : () {
-                                if (widget.blockedNotifier!.value) {
-                                  unblockUser(
-                                      parentContext); // Funzione per sbloccare l'utente
-                                } else {
-                                  toggleFollow(); // Funzione per seguire/smettere di seguire
-                                }
-                              },
-                        style: TextButton.styleFrom(
-                          backgroundColor: isBlocked
-                              ? Colors
-                                  .orange // Colore per il pulsante "Unblock"
-                              : (widget.isFollowedNotifier!.value
-                                  ? Color(0xFF871C1C)
-                                  : Color(0xBE17A828)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 9.0, horizontal: 15.0), // More padding
-                          textStyle: const TextStyle(
-                              fontSize:
-                                  16), // Uniform font size for both Follow and Unfollow
-                        ),
+                  child: Row(
+                    children: [
+                      // Il nome utente, che andrà a capo se troppo lungo
+                      Expanded(
                         child: Text(
-                          isBlocked
-                              ? 'Unblock User'
-                              : (widget.isFollowedNotifier!.value
-                                  ? 'Unfollow'
-                                  : 'Follow'),
-                          style: const TextStyle(color: Colors.white),
+                          '${userData!['username']}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.start,
+                          softWrap: true,
                         ),
-                      );
-                    },
+                      ),
+                      const SizedBox(width: 10),
+                      // Pulsante di follow/unfollow o unblock
+                      if (loggedInUserId != null)
+                        ValueListenableBuilder<bool>(
+                          valueListenable: widget.blockedNotifier!,
+                          builder: (context, isBlocked, child) {
+                            return TextButton(
+                              onPressed: isButtonDisabled
+                                  ? null
+                                  : () {
+                                      if (widget.blockedNotifier!.value) {
+                                        unblockUser(
+                                            parentContext); // Funzione per sbloccare l'utente
+                                      } else {
+                                        toggleFollow(); // Funzione per seguire/smettere di seguire
+                                      }
+                                    },
+                              style: TextButton.styleFrom(
+                                backgroundColor: isBlocked
+                                    ? Colors
+                                        .orange // Colore per il pulsante "Unblock"
+                                    : (widget.isFollowedNotifier!.value
+                                        ? Color(
+                                            0xFF871C1C) // Colore per "Unfollow"
+                                        : Color(0xBE17A828)),
+                                // Colore per "Follow"
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 9.0, horizontal: 15.0),
+                                // Maggiore padding
+                                textStyle: const TextStyle(
+                                    fontSize: 16), // Font uniforme per entrambi
+                              ),
+                              child: Text(
+                                isBlocked
+                                    ? 'Unblock'
+                                    : (widget.isFollowedNotifier!.value
+                                        ? 'Unfollow'
+                                        : 'Follow'),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            );
+                          },
+                        ),
+                    ],
                   ),
-                ),
+                )
               ],
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildAvatarWithName(
-      String? profilePictureUrl, String name, String surname) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const SizedBox(height: 8),
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 3),
-            image: profilePictureUrl != null
-                ? DecorationImage(
-                    image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
-                : null,
-          ),
-          child: profilePictureUrl == null
-              ? const Icon(Icons.person, size: 40, color: Colors.white)
-              : null,
-        ),
-      ],
     );
   }
 
@@ -357,6 +423,16 @@ class _UserInfoCardState extends State<UserInfoCard> {
           style: const TextStyle(color: Colors.white, fontSize: 14),
         ),
       ],
+    );
+  }
+
+  Widget _buildClickableStatColumn(BuildContext context, String count,
+      String label, IconData icon, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+      },
+      child: _buildStatColumn(context, count, label, icon),
     );
   }
 }
