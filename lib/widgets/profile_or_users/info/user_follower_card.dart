@@ -11,17 +11,20 @@ class UserCard extends StatefulWidget {
   final bool isFollowed;
   final bool isBlocked;
   final BuildContext parentContext;
+  final double? distance; // Nuovo campo opzionale per la distanza
 
-  const UserCard(
-      {super.key,
-      required this.index,
-      required this.onTap,
-      required this.username,
-      required this.profilePicture,
-      this.currentUser,
-      required this.isFollowed,
-      required this.isBlocked,
-      required this.parentContext});
+  const UserCard({
+    super.key,
+    required this.index,
+    required this.onTap,
+    required this.username,
+    required this.profilePicture,
+    this.currentUser,
+    required this.isFollowed,
+    required this.isBlocked,
+    required this.parentContext,
+    this.distance, // Aggiunto parametro opzionale
+  });
 
   @override
   State<UserCard> createState() => UserCardState();
@@ -107,51 +110,65 @@ class UserCardState extends State<UserCard> {
           onTap: widget.onTap,
           child: ListTile(
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             leading: CircleAvatar(
               radius: 25,
               child: widget.profilePicture != ''
                   ? Image.network(widget.profilePicture)
-                  : Icon(Icons.person, color: Colors.white),
+                  : const Icon(Icons.person, color: Colors.white),
             ),
-            title: Text(
-              widget.username,
-              style: const TextStyle(color: Colors.white, fontSize: 18),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.username,
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                ),
+                // Aggiungi la riga per la distanza se presente
+                if (widget.distance != null)
+                  Text(
+                    'Distance: ${widget.distance?.toStringAsFixed(2)} km', // Mostra la distanza con 2 decimali
+                    style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic
+                    ),
+                  ),
+              ],
             ),
-            trailing: widget.currentUser != null &&
-                    widget.currentUser != widget.index
+            trailing: widget.currentUser != null && widget.currentUser != widget.index
                 ? TextButton(
-                    onPressed: isButtonDisabled
-                        ? null
-                        : () {
-                            if (widget.isBlocked) {
-                              unblockUser(widget.parentContext);
-                            } else {
-                              toggleFollow();
-                            }
-                          },
-                    style: TextButton.styleFrom(
-                      backgroundColor: isBlocked
-                          ? Colors.orange
-                          : (isFriend ? Color(0xFF871C1C) : Color(0xBE17A828)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 9.0, horizontal: 15.0),
-                      textStyle: const TextStyle(fontSize: 16),
-                    ),
-                    child: Text(
-                      isBlocked
-                          ? 'Unblock'
-                          : (isFriend ? 'Unfollow' : 'Follow'),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  )
+              onPressed: isButtonDisabled
+                  ? null
+                  : () {
+                if (widget.isBlocked) {
+                  unblockUser(widget.parentContext);
+                } else {
+                  toggleFollow();
+                }
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: isBlocked
+                    ? Colors.orange
+                    : (isFriend ? Color(0xFF871C1C) : Color(0xBE17A828)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 9.0, horizontal: 15.0),
+                textStyle: const TextStyle(fontSize: 16),
+              ),
+              child: Text(
+                isBlocked
+                    ? 'Unblock'
+                    : (isFriend ? 'Unfollow' : 'Follow'),
+                style: const TextStyle(color: Colors.white),
+              ),
+            )
                 : null,
           ),
         ),
       ),
     );
   }
+
 }
