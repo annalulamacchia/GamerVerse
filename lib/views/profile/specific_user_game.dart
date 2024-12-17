@@ -11,9 +11,13 @@ import 'package:intl/intl.dart';
 class SpecificUserGame extends StatefulWidget {
   final GameProfile game;
   final String currentUser;
+  final String userId;
 
   const SpecificUserGame(
-      {super.key, required this.game, required this.currentUser});
+      {super.key,
+      required this.game,
+      required this.currentUser,
+      required this.userId});
 
   @override
   SpecificUserGameState createState() => SpecificUserGameState();

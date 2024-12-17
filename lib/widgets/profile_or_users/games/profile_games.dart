@@ -7,12 +7,13 @@ class ProfileGames extends StatelessWidget {
   final String userId;
   final List<GameProfile> wishlist;
   final ValueNotifier<bool>? blockedNotifier;
+  final String? currentUser;
 
   const ProfileGames(
       {super.key,
       required this.userId,
       required this.wishlist,
-      this.blockedNotifier});
+      this.blockedNotifier, required this.currentUser});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class ProfileGames extends StatelessWidget {
         userId: userId,
         wishlist: wishlist,
         blockedNotifier: blockedNotifier,
+        currentUser: currentUser,
       ),
     );
   }

@@ -209,6 +209,7 @@ class _UserPostsState extends State<UserPosts> {
                                 username: username,
                                 gameName: gameName,
                                 gameCover: cover,
+                                profilePicture: '',
                               );
                             },
                           );
@@ -257,6 +258,7 @@ class _UserPostsState extends State<UserPosts> {
                           imageUrl: cover,
                           timestamp: post.timestamp,
                           likeCount: likeCount,
+                          profilePicture: '',
                           commentCount: commentCount,
                           likedBy: likedBy,
                           currentUser: currentUser,

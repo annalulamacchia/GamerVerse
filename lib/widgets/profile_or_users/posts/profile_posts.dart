@@ -205,7 +205,7 @@ class _ProfilePostsState extends State<ProfilePosts> {
                       username: username,
                       gameName: gameName,
                       gameCover: cover,
-                      onPostDeleted: _updatePosts,
+                      onPostDeleted: _updatePosts, profilePicture: '',
                     );
                   },
                 ),
