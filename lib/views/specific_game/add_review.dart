@@ -145,8 +145,9 @@ class _AddReviewState extends State<AddReview> {
               : Theme(
                   data: Theme.of(context).copyWith(
                     textSelectionTheme: const TextSelectionThemeData(
-                      selectionHandleColor: AppColors.mediumGreen,
-                    ),
+                        selectionHandleColor: AppColors.mediumGreen,
+                        cursorColor: AppColors.mediumGreen,
+                        selectionColor: AppColors.mediumGreen),
                   ),
                   //Text Area
                   child: TextField(

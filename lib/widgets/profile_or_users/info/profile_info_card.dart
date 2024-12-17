@@ -38,16 +38,20 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
         List<dynamic> followedList = userData!['data']['followed'] ?? [];
 
         userData!['data']['followers_count'] = followersList.where((follower) {
-          return follower['isBlocked'] == false && follower['isFriend'];
+          return follower['isBlocked'] == false && follower['isFriend'] && follower['id'] != widget.currentUser;
         }).length;
 
         userData!['data']['followed_count'] =
             followedList.where((followedUser) {
-          return followedUser['isBlocked'] == false && followedUser['isFriend'];
+          return followedUser['isBlocked'] == false && followedUser['isFriend'] && followedUser['id'] != widget.currentUser;
         }).length;
 
         followed = followedList.where((followedUser) {
-          return followedUser['isBlocked'] == false && followedUser['isFriend'];
+          return followedUser['isBlocked'] == false && followedUser['isFriend'] && followedUser['id'] != widget.currentUser;
+        }).toList();
+
+        followers = followersList.where((follower) {
+          return follower['isBlocked'] == false && follower['isFriend'] && follower['id'] != widget.currentUser;
         }).toList();
       });
     } else {
@@ -138,7 +142,7 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
                             FollowersPage(
                               users: followers,
                               currentUser: widget.currentUser,
-                              currentFollowed: followed,
+                              currentFollowed: followers,
                             ),
                           ),
                         ],
