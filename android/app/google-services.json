@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "298603606997-1gr3m8gmeacn7u04r5rs22cjtruinqbf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gamerverse.app",
+            "certificate_hash": "d10641e1b1c05d9e36cc11bec9a8d05f10dce362"
+          }
+        },
+        {
           "client_id": "298603606997-blkp168stikin95ar8o8ka9o58a3rdp8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
