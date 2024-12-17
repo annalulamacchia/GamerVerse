@@ -140,20 +140,35 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
               ),
               const SizedBox(height: 16),
               //input field
-              TextField(
-                controller: _timeController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Hours',
-                  labelStyle: TextStyle(color: Colors.white70),
-                  border: OutlineInputBorder(),
-                  fillColor: Colors.white12,
-                  filled: true,
+              Theme(
+                data: Theme.of(context).copyWith(
+                  textSelectionTheme: const TextSelectionThemeData(
+                      selectionHandleColor: AppColors.mediumGreen,
+                      cursorColor: AppColors.mediumGreen,
+                      selectionColor: AppColors.mediumGreen),
                 ),
-                style: const TextStyle(color: Colors.white),
-                onChanged: (value) {
-                  hours = double.tryParse(value) ?? 0;
-                },
+                //Text Area
+                child: TextField(
+                  controller: _timeController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Hours',
+                    labelStyle: TextStyle(color: Colors.white70),
+                    border: OutlineInputBorder(),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white70),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.mediumGreen),
+                    ),
+                    fillColor: Colors.white12,
+                    filled: true,
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                  onChanged: (value) {
+                    hours = double.tryParse(value) ?? 0;
+                  },
+                ),
               ),
               const SizedBox(height: 16),
               //Send button

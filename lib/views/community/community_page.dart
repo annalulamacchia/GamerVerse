@@ -24,6 +24,7 @@ class _CommunityPageState extends State<CommunityPage> {
   List<String> usernames = [];
   List<String> gamesNames = [];
   List<String> gamesCovers = [];
+  List<String> profilePictures = [];
   String? currentUser;
   bool isLoading = true;
 
@@ -88,6 +89,11 @@ class _CommunityPageState extends State<CommunityPage> {
                 .toList() ??
             [];
 
+        List<String> profilePicturesList = (result["profile_pictures"] as List<dynamic>?)
+            ?.map((profilePicture) => profilePicture != null && profilePicture is String ? profilePicture : "")
+            .toList() ??
+            [];
+
         // Otteniamo i like, commenti e gli utenti che mettono like
         List<List<String>> likeUsersListTemp =
             (result["like_users"] as List<dynamic>?)?.map((likeUsers) {
@@ -126,6 +132,7 @@ class _CommunityPageState extends State<CommunityPage> {
           likeCounts = likeCountsTemp;
           commentCounts = commentCountsTemp;
           likeUsersList = likeUsersListTemp;
+          profilePictures = profilePicturesList;
           isLoading = false;
         });
       } else {
@@ -190,6 +197,7 @@ class _CommunityPageState extends State<CommunityPage> {
                     final username = usernames[index];
                     final gameName = gamesNames[index];
                     final cover = gamesCovers[index];
+                    final profilePicture = profilePictures[index];
 
                     return PostCard(
                       postId: post.id,
@@ -206,6 +214,7 @@ class _CommunityPageState extends State<CommunityPage> {
                       gameName: gameName,
                       gameCover: cover,
                       onPostDeleted: _updatePosts,
+                      profilePicture: profilePicture,
                     );
                   },
                 ),
