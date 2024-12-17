@@ -25,7 +25,6 @@ import 'package:gamerverse/views/specific_game/specific_game.dart';
 import 'package:gamerverse/views/profile/specific_user_game.dart';
 import 'package:gamerverse/views/home/upcoming_games_page.dart';
 
-
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
@@ -100,23 +99,25 @@ class RouteGenerator {
       case '/userAllGames':
         if (args is Map<String, dynamic> &&
             args.containsKey('games') &&
-            args.containsKey('currentUser')) {
+            args.containsKey('currentUser') &&
+            args.containsKey('userId')) {
           return MaterialPageRoute(
               builder: (context) => AllGamesUserPage(
-                    games: args['games'],
-                    currentUser: args['currentUser'],
-                  ));
+                  games: args['games'],
+                  currentUser: args['currentUser'],
+                  userId: args['userId']));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/userGame':
         if (args is Map<String, dynamic> &&
             args.containsKey('game') &&
-            args.containsKey('currentUser')) {
+            args.containsKey('currentUser') &&
+            args.containsKey('userId')) {
           return MaterialPageRoute(
               builder: (context) => SpecificUserGame(
-                    game: args['game'],
-                    currentUser: args['currentUser'],
-                  ));
+                  game: args['game'],
+                  currentUser: args['currentUser'],
+                  userId: args['userId']));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/admin':
