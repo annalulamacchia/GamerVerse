@@ -1,263 +1,373 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/services/user/Get_user_info.dart';
-import 'package:gamerverse/services/specific_game/get_game_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/report_menu.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:gamerverse/services/Community/post_service.dart';
+import 'package:gamerverse/widgets/community/likeButton.dart';
 
 class PostCard extends StatefulWidget {
-  final String? currentUser;
+  final String postId;
+  final String userId;
   final String gameId;
-  final String description;
+  final String content;
+  final String imageUrl;
+  final String timestamp;
   final int likeCount;
   final int commentCount;
-  final String timestamp;
-  final String userId; // Aggiunto per l'autore
-  final VoidCallback onCommentPressed;
-  final VoidCallback onDeletePressed;
-  final String postId;
+  final List<dynamic> likedBy; // Lista degli utenti che hanno messo like
+  final String? currentUser;
+  final String username;
+  final String gameName;
+  final String gameCover;
+  final VoidCallback? onPostDeleted;
+  final String profilePicture;
 
   const PostCard({
     super.key,
+    required this.postId,
+    required this.userId,
     required this.gameId,
-    required this.description,
+    required this.content,
+    required this.imageUrl,
+    required this.timestamp,
     required this.likeCount,
     required this.commentCount,
-    required this.onCommentPressed,
-    required this.onDeletePressed,
-    required this.timestamp,
-    required this.userId,
+    required this.likedBy, // Passa likedBy qui
     required this.currentUser,
-    required this.postId,
+    required this.username,
+    required this.gameName,
+    required this.gameCover,
+    this.onPostDeleted,
+    required this.profilePicture,
   });
 
   @override
-  _PostCardState createState() => _PostCardState();
+  PostCardState createState() => PostCardState();
 }
 
-class _PostCardState extends State<PostCard> {
-  late int _likeCount;
+class PostCardState extends State<PostCard> {
   bool _isExpanded = false;
+  bool _isDeleting = false;
+  final ValueNotifier<int> commentNotifier = ValueNotifier(0);
 
   @override
   void initState() {
     super.initState();
-    _likeCount = widget.likeCount ?? 0;
+    commentNotifier.value = widget.commentCount;
   }
 
-  T normalize<T>(T? value, T defaultValue) => value ?? defaultValue;
+  @override
+  void dispose() {
+    commentNotifier.dispose();
+    super.dispose();
+  }
 
-  Future<Map> fetchPostDetails() async {
-    Map<String, dynamic>? userData;
-    Map<String, dynamic>? gameData;
-    final responseUser =
-        await UserProfileService.getUserByUid(); // Recupera informazioni utente
-    final responseGame = await GameService.getGamebyId(
-        widget.gameId); // Recupera informazioni gioco
+  void _deletePost() async {
+    setState(() {
+      _isDeleting = true;
+    });
 
-    if (responseUser['success']) {
-      userData = responseUser['data'];
-      // Popola i controller con i dati dell'utente
+    try {
+      await PostService.deletePost(widget.postId);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Post deleted successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        if (widget.onPostDeleted != null) {
+          widget.onPostDeleted!();
+        }
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to delete post: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeleting = false;
+        });
+      }
     }
-    if (responseGame['success']) {
-      gameData = responseGame['data'];
-      // Popola i controller con i dati dell'utente
-    }
-    return {
-      "author": userData?["username"] ?? "Unknown User",
-      "gameName": gameData?["name"] ?? "Unknown Game",
-      "cover": gameData?["cover"] ?? "",
-    };
+  }
+
+  String _getRelativeTime(String timestamp) {
+    final postTime = DateTime.parse(timestamp);
+    return timeago.format(postTime, locale: 'en');
+  }
+
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Post'),
+          content: const Text(
+              'Are you sure you want to delete this post? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deletePost();
+              },
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final description = normalize<String>(widget.description, "");
-    final timestamp = normalize<String>(widget.timestamp, "");
-    final commentCount = normalize<int>(widget.commentCount, 0);
-
-    return FutureBuilder<Map>(
-      future: fetchPostDetails(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-              child: CircularProgressIndicator(color: Colors.teal));
-        } else if (snapshot.hasError) {
-          return const Center(child: Text("Error loading game details"));
-        } else if (!snapshot.hasData) {
-          return const Center(child: Text("No game details available"));
-        } else {
-          final gameName = snapshot.data!["gameName"]!;
-          final cover = snapshot.data!["cover"]!;
-          final author = snapshot.data!["author"]!;
-
-          return Stack(
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 6,
+      color: AppColors.lightGreenishWhite,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header con immagine del gioco e overlay per il nome del gioco
+          Stack(
             children: [
-              Card(
-                color: const Color(0xfff0f9f1),
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
                 ),
-                elevation: 8,
-                shadowColor: Colors.black.withOpacity(0.5),
-                child: Padding(
-                  padding: const EdgeInsets.all(100),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // RIGA CON IMMAGINE, TITOLO E AUTORE
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Immagine del gioco
-                          Container(
-                            width: 90,
-                            height: 90,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15.0),
-                              image: DecorationImage(
-                                image: cover.isNotEmpty
-                                    ? NetworkImage(cover)
-                                    : const AssetImage(
-                                            'assets/images/broken_image.png')
-                                        as ImageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          // Titolo e autore
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 215,
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text(
-                                    gameName,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      color: Colors.black87,
-                                    ),
-                                    maxLines: null,
-                                    softWrap: true,
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                Container(
-                                  width: 215,
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text(
-                                    "Author: $author",
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                    maxLines: null,
-                                    softWrap: true,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      // DESCRIZIONE
-                      Text(
-                        description,
-                        maxLines: _isExpanded ? description.length : 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontSize: 14, color: Colors.black87),
-                      ),
-
-                      // View More / View Less
-                      if (description.toUpperCase().length > 74)
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _isExpanded = !_isExpanded;
-                            });
-                          },
-                          child: Text(
-                            _isExpanded ? 'View Less' : 'View More',
-                            style: const TextStyle(
-                              color: Colors.teal,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 15),
-                      // SEZIONE LIKE E COMMENTI
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.thumb_up, color: Colors.grey[700]),
-                            onPressed: () {
-                              setState(() {
-                                _likeCount++;
-                              });
-                            },
-                          ),
-                          Text(
-                            "$_likeCount",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          IconButton(
-                            icon: Icon(Icons.comment, color: Colors.grey[700]),
-                            onPressed: widget.onCommentPressed,
-                          ),
-                          Text(
-                            "$commentCount",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                child: Image.network(
+                  widget.gameCover,
+                  width: double.infinity,
+                  height: 125,
+                  fit: BoxFit.cover,
                 ),
               ),
               Positioned(
-                top: 20,
-                right: 20,
-                child: Row(
-                  children: [
-                    //Toggle menu
-                    if (widget.currentUser != widget.userId)
-                      ReportMenu(
-                          userId: widget.currentUser,
-                          reportedId: widget.postId,
-                          parentContext: context,
-                          writerId: widget.userId,
-                          type: 'Post'),
-
-                    //remove review
-                    if (widget.currentUser == widget.userId)
-                      IconButton(
-                        icon: const Icon(
-                          Icons.delete_outline,
-                          color: Colors.black54,
-                        ),
-                        onPressed: () => {},
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/game',
+                        arguments: int.parse(widget.gameId),
+                      );
+                    },
+                    child: Text(
+                      widget.gameName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
-                  ],
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
               ),
             ],
-          );
-        }
-      },
+          ),
+          Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Nome utente e immagine profilo
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.grey[200],
+                          backgroundImage: widget.profilePicture != ''
+                              ? NetworkImage(widget.profilePicture)
+                              : null,
+                          radius: 20,
+                          child: widget.profilePicture != ''
+                              ? null
+                              : Icon(Icons.person,
+                              color: Colors.grey[700], size: 30),
+                        ),
+                        const SizedBox(width: 10),
+                        // Nome utente e data
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  if (widget.userId == widget.currentUser) {
+                                    Navigator.pushNamed(context, '/profile',
+                                        arguments: widget.userId);
+                                  } else {
+                                    Navigator.pushNamed(context, '/userProfile',
+                                        arguments: widget.userId);
+                                  }
+                                },
+                                child: SizedBox(
+                                  width: 275,
+                                  child: Text(
+                                    widget.username,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                _getRelativeTime(widget.timestamp),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Contenuto del post
+                    Text(
+                      widget.content,
+                      maxLines: _isExpanded ? widget.content.length : 2,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                      const TextStyle(fontSize: 14, color: Colors.black87),
+                    ),
+                    if (widget.content.toUpperCase().length > 74)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isExpanded = !_isExpanded;
+                          });
+                        },
+                        child: Text(
+                          _isExpanded ? 'Show less' : 'Show more',
+                          style: const TextStyle(
+                            color: Colors.teal,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 10),
+
+                    // Footer con icone di interazione
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Pulsante Like
+                        Row(
+                          children: [
+                            LikeButton(
+                              postId: widget.postId,
+                              currentUser: widget.currentUser ?? '',
+                              initialLikeCount: widget.likeCount,
+                              initialLikedUsers: widget.likedBy,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "likes",
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+
+                        // Commenti
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.comment_outlined,
+                                color: Colors.grey[700],
+                                size: 24,
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/comments',
+                                  arguments: {
+                                    'postId': widget.postId,
+                                    'currentUser': widget.currentUser,
+                                    'commentNotifier': commentNotifier
+                                  },
+                                );
+                              },
+                            ),
+                            ValueListenableBuilder<int>(
+                              valueListenable: commentNotifier,
+                              builder: (context, commentCount, child) {
+                                return Text(
+                                  "$commentCount comments",
+                                  style: const TextStyle(fontSize: 14),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: widget.currentUser != widget.userId
+                    ? ReportMenu(
+                  userId: widget.currentUser,
+                  reportedId: widget.postId,
+                  parentContext: context,
+                  writerId: widget.userId,
+                  type: 'Post',
+                )
+                    : IconButton(
+                  icon: _isDeleting
+                      ? const Opacity(
+                    opacity: 0,
+                    child: CircularProgressIndicator(),
+                  )
+                      : const Icon(
+                    Icons.delete_outline,
+                    color: Colors.black54,
+                  ),
+                  onPressed: _isDeleting ? null : _showDeleteConfirmation,
+                ),
+              ),
+            ],
+          ),
+          // Toggle o cestino fisso in alto a destra
+        ],
+      ),
     );
   }
 }

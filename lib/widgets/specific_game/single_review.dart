@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/review.dart';
 import 'package:gamerverse/services/specific_game/review_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:gamerverse/widgets/common_sections/report_menu.dart';
 import 'package:gamerverse/widgets/specific_game/like_dislike_button.dart';
@@ -82,7 +83,7 @@ class SingleReviewState extends State<SingleReview> {
     return Stack(
       children: [
         Card(
-          color: const Color(0xfff0f9f1),
+          color: AppColors.lightGreenishWhite,
           margin: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 15),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -186,7 +187,7 @@ class SingleReviewState extends State<SingleReview> {
                       });
                     },
                     child: Text(
-                      _isExpanded ? 'View Less' : 'View More',
+                      _isExpanded ? 'Show Less' : 'Show More',
                       style: const TextStyle(
                         color: Colors.teal,
                         fontWeight: FontWeight.bold,

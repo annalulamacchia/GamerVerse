@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/report_menu.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:gamerverse/services/Community/post_service.dart';
@@ -19,6 +20,7 @@ class PostCard extends StatefulWidget {
   final String gameName;
   final String gameCover;
   final VoidCallback? onPostDeleted;
+  final String profilePicture;
 
   const PostCard({
     super.key,
@@ -36,6 +38,7 @@ class PostCard extends StatefulWidget {
     required this.gameName,
     required this.gameCover,
     this.onPostDeleted,
+    required this.profilePicture,
   });
 
   @override
@@ -133,197 +136,238 @@ class PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Card(
-          color: const Color(0xfff0f9f1),
-          margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          elevation: 8,
-          shadowColor: Colors.black.withOpacity(0.5),
-          child: Padding(
-            padding: const EdgeInsets.only(right: 15, left: 15, top: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Cover del gioco
-                    Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        image: DecorationImage(
-                          image: NetworkImage(widget.gameCover),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    // Titolo del gioco e autore
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/game',
-                                  arguments: int.parse(widget.gameId));
-                            },
-                            child: Container(
-                              width: 240,
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                widget.gameName,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              if (widget.userId == widget.currentUser) {
-                                Navigator.pushNamed(context, '/profile',
-                                    arguments: widget.userId);
-                              } else {
-                                Navigator.pushNamed(context, '/userProfile',
-                                    arguments: widget.userId);
-                              }
-                            },
-                            child: Container(
-                              width: 240,
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                "Author: ${widget.username}",
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 6,
+      color: AppColors.lightGreenishWhite,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header con immagine del gioco e overlay per il nome del gioco
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
                 ),
-                const SizedBox(height: 10),
-                // Descrizione
-                Text(
-                  widget.content,
-                  maxLines: _isExpanded ? widget.content.length : 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                child: Image.network(
+                  widget.gameCover,
+                  width: double.infinity,
+                  height: 125,
+                  fit: BoxFit.cover,
                 ),
-                if (widget.content.length > 74)
-                  GestureDetector(
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                  ),
+                  child: GestureDetector(
                     onTap: () {
-                      setState(() {
-                        _isExpanded = !_isExpanded;
-                      });
+                      Navigator.pushNamed(
+                        context,
+                        '/game',
+                        arguments: int.parse(widget.gameId),
+                      );
                     },
                     child: Text(
-                      _isExpanded ? 'View Less' : 'View More',
+                      widget.gameName,
                       style: const TextStyle(
-                        color: Colors.teal,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+              ),
+            ],
+          ),
+          Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      _getRelativeTime(widget.timestamp),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
-                    ),
+                    // Nome utente e immagine profilo
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        LikeButton(
-                          postId: widget.postId,
-                          currentUser: widget.currentUser ?? '',
-                          initialLikeCount: widget.likeCount,
-                          initialLikedUsers: widget.likedBy,
+                        CircleAvatar(
+                          backgroundColor: Colors.grey[200],
+                          backgroundImage: widget.profilePicture != ''
+                              ? NetworkImage(widget.profilePicture)
+                              : null,
+                          radius: 20,
+                          child: widget.profilePicture != ''
+                              ? null
+                              : Icon(Icons.person,
+                                  color: Colors.grey[700], size: 30),
                         ),
-                        const SizedBox(width: 20),
-                        IconButton(
-                          icon: Icon(
-                            Icons.comment_outlined,
-                            color: Colors.grey[700],
-                            size: 26,
-                          ),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/comments',
-                              arguments: {
-                                'postId': widget.postId,
-                                'currentUser': widget.currentUser,
-                                'commentNotifier': commentNotifier
-                              },
-                            );
-                          },
-                        ),
-                        ValueListenableBuilder<int>(
-                          valueListenable: commentNotifier,
-                          builder: (context, commentCount, child) {
-                            return Text(
-                              "$commentCount",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                        const SizedBox(width: 10),
+                        // Nome utente e data
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  if (widget.userId == widget.currentUser) {
+                                    Navigator.pushNamed(context, '/profile',
+                                        arguments: widget.userId);
+                                  } else {
+                                    Navigator.pushNamed(context, '/userProfile',
+                                        arguments: widget.userId);
+                                  }
+                                },
+                                child: SizedBox(
+                                  width: 275,
+                                  child: Text(
+                                    widget.username,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            );
-                          },
+                              Text(
+                                _getRelativeTime(widget.timestamp),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Contenuto del post
+                    Text(
+                      widget.content,
+                      maxLines: _isExpanded ? widget.content.length : 2,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          const TextStyle(fontSize: 14, color: Colors.black87),
+                    ),
+                    if (widget.content.toUpperCase().length > 74)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isExpanded = !_isExpanded;
+                          });
+                        },
+                        child: Text(
+                          _isExpanded ? 'Show less' : 'Show more',
+                          style: const TextStyle(
+                            color: Colors.teal,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 10),
+
+                    // Footer con icone di interazione
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Pulsante Like
+                        Row(
+                          children: [
+                            LikeButton(
+                              postId: widget.postId,
+                              currentUser: widget.currentUser ?? '',
+                              initialLikeCount: widget.likeCount,
+                              initialLikedUsers: widget.likedBy,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "likes",
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+
+                        // Commenti
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.comment_outlined,
+                                color: Colors.grey[700],
+                                size: 24,
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/comments',
+                                  arguments: {
+                                    'postId': widget.postId,
+                                    'currentUser': widget.currentUser,
+                                    'commentNotifier': commentNotifier
+                                  },
+                                );
+                              },
+                            ),
+                            ValueListenableBuilder<int>(
+                              valueListenable: commentNotifier,
+                              builder: (context, commentCount, child) {
+                                return Text(
+                                  "$commentCount comments",
+                                  style: const TextStyle(fontSize: 14),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-          top: 25,
-          right: 20,
-          child: Row(
-            children: [
-              if (widget.currentUser != widget.userId)
-                ReportMenu(
-                  userId: widget.currentUser,
-                  reportedId: widget.postId,
-                  parentContext: context,
-                  writerId: widget.userId,
-                  type: 'Post',
-                ),
-              if (widget.currentUser == widget.userId)
-                IconButton(
-                  icon: _isDeleting
-                      ? const Opacity(
-                          opacity: 0,
-                          child: CircularProgressIndicator(),
-                        )
-                      : const Icon(
-                          Icons.delete_outline,
-                          color: Colors.black54,
-                        ),
-                  onPressed: _isDeleting ? null : _showDeleteConfirmation,
-                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: widget.currentUser != widget.userId
+                    ? ReportMenu(
+                        userId: widget.currentUser,
+                        reportedId: widget.postId,
+                        parentContext: context,
+                        writerId: widget.userId,
+                        type: 'Post',
+                      )
+                    : IconButton(
+                        icon: _isDeleting
+                            ? const Opacity(
+                                opacity: 0,
+                                child: CircularProgressIndicator(),
+                              )
+                            : const Icon(
+                                Icons.delete_outline,
+                                color: Colors.black54,
+                              ),
+                        onPressed: _isDeleting ? null : _showDeleteConfirmation,
+                      ),
+              ),
             ],
           ),
-        ),
-      ],
+          // Toggle o cestino fisso in alto a destra
+        ],
+      ),
     );
   }
 }
