@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:gamerverse/services/community/advised_user_service.dart'; // Importa il widget UserCard
+import 'package:gamerverse/services/Community/advised_user_service.dart'; // Importa il widget UserCard
 
 
 class NearbyUsersWidget extends StatefulWidget {

@@ -40,18 +40,35 @@ class _UserResultsState extends State<UserResults> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
-              child: CircularProgressIndicator(color: Colors.teal));
+            child: CircularProgressIndicator(color: Colors.teal),
+          );
         }
 
         if (snapshot.hasError) {
           return Center(
-            child: Text('Error: ${snapshot.error}',
-                style: TextStyle(color: Colors.red)),
+            child: Text(
+              'An error occurred: ${snapshot.error}',
+              style: const TextStyle(color: Colors.red, fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
           );
         }
 
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No users found.'));
+          // Custom message for no search results
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.search_off, color: Colors.white, size: 50),
+                SizedBox(height: 10),
+                Text(
+                  'No users found for "${widget.searchQuery}".',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
+            ),
+          );
         }
 
         final users = snapshot.data!;
@@ -65,11 +82,17 @@ class _UserResultsState extends State<UserResults> {
                     ? NetworkImage(user['profile_picture'])
                     : null,
                 child: user['profile_picture'].isEmpty
-                    ? Icon(Icons.person, color: Colors.grey)
+                    ? const Icon(Icons.person, color: Colors.grey)
                     : null,
               ),
-              title: Text(user['username']),
-              subtitle: Text(user['name']),
+              title: Text(
+                user['username'],
+                style: const TextStyle(color: Colors.white),
+              ),
+              subtitle: Text(
+                user['name'],
+                style: const TextStyle(color: Colors.white70),
+              ),
               onTap: () {
                 // Handle user selection (e.g., navigate to user profile page)
                 Navigator.pushNamed(context, '/userProfile',

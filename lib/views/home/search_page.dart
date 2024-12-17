@@ -37,35 +37,41 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ),
         centerTitle: true, // Center the title for a modern feel
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Set the arrow (back icon) color to white
+        ),
       ),
-      backgroundColor: AppColors.lightGreen, // Set the background color of the entire page
+
+      backgroundColor: AppColors.darkestGreen, // Set the background color of the entire page
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             // Search Bar
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: TextField(
-                onSubmitted: handleSearch,
-                decoration: InputDecoration(
-                  hintText: 'Search for games or users...',
-                  prefixIcon: const Icon(Icons.search, color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.white38,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+        Padding(
+        padding: const EdgeInsets.only(bottom: 20.0),
+        child: TextField(
+          onSubmitted: handleSearch,
+          decoration: InputDecoration(
+            hintText: 'Search for games or users...',
+            prefixIcon: const Icon(Icons.search, color: Colors.black),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide.none,
             ),
+            hintStyle: const TextStyle(color: Colors.black54), // Hint text color
+          ),
+          style: const TextStyle(
+            color: Colors.black, // Set the input text color to black
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+
             // Search Type Toggle Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Space the buttons evenly
