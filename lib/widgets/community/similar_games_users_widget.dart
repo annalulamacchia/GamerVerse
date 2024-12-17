@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SimilarGamesUsersWidget extends StatefulWidget {
-  const SimilarGamesUsersWidget({Key? key}) : super(key: key);
+  const SimilarGamesUsersWidget({super.key});
 
   @override
   _SimilarGamesUsersWidgetState createState() => _SimilarGamesUsersWidgetState();

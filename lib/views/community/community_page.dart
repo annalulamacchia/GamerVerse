@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_profile.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/posts/NewPostBottomSheet.dart';
 import 'package:gamerverse/widgets/community/PostCardCommunity.dart';
@@ -8,7 +9,6 @@ import 'package:gamerverse/services/Community/post_service.dart';
 import 'package:gamerverse/models/post.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:gamerverse/views/community/advised_users_page.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
@@ -24,6 +24,7 @@ class _CommunityPageState extends State<CommunityPage> {
   List<String> usernames = [];
   List<String> gamesNames = [];
   List<String> gamesCovers = [];
+  List<String> profilePictures = [];
   String? currentUser;
   bool isLoading = true;
 
@@ -63,7 +64,8 @@ class _CommunityPageState extends State<CommunityPage> {
 
       if (result["success"] == true) {
         List<Post> postsList = (result["posts"] as List)
-            .map((postJson) => postJson != null ? Post.fromJson(postJson) : null)
+            .map(
+                (postJson) => postJson != null ? Post.fromJson(postJson) : null)
             .where((post) => post != null)
             .cast<Post>()
             .toList();
@@ -85,6 +87,11 @@ class _CommunityPageState extends State<CommunityPage> {
         List<String> gamesCoversList = (result["game_covers"] as List<dynamic>?)
                 ?.map((cover) => cover != null && cover is String ? cover : "")
                 .toList() ??
+            [];
+
+        List<String> profilePicturesList = (result["profile_pictures"] as List<dynamic>?)
+            ?.map((profilePicture) => profilePicture != null && profilePicture is String ? profilePicture : "")
+            .toList() ??
             [];
 
         // Otteniamo i like, commenti e gli utenti che mettono like
@@ -125,6 +132,7 @@ class _CommunityPageState extends State<CommunityPage> {
           likeCounts = likeCountsTemp;
           commentCounts = commentCountsTemp;
           likeUsersList = likeUsersListTemp;
+          profilePictures = profilePicturesList;
           isLoading = false;
         });
       } else {
@@ -155,17 +163,16 @@ class _CommunityPageState extends State<CommunityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         title: const Text('Community', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         actions: [
           IconButton(
             icon: const Icon(Icons.person_add, color: Colors.white),
             onPressed: () {
               // Reindirizza alla pagina "AdvisedUser"
               Navigator.pushNamed(context, '/suggestedUsers');
-
             },
           ),
         ],
@@ -190,6 +197,7 @@ class _CommunityPageState extends State<CommunityPage> {
                     final username = usernames[index];
                     final gameName = gamesNames[index];
                     final cover = gamesCovers[index];
+                    final profilePicture = profilePictures[index];
 
                     return PostCard(
                       postId: post.id,
@@ -206,6 +214,7 @@ class _CommunityPageState extends State<CommunityPage> {
                       gameName: gameName,
                       gameCover: cover,
                       onPostDeleted: _updatePosts,
+                      profilePicture: profilePicture,
                     );
                   },
                 ),
@@ -214,7 +223,7 @@ class _CommunityPageState extends State<CommunityPage> {
         onPressed: () {
           _showNewPostBottomSheet(context);
         },
-        backgroundColor: const Color(0xff3e6259),
+        backgroundColor: AppColors.mediumGreen,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );

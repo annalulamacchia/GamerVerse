@@ -7,12 +7,14 @@ class GameListSection extends StatefulWidget {
   final String userId;
   final List<GameProfile> wishlist;
   final ValueNotifier<bool>? blockedNotifier;
+  final String? currentUser;
 
   const GameListSection({
     super.key,
     required this.userId,
     required this.wishlist,
     this.blockedNotifier,
+    required this.currentUser,
   });
 
   @override
@@ -45,12 +47,17 @@ class GameListSectionState extends State<GameListSection> {
             builder: (context, isBlocked, child) {
               // If the user is blocked, show NoDataList
               if (isBlocked) {
-                return NoDataList(
-                  textColor: Colors.white,
-                  icon: HugeIcons.strokeRoundedAircraftGame,
-                  message: 'The user is blocked!',
-                  subMessage: 'Please unblock to view the game list.',
-                  color: Colors.grey[500]!,
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    NoDataList(
+                      textColor: Colors.white,
+                      icon: HugeIcons.strokeRoundedAircraftGame,
+                      message: 'The user is blocked!',
+                      subMessage: 'Please unblock to view the game list.',
+                      color: Colors.grey[500]!,
+                    ),
+                  ],
                 );
               }
 
@@ -63,13 +70,18 @@ class GameListSectionState extends State<GameListSection> {
                         if (liked.isEmpty &&
                             playing.isEmpty &&
                             completed.isEmpty)
-                          NoDataList(
-                            textColor: Colors.white,
-                            icon: HugeIcons.strokeRoundedAircraftGame,
-                            message: 'No games added yet',
-                            subMessage:
-                                'Start adding games to your list to keep track of your progress.',
-                            color: Colors.grey[500]!,
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              NoDataList(
+                                textColor: Colors.white,
+                                icon: HugeIcons.strokeRoundedAircraftGame,
+                                message: 'No games added yet',
+                                subMessage:
+                                    'Start adding games to your list to keep track of your progress.',
+                                color: Colors.grey[500]!,
+                              ),
+                            ],
                           ),
                         if (liked.isNotEmpty)
                           _buildGameSection(context, 'Wishlist', liked,
@@ -149,7 +161,8 @@ class GameListSectionState extends State<GameListSection> {
                 onPressed: () {
                   Navigator.pushNamed(context, '/userAllGames', arguments: {
                     'games': games,
-                    'currentUser': widget.userId,
+                    'currentUser': widget.currentUser,
+                    'userId': widget.userId
                   });
                 },
               ),
@@ -166,7 +179,8 @@ class GameListSectionState extends State<GameListSection> {
                 onTap: () {
                   Navigator.pushNamed(context, '/userGame', arguments: {
                     'game': games[index],
-                    'currentUser': widget.userId,
+                    'currentUser': widget.currentUser,
+                    'userId': widget.userId
                   });
                 },
                 child: _buildGameCard(games[index].cover),

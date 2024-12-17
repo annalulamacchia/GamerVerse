@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 
 class SeriesGame extends StatefulWidget {
@@ -44,7 +45,7 @@ class SeriesGameState extends State<SeriesGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         title: Text(widget.title, style: const TextStyle(color: Colors.white)),
         leading: IconButton(
@@ -53,7 +54,7 @@ class SeriesGameState extends State<SeriesGame> {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

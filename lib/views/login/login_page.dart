@@ -36,9 +36,9 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {

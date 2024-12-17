@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/services/specific_game/playing_time_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:hugeicons/hugeicons.dart';
 
@@ -139,20 +140,35 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
               ),
               const SizedBox(height: 16),
               //input field
-              TextField(
-                controller: _timeController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Hours',
-                  labelStyle: TextStyle(color: Colors.white70),
-                  border: OutlineInputBorder(),
-                  fillColor: Colors.white12,
-                  filled: true,
+              Theme(
+                data: Theme.of(context).copyWith(
+                  textSelectionTheme: const TextSelectionThemeData(
+                      selectionHandleColor: AppColors.mediumGreen,
+                      cursorColor: AppColors.mediumGreen,
+                      selectionColor: AppColors.mediumGreen),
                 ),
-                style: const TextStyle(color: Colors.white),
-                onChanged: (value) {
-                  hours = double.tryParse(value) ?? 0;
-                },
+                //Text Area
+                child: TextField(
+                  controller: _timeController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Hours',
+                    labelStyle: TextStyle(color: Colors.white70),
+                    border: OutlineInputBorder(),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white70),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.mediumGreen),
+                    ),
+                    fillColor: Colors.white12,
+                    filled: true,
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                  onChanged: (value) {
+                    hours = double.tryParse(value) ?? 0;
+                  },
+                ),
               ),
               const SizedBox(height: 16),
               //Send button
@@ -162,7 +178,7 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
                   _sendTime(hours);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff3e6259),
+                  backgroundColor: AppColors.mediumGreen,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -241,7 +257,7 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
                                   : _toLoginForTime(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff3e6259),
+                              backgroundColor: AppColors.mediumGreen,
                               shape: const CircleBorder(),
                             ),
                             child: const Icon(Icons.add,

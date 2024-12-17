@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/report.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:gamerverse/services/report_service.dart';
@@ -57,7 +58,7 @@ class ReviewInfoReportState extends State<ReviewInfoReport> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xff1c463f),
+                color: AppColors.mediumMediumGreen,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(

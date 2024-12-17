@@ -72,7 +72,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: AppColors.veryDarkGreen,
+        backgroundColor: AppColors.darkGreen,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(

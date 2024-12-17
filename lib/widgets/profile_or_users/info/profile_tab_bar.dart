@@ -149,17 +149,20 @@ class TabBarSectionState extends State<TabBarSection> {
       return const Center(child: Text('User not found'));
     }
     return ProfileGames(
-      userId: widget.userId!,
-      wishlist: widget.wishlist,
-      blockedNotifier: widget.blockedNotifier,
-    );
+        userId: widget.userId!,
+        wishlist: widget.wishlist,
+        blockedNotifier: widget.blockedNotifier,
+        currentUser: widget.currentUser);
   }
 
   Widget _buildProfileGamesWidget() {
     if (widget.userId == null) {
       return const Center(child: Text('User not found'));
     }
-    return ProfileGames(userId: widget.userId!, wishlist: widget.wishlist);
+    return ProfileGames(
+        userId: widget.userId!,
+        wishlist: widget.wishlist,
+        currentUser: widget.currentUser);
   }
 
   Widget _buildUserReviewsWidget() {
@@ -188,7 +191,9 @@ class TabBarSectionState extends State<TabBarSection> {
 
   Widget _buildUserPostsWidget() {
     return UserPosts(
-        userId: widget.userId!,
-        currentUser: widget.currentUser); // Passa userId
+      userId: widget.userId!,
+      currentUser: widget.currentUser,
+      blockedNotifier: widget.blockedNotifier,
+    ); // Passa userId
   }
 }

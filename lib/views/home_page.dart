@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/home/category_section.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/services/game_api_service.dart';
@@ -44,10 +45,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         title: const Text('Home', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -56,7 +57,10 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.white,),
+            icon: const Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
             onPressed: () {
               Navigator.pushNamed(context, '/search');
             },

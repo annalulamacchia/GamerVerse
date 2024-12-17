@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/services/user/logout.dart'; // Servizio logout
 import 'package:gamerverse/services/user/Get_user_info.dart'; // Servizio per ottenere dati utente
@@ -189,7 +190,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20), // Colore di sfondo
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         title: Text(
           userData?['username'] ?? 'Account Settings',
@@ -199,7 +200,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
       ),
       body: (isLoading)
           ? Center(child: CircularProgressIndicator(color: Colors.teal))
@@ -247,21 +248,51 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                       Expanded(
                         child: Column(
                           children: [
-                            TextField(
-                              controller: nameController,
-                              decoration: const InputDecoration(
-                                labelText: 'Name',
-                                labelStyle: TextStyle(color: Colors.white70),
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                textSelectionTheme:
+                                    const TextSelectionThemeData(
+                                        selectionHandleColor:
+                                            AppColors.mediumGreen,
+                                        cursorColor: AppColors.mediumGreen,
+                                        selectionColor: AppColors.mediumGreen),
                               ),
-                              style: const TextStyle(color: Colors.white),
+                              //Text Area
+                              child: TextField(
+                                controller: nameController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Name',
+                                  labelStyle: TextStyle(color: Colors.white70),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: AppColors.mediumGreen),
+                                  ),
+                                ),
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
-                            TextField(
-                              controller: usernameController,
-                              decoration: const InputDecoration(
-                                labelText: 'Username',
-                                labelStyle: TextStyle(color: Colors.white70),
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                textSelectionTheme:
+                                    const TextSelectionThemeData(
+                                        selectionHandleColor:
+                                            AppColors.mediumGreen,
+                                        cursorColor: AppColors.mediumGreen,
+                                        selectionColor: AppColors.mediumGreen),
                               ),
-                              style: const TextStyle(color: Colors.white),
+                              //Text Area
+                              child: TextField(
+                                controller: usernameController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Username',
+                                  labelStyle: TextStyle(color: Colors.white70),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: AppColors.mediumGreen),
+                                  ),
+                                ),
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
                           ],
                         ),
@@ -280,43 +311,91 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   const SizedBox(height: 10),
 
                   // Email
-                  TextField(
-                    controller: emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: Colors.white70),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      textSelectionTheme: const TextSelectionThemeData(
+                          selectionHandleColor: AppColors.mediumGreen,
+                          cursorColor: AppColors.mediumGreen,
+                          selectionColor: AppColors.mediumGreen),
                     ),
-                    style: const TextStyle(color: Colors.white),
+                    //Text Area
+                    child: TextField(
+                      controller: emailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: TextStyle(color: Colors.white70),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.mediumGreen),
+                        ),
+                      ),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                   const SizedBox(height: 10),
 
                   // Password Fields
-                  TextField(
-                    controller: oldPasswordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Old Password',
-                      labelStyle: TextStyle(color: Colors.white70),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      textSelectionTheme: const TextSelectionThemeData(
+                          selectionHandleColor: AppColors.mediumGreen,
+                          cursorColor: AppColors.mediumGreen,
+                          selectionColor: AppColors.mediumGreen),
                     ),
-                    obscureText: true,
-                    style: const TextStyle(color: Colors.white),
+                    //Text Area
+                    child: TextField(
+                      controller: oldPasswordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Old Password',
+                        labelStyle: TextStyle(color: Colors.white70),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.mediumGreen),
+                        ),
+                      ),
+                      obscureText: true,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
-                  TextField(
-                    controller: newPasswordController,
-                    decoration: const InputDecoration(
-                      labelText: 'New Password',
-                      labelStyle: TextStyle(color: Colors.white70),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      textSelectionTheme: const TextSelectionThemeData(
+                          selectionHandleColor: AppColors.mediumGreen,
+                          cursorColor: AppColors.mediumGreen,
+                          selectionColor: AppColors.mediumGreen),
                     ),
-                    obscureText: true,
-                    style: const TextStyle(color: Colors.white),
+                    //Text Area
+                    child: TextField(
+                      controller: newPasswordController,
+                      decoration: const InputDecoration(
+                        labelText: 'New Password',
+                        labelStyle: TextStyle(color: Colors.white70),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.mediumGreen),
+                        ),
+                      ),
+                      obscureText: true,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
-                  TextField(
-                    controller: repeatPasswordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Repeat Password',
-                      labelStyle: TextStyle(color: Colors.white70),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      textSelectionTheme: const TextSelectionThemeData(
+                          selectionHandleColor: AppColors.mediumGreen,
+                          cursorColor: AppColors.mediumGreen,
+                          selectionColor: AppColors.mediumGreen),
                     ),
-                    obscureText: true,
-                    style: const TextStyle(color: Colors.white),
+                    //Text Area
+                    child: TextField(
+                      controller: repeatPasswordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Repeat Password',
+                        labelStyle: TextStyle(color: Colors.white70),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.mediumGreen),
+                        ),
+                      ),
+                      obscureText: true,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                   const SizedBox(height: 20),
 

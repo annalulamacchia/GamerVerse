@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/profile_or_users/games/wishing_favorite_completed.dart';
 import 'package:gamerverse/models/game_profile.dart';
 
@@ -16,7 +17,7 @@ class ProfileGames extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       body: GameListSection(
         userId: userId,
         wishlist: wishlist,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/report_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 
 // to read token from local storage
 import 'package:gamerverse/utils/firebase_auth_helper.dart';
@@ -100,8 +101,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     return BottomNavigationBar(
       items: items,
       currentIndex: validIndex,
-      selectedItemColor: Colors.teal,
-      unselectedItemColor: Colors.black38,
+      selectedItemColor: AppColors.mediumGreen,
+      unselectedItemColor: Colors.grey[600],
       onTap: (index) => _onItemTapped(context, index),
     );
   }

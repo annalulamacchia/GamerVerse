@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/report_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 
 class ReportWidget extends StatefulWidget {
@@ -139,7 +140,7 @@ class ReportWidgetState extends State<ReportWidget> {
                 ? const CircularProgressIndicator(color: Colors.teal)
                 : ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff3e6259),
+                      backgroundColor: AppColors.mediumGreen,
                     ),
                     onPressed: _submitReport,
                     child: const Text(

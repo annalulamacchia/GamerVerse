@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 
@@ -273,10 +274,10 @@ class _AllGamesPageState extends State<AllGamesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         title: const Text('All Games', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {

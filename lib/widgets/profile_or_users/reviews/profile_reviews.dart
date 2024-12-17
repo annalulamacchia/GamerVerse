@@ -52,9 +52,9 @@ class _ProfileReviewsPageState extends State<ProfileReviews> {
                 // If the user is blocked, show a NoDataList widget
                 if (isBlocked) {
                   return NoDataList(
-                    textColor: Colors.grey[400],
+                    textColor: Colors.white,
                     icon: Icons.reviews_outlined,
-                    message: 'The User is Blocked!',
+                    message: 'The user is blocked!',
                     subMessage: 'Please, unblock to see their reviews.',
                     color: Colors.grey[500]!,
                   );

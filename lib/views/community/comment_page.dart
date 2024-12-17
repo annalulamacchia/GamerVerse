@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/Community/post_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/posts/comments.dart';
 import 'package:gamerverse/models/comment.dart';
@@ -85,18 +86,16 @@ class CommentsPageState extends State<CommentsPage> {
   Widget build(BuildContext context) {
     BuildContext parentContext = context;
     return Scaffold(
-      backgroundColor: const Color(0xff051f20), // Sfondo scuro per uniformità
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        title: const Text('Comments', style: TextStyle(color: Colors.white)),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        backgroundColor:
-            const Color(0xff163832), // Colore verde scuro per l'AppBar
-      ),
+          title: const Text('Comments', style: TextStyle(color: Colors.white)),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: AppColors.darkGreen),
       body: Column(
         children: [
           Expanded(
@@ -113,7 +112,7 @@ class CommentsPageState extends State<CommentsPage> {
                       if (_comments.isEmpty) {
                         return NoDataList(
                           textColor: Colors.grey,
-                          icon: Icons.comment_outlined,
+                          icon: Icons.comments_disabled_outlined,
                           message: 'No comments yet!',
                           subMessage: 'Be the first to share your thoughts.',
                           color: Colors.white,
@@ -143,31 +142,48 @@ class CommentsPageState extends State<CommentsPage> {
   Widget _buildCommentInputField(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      color: const Color(0xff051f20), // Sfondo scuro per uniformità
+      color: AppColors.darkestGreen, // Sfondo scuro per uniformità
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              controller: _commentController,
-              decoration: InputDecoration(
-                hintText: 'Write a comment...',
-                hintStyle: TextStyle(color: Colors.grey[400]),
-                filled: true,
-                fillColor: const Color(0xffe6f2ed),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                textSelectionTheme: const TextSelectionThemeData(
+                    selectionHandleColor: AppColors.mediumGreen,
+                    cursorColor: AppColors.mediumGreen,
+                    selectionColor: AppColors.mediumGreen
                 ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              ),
+              child: TextField(
+                controller: _commentController,
+                decoration: InputDecoration(
+                  hintText: 'Write a comment...',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  filled: true,
+                  fillColor: const Color(0xffe6f2ed),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(color: Colors.white70),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(color: AppColors.mediumGreen),
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
               ),
             ),
           ),
           const SizedBox(width: 10),
           IconButton(
             icon: _isSending
-                ? const CircularProgressIndicator(color: Color(0xff3e6259))
-                : const Icon(Icons.send, color: Color(0xff3e6259)),
+                ? const CircularProgressIndicator(color: AppColors.mediumGreen)
+                : const Icon(Icons.send, color: AppColors.mediumGreen),
             onPressed: _isSending
                 ? null
                 : () async {

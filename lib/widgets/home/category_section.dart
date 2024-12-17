@@ -26,7 +26,7 @@ class CategorySection extends StatelessWidget {
               Text(
                 title,
                 style:
-                const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_forward, color: Colors.white),

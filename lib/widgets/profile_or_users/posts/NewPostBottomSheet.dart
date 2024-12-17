@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_profile.dart';
-import 'package:gamerverse/services/Community/post_service.dart'; // Importa il servizio
+import 'package:gamerverse/services/Community/post_service.dart';
+import 'package:gamerverse/utils/colors.dart'; // Importa il servizio
 
 class NewPostBottomSheet extends StatefulWidget {
   final Function(String description, String gameId) onPostCreated;
@@ -69,20 +70,37 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
           const SizedBox(height: 20),
 
           // Text field for the description
-          TextField(
-            controller: descriptionController,
-            maxLines: 5,
-            decoration: InputDecoration(
-              labelText: 'Description',
-              filled: true,
-              fillColor: const Color(0xffe6f2ed),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
+          Theme(
+            data: Theme.of(context).copyWith(
+              textSelectionTheme: const TextSelectionThemeData(
+                  selectionHandleColor: AppColors.mediumGreen,
+                  cursorColor: AppColors.mediumGreen,
+                  selectionColor: AppColors.mediumGreen),
+            ),
+            //Text Area
+            child: TextField(
+              controller: descriptionController,
+              maxLines: 5,
+              decoration: InputDecoration(
+                labelText: 'Description',
+                filled: true,
+                fillColor: const Color(0xffe6f2ed),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.white70),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.mediumGreen),
+                ),
+                labelStyle: TextStyle(color: Colors.grey[800]),
+                hintText: 'Add a description of your post...',
+                hintStyle: TextStyle(color: Colors.grey[600]),
               ),
-              labelStyle: TextStyle(color: Colors.grey[800]),
-              hintText: 'Add a description of your post...',
-              hintStyle: TextStyle(color: Colors.grey[600]),
             ),
           ),
 
@@ -91,7 +109,7 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
           // Submit button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
+              backgroundColor: AppColors.mediumGreen,
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 32),
             ),
             onPressed: () async {

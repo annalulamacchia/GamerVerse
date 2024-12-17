@@ -55,8 +55,9 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {

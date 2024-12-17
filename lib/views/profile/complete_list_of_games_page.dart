@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_profile.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/profile_or_users/games/user_card_game.dart';
 
 class AllGamesUserPage extends StatelessWidget {
   final List<GameProfile> games;
   final String currentUser;
+  final String userId;
 
   const AllGamesUserPage(
-      {super.key, required this.games, required this.currentUser});
+      {super.key,
+      required this.games,
+      required this.currentUser,
+      required this.userId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         title: const Text(
           'All Games',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color(0xff163832),
+        backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -41,7 +46,7 @@ class AllGamesUserPage extends StatelessWidget {
               width: 180,
               margin: const EdgeInsets.symmetric(horizontal: 1),
               child: ImageCardProfileWidget(
-                  game: games[index], currentUser: currentUser),
+                  game: games[index], currentUser: currentUser, userId: userId),
             );
           },
         ),

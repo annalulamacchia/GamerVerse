@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 
 class SpecificGameSectionWidget extends StatefulWidget {
   final String title;
@@ -99,7 +100,7 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
             margin: const EdgeInsets.symmetric(horizontal: 5),
             padding: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 12),
             decoration: BoxDecoration(
-              color: const Color(0xff3e6259),
+              color: AppColors.mediumGreen,
               border: Border.all(color: Colors.black12),
               borderRadius: BorderRadius.circular(8),
             ),
