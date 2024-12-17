@@ -7,12 +7,14 @@ class GameListSection extends StatefulWidget {
   final String userId;
   final List<GameProfile> wishlist;
   final ValueNotifier<bool>? blockedNotifier;
+  final String? currentUser;
 
   const GameListSection({
     super.key,
     required this.userId,
     required this.wishlist,
     this.blockedNotifier,
+    required this.currentUser,
   });
 
   @override
@@ -159,7 +161,8 @@ class GameListSectionState extends State<GameListSection> {
                 onPressed: () {
                   Navigator.pushNamed(context, '/userAllGames', arguments: {
                     'games': games,
-                    'currentUser': widget.userId,
+                    'currentUser': widget.currentUser,
+                    'userId': widget.userId
                   });
                 },
               ),
@@ -176,7 +179,8 @@ class GameListSectionState extends State<GameListSection> {
                 onTap: () {
                   Navigator.pushNamed(context, '/userGame', arguments: {
                     'game': games[index],
-                    'currentUser': widget.userId,
+                    'currentUser': widget.currentUser,
+                    'userId': widget.userId
                   });
                 },
                 child: _buildGameCard(games[index].cover),

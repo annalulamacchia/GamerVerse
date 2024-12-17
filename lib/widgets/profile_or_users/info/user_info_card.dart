@@ -97,18 +97,23 @@ class _UserInfoCardState extends State<UserInfoCard> {
           List<dynamic> followedList = userData!['followed'] ?? [];
 
           userData!['followers_count'] = followersList.where((follower) {
-            return follower['isBlocked'] == false && follower['isFriend'];
+            return follower['isBlocked'] == false &&
+                follower['isFriend'] &&
+                follower['id'] != widget.userId;
           }).length;
 
           if (widget.followersNotifier != null) {
             widget.followersNotifier!.value = followersList.where((follower) {
-              return follower['isBlocked'] == false && follower['isFriend'];
+              return follower['isBlocked'] == false &&
+                  follower['isFriend'] &&
+                  follower['id'] != widget.userId;
             }).length;
           }
 
           userData!['followed_count'] = followedList.where((followedUser) {
             return followedUser['isBlocked'] == false &&
-                followedUser['isFriend'];
+                followedUser['isFriend'] &&
+                followedUser['id'] != widget.userId;
           }).length;
 
           if (loggedInUserId != null) {
@@ -126,12 +131,12 @@ class _UserInfoCardState extends State<UserInfoCard> {
 
           followers = followersList.where((follower) {
             return follower['isBlocked'] == false &&
-                follower['isFriend'] == true;
+                follower['isFriend'] == true && follower['id'] != widget.userId;
           }).toList();
 
           followed = followedList.where((followedUser) {
             return followedUser['isBlocked'] == false &&
-                followedUser['isFriend'];
+                followedUser['isFriend'] && followedUser['id'] != widget.userId;
           }).toList();
         });
       } else {

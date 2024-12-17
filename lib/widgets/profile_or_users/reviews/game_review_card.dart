@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_review.dart';
 import 'package:gamerverse/services/specific_game/review_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/dialog_helper.dart';
 import 'package:gamerverse/widgets/common_sections/report_menu.dart';
 import 'package:gamerverse/widgets/specific_game/like_dislike_button.dart';
@@ -79,99 +80,126 @@ class GameReviewCardState extends State<GameReviewCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Card(
-          color: const Color(0xfff0f9f1),
-          margin: const EdgeInsets.only(left: 15, right: 15, bottom: 17.5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 6,
+      color: AppColors.lightGreenishWhite,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header con immagine del gioco e overlay per il nome del gioco
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
+                ),
+                child: Image.network(
+                  widget.gameReview.cover,
+                  width: double.infinity,
+                  height: 125,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/game',
+                        arguments: int.parse(widget.gameReview.gameId),
+                      );
+                    },
+                    child: Text(
+                      widget.gameReview.gameName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          elevation: 8,
-          shadowColor: Colors.black.withOpacity(0.5),
-          child: Padding(
-            padding: const EdgeInsets.all(15),
+          Padding(
+            padding: const EdgeInsets.only(left: 15, bottom: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Game Image, username and rating
+                // Rating e user info
                 Row(
                   children: [
-                    //Game Image
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/game',
-                            arguments: int.parse(widget.gameReview.gameId));
-                      },
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(widget.gameReview.cover),
-                            fit: BoxFit.cover,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                    // Rating
+                    const HugeIcon(
+                      icon: HugeIcons.strokeRoundedPacman02,
+                      color: Colors.black,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      widget.gameReview.rating.toStringAsFixed(1),
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    Spacer(),
+                    Text(
+                      widget.gameReview.status,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
                       ),
                     ),
-                    const SizedBox(width: 15),
-
-                    //Game Name
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, '/game',
-                                arguments: int.parse(widget.gameReview.gameId));
-                          },
-                          child: Container(
-                            width: 175,
-                            alignment: Alignment.bottomLeft,
-                            child: Text(
-                              widget.gameReview.gameName,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                              maxLines: null,
-                              softWrap: true,
-                            ),
-                          ),
+                    // Toggle menu
+                    if (widget.currentUser != widget.gameReview.writerId)
+                      ReportMenu(
+                        userId: widget.currentUser,
+                        reportedId: widget.gameReview.reviewId,
+                        parentContext: context,
+                        writerId: widget.gameReview.writerId,
+                        type: 'Review',
+                      ),
+                    // Remove review
+                    if (widget.currentUser == widget.gameReview.writerId)
+                      IconButton(
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.black54,
                         ),
-
-                        //Rating
-                        Row(
-                          children: [
-                            const HugeIcon(
-                              icon: HugeIcons.strokeRoundedPacman02,
-                              color: Colors.black,
-                              size: 20.0,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              widget.gameReview.rating.toString(),
-                              style: const TextStyle(fontSize: 20),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
+                        onPressed: () => _showDeleteConfirmation(
+                            widget.gameContext,
+                            widget.gameReview.reviewId,
+                            widget.gameReview.gameId),
+                      ),
                   ],
                 ),
                 const SizedBox(height: 10),
 
-                //Review
-                Text(
-                  widget.gameReview.description,
-                  maxLines:
-                      _isExpanded ? widget.gameReview.description.length : 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                // Review Description
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: Text(
+                    widget.gameReview.description,
+                    maxLines:
+                        _isExpanded ? widget.gameReview.description.length : 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
                 ),
-
-                // View More / View Less
                 if (widget.gameReview.description.length > 100)
                   GestureDetector(
                     onTap: () {
@@ -188,57 +216,26 @@ class GameReviewCardState extends State<GameReviewCard> {
                     ),
                   ),
 
+                const SizedBox(height: 10),
+
                 // Like and Dislike buttons
-                LikeDislikeWidget(
-                  reviewId: widget.gameReview.reviewId,
-                  gameId: widget.gameReview.gameId,
-                  timestamp: widget.gameReview.timestamp,
-                  initialLikes: widget.gameReview.likes,
-                  initialDislikes: widget.gameReview.dislikes,
-                  userId: widget.currentUser,
-                  writerId: widget.gameReview.writerId,
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: LikeDislikeWidget(
+                    reviewId: widget.gameReview.reviewId,
+                    gameId: widget.gameReview.gameId,
+                    timestamp: widget.gameReview.timestamp,
+                    initialLikes: widget.gameReview.likes,
+                    initialDislikes: widget.gameReview.dislikes,
+                    userId: widget.currentUser,
+                    writerId: widget.gameReview.writerId,
+                  ),
                 ),
               ],
             ),
           ),
-        ),
-        Positioned(
-          top: 5,
-          right: 15,
-          child: Row(
-            children: [
-              //Status
-              Text(
-                widget.gameReview.status,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
-              ),
-
-              //Toggle menu
-              if (widget.currentUser != widget.gameReview.writerId)
-                ReportMenu(
-                    userId: widget.currentUser,
-                    reportedId: widget.gameReview.reviewId,
-                    parentContext: context,
-                    writerId: widget.gameReview.writerId,
-                    type: 'Review'),
-
-              //remove review
-              if (widget.currentUser == widget.gameReview.writerId)
-                IconButton(
-                  icon: const Icon(
-                    Icons.delete_outline,
-                    color: Colors.black54,
-                  ),
-                  onPressed: () => _showDeleteConfirmation(widget.gameContext,
-                      widget.gameReview.reviewId, widget.gameReview.gameId),
-                ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

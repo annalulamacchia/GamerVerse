@@ -110,9 +110,17 @@ class UserCardState extends State<UserCard> {
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             leading: CircleAvatar(
               radius: 25,
-              child: widget.profilePicture != ''
-                  ? Image.network(widget.profilePicture)
-                  : Icon(Icons.person, color: Colors.white),
+              backgroundColor: Colors.grey[200],
+              child: ClipOval(
+                child: widget.profilePicture != ''
+                    ? Image.network(
+                        widget.profilePicture,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      )
+                    : Icon(Icons.person, color: Colors.grey[700],),
+              ),
             ),
             title: Text(
               widget.username,

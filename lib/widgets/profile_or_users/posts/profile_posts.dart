@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game_profile.dart';
 import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/profile_or_users/posts/NewPostBottomSheet.dart';
-import 'package:gamerverse/widgets/community/PostCardCommunity.dart';
 import 'package:gamerverse/services/specific_game/wishlist_service.dart';
 import 'package:gamerverse/services/Community/post_service.dart';
 import 'package:gamerverse/models/post.dart';
+import 'package:gamerverse/widgets/profile_or_users/posts/PostCardProfile.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
