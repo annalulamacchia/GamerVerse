@@ -112,12 +112,15 @@ class RouteGenerator {
         if (args is Map<String, dynamic> &&
             args.containsKey('game') &&
             args.containsKey('currentUser') &&
-            args.containsKey('userId')) {
+            args.containsKey('userId') &&
+            args.containsKey('currentFollowedNotifier')) {
           return MaterialPageRoute(
               builder: (context) => SpecificUserGame(
-                  game: args['game'],
-                  currentUser: args['currentUser'],
-                  userId: args['userId']));
+                    game: args['game'],
+                    currentUser: args['currentUser'],
+                    userId: args['userId'],
+                    currentFollowedNotifier: args['currentFollowedNotifier'],
+                  ));
         }
         return MaterialPageRoute(builder: (context) => const HomePage());
       case '/admin':

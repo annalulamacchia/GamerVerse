@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 
 class VideoGameResults extends StatefulWidget {
   final String searchQuery;
@@ -115,43 +116,55 @@ class _VideoGameResultsState extends State<VideoGameResults> {
               child: Card(
                 color: Colors.white, // White card background
                 elevation: 4,
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      // Game Cover
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: game['coverUrl'] != null
-                            ? Image.network(
-                          game['coverUrl']!,
-                          width: 90,
-                          height: 90,
-                          fit: BoxFit.cover,
-                        )
-                            : const Icon(
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // Rounded corners for card
+                ),
+                child: Row(
+                  children: [
+                    // Game Cover - Occupies the left side
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
+                      ),
+                      child: game['coverUrl'] != null
+                          ? Image.network(
+                        game['coverUrl']!,
+                        width: 125,
+                        height: 125,
+                        fit: BoxFit.cover,
+                      )
+                          : Container(
+                        width: 125,
+                        height: 125,
+                        color: AppColors.lightGreenishWhite,
+                        child: const Icon(
                           Icons.image_not_supported,
-                          size: 90,
+                          size: 50,
                           color: Colors.grey,
                         ),
                       ),
-                      const SizedBox(width: 15),
+                    ),
 
-                      // Game Information
-                      Expanded(
+                    // Game Details - Occupies the right side
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               game['name'] ?? 'Unknown Game',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black, // Dark text color
+                                color: Colors.black,
                               ),
                             ),
-                            const SizedBox(height: 5),
+                            const SizedBox(height: 8),
                             const Text(
                               'Click to view details',
                               style: TextStyle(
@@ -162,11 +175,20 @@ class _VideoGameResultsState extends State<VideoGameResults> {
                           ],
                         ),
                       ),
-                      const Icon(Icons.arrow_forward_ios, color: Colors.black45),
-                    ],
-                  ),
+                    ),
+
+                    // Navigation Icon
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: const Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.black45,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
             );
           },
         );

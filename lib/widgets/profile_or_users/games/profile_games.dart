@@ -9,6 +9,7 @@ class ProfileGames extends StatelessWidget {
   final ValueNotifier<bool>? blockedNotifier;
   final String? currentUser;
   final ValueNotifier<bool>? gamesLoadingNotifier;
+  final ValueNotifier<List<dynamic>>? currentFollowedNotifier;
 
   const ProfileGames(
       {super.key,
@@ -16,7 +17,8 @@ class ProfileGames extends StatelessWidget {
       required this.wishlist,
       this.blockedNotifier,
       required this.currentUser,
-      this.gamesLoadingNotifier});
+      this.gamesLoadingNotifier,
+      this.currentFollowedNotifier});
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class ProfileGames extends StatelessWidget {
         blockedNotifier: blockedNotifier,
         currentUser: currentUser,
         gamesLoadingNotifier: gamesLoadingNotifier,
+        currentFollowedNotifier: currentFollowedNotifier,
       ),
     );
   }

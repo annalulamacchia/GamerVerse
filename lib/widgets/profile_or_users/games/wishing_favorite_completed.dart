@@ -9,6 +9,7 @@ class GameListSection extends StatefulWidget {
   final ValueNotifier<bool>? blockedNotifier;
   final String? currentUser;
   final ValueNotifier<bool>? gamesLoadingNotifier;
+  final ValueNotifier<List<dynamic>>? currentFollowedNotifier;
 
   const GameListSection({
     super.key,
@@ -17,6 +18,7 @@ class GameListSection extends StatefulWidget {
     this.blockedNotifier,
     required this.currentUser,
     this.gamesLoadingNotifier,
+    this.currentFollowedNotifier,
   });
 
   @override
@@ -146,7 +148,8 @@ class GameListSectionState extends State<GameListSection> {
                   Navigator.pushNamed(context, '/userAllGames', arguments: {
                     'games': games,
                     'currentUser': widget.currentUser,
-                    'userId': widget.userId
+                    'userId': widget.userId,
+                    'currentFollowedNotifier': widget.currentFollowedNotifier
                   });
                 },
               ),
@@ -164,7 +167,8 @@ class GameListSectionState extends State<GameListSection> {
                   Navigator.pushNamed(context, '/userGame', arguments: {
                     'game': games[index],
                     'currentUser': widget.currentUser,
-                    'userId': widget.userId
+                    'userId': widget.userId,
+                    'currentFollowedNotifier': widget.currentFollowedNotifier
                   });
                 },
                 child: _buildGameCard(games[index].cover),
