@@ -10,17 +10,14 @@ class PostCard extends StatefulWidget {
   final String userId;
   final String gameId;
   final String content;
-  final String imageUrl;
   final String timestamp;
   final int likeCount;
   final int commentCount;
-  final List<dynamic> likedBy; // Lista degli utenti che hanno messo like
+  final List<dynamic> likedBy;
   final String? currentUser;
-  final String username;
   final String gameName;
   final String gameCover;
   final VoidCallback? onPostDeleted;
-  final String profilePicture;
 
   const PostCard({
     super.key,
@@ -28,17 +25,14 @@ class PostCard extends StatefulWidget {
     required this.userId,
     required this.gameId,
     required this.content,
-    required this.imageUrl,
     required this.timestamp,
     required this.likeCount,
     required this.commentCount,
-    required this.likedBy, // Passa likedBy qui
+    required this.likedBy,
     required this.currentUser,
-    required this.username,
     required this.gameName,
     required this.gameCover,
     this.onPostDeleted,
-    required this.profilePicture,
   });
 
   @override
@@ -167,7 +161,7 @@ class PostCardState extends State<PostCard> {
                 right: 0,
                 child: Container(
                   padding:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.6),
                   ),
@@ -204,48 +198,15 @@ class PostCardState extends State<PostCard> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.grey[200],
-                          backgroundImage: widget.profilePicture != ''
-                              ? NetworkImage(widget.profilePicture)
-                              : null,
-                          radius: 20,
-                          child: widget.profilePicture != ''
-                              ? null
-                              : Icon(Icons.person,
-                              color: Colors.grey[700], size: 30),
-                        ),
-                        const SizedBox(width: 10),
                         // Nome utente e data
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  if (widget.userId == widget.currentUser) {
-                                    Navigator.pushNamed(context, '/profile',
-                                        arguments: widget.userId);
-                                  } else {
-                                    Navigator.pushNamed(context, '/userProfile',
-                                        arguments: widget.userId);
-                                  }
-                                },
-                                child: SizedBox(
-                                  width: 275,
-                                  child: Text(
-                                    widget.username,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
                               Text(
                                 _getRelativeTime(widget.timestamp),
                                 style: const TextStyle(
-                                  color: Colors.grey,
+                                  color: Colors.black54,
                                   fontSize: 12,
                                 ),
                               ),
@@ -262,7 +223,7 @@ class PostCardState extends State<PostCard> {
                       maxLines: _isExpanded ? widget.content.length : 2,
                       overflow: TextOverflow.ellipsis,
                       style:
-                      const TextStyle(fontSize: 14, color: Colors.black87),
+                          const TextStyle(fontSize: 14, color: Colors.black87),
                     ),
                     if (widget.content.toUpperCase().length > 74)
                       GestureDetector(
@@ -344,24 +305,24 @@ class PostCardState extends State<PostCard> {
                 right: 0,
                 child: widget.currentUser != widget.userId
                     ? ReportMenu(
-                  userId: widget.currentUser,
-                  reportedId: widget.postId,
-                  parentContext: context,
-                  writerId: widget.userId,
-                  type: 'Post',
-                )
+                        userId: widget.currentUser,
+                        reportedId: widget.postId,
+                        parentContext: context,
+                        writerId: widget.userId,
+                        type: 'Post',
+                      )
                     : IconButton(
-                  icon: _isDeleting
-                      ? const Opacity(
-                    opacity: 0,
-                    child: CircularProgressIndicator(),
-                  )
-                      : const Icon(
-                    Icons.delete_outline,
-                    color: Colors.black54,
-                  ),
-                  onPressed: _isDeleting ? null : _showDeleteConfirmation,
-                ),
+                        icon: _isDeleting
+                            ? const Opacity(
+                                opacity: 0,
+                                child: CircularProgressIndicator(),
+                              )
+                            : const Icon(
+                                Icons.delete_outline,
+                                color: Colors.black54,
+                              ),
+                        onPressed: _isDeleting ? null : _showDeleteConfirmation,
+                      ),
               ),
             ],
           ),

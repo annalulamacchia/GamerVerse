@@ -46,7 +46,7 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
                 value: game.gameId,
                 child: Text(
                   game.gameName,
-                  style: TextStyle(color: Colors.grey[800]),
+                  style: TextStyle(color: Colors.white),
                 ),
               );
             }).toList(),
@@ -58,13 +58,22 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
             decoration: InputDecoration(
               labelText: 'Game',
               filled: true,
-              fillColor: const Color(0xffe6f2ed),
+              fillColor: Colors.white12,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
-              labelStyle: TextStyle(color: Colors.grey[800]),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.white70),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColors.mediumGreen),
+              ),
+              labelStyle: TextStyle(color: Colors.white70),
             ),
+            dropdownColor: Colors.grey[900],
           ),
 
           const SizedBox(height: 20),
@@ -84,7 +93,7 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
               decoration: InputDecoration(
                 labelText: 'Description',
                 filled: true,
-                fillColor: const Color(0xffe6f2ed),
+                fillColor: Colors.white12,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -97,10 +106,11 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: AppColors.mediumGreen),
                 ),
-                labelStyle: TextStyle(color: Colors.grey[800]),
+                labelStyle: TextStyle(color: Colors.white70),
                 hintText: 'Add a description of your post...',
                 hintStyle: TextStyle(color: Colors.grey[600]),
               ),
+              style: TextStyle(color: Colors.white),
             ),
           ),
 
