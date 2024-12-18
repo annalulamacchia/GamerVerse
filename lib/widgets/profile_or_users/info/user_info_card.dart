@@ -219,7 +219,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
   @override
   Widget build(BuildContext context) {
     BuildContext parentContext = context;
-    if (isLoading && isLoadingCurrentUser) {
+    if (isLoading || isLoadingCurrentUser) {
       return const Center(child: CircularProgressIndicator(color: Colors.teal));
     }
 
@@ -268,17 +268,17 @@ class _UserInfoCardState extends State<UserInfoCard> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 3),
-                        image: userData!['profilePicture'] != null &&
-                                userData!['profilePicture'] != ''
+                        image: userData!['profile_picture'] != null &&
+                                userData!['profile_picture'] != ''
                             ? DecorationImage(
                                 image:
-                                    NetworkImage(userData!['profilePicture']),
+                                    NetworkImage(userData!['profile_picture']),
                                 fit: BoxFit.cover)
                             : null,
                       ),
-                      child: (userData!['profilePicture'] != null &&
-                                  userData!['profilePicture'] != '') ||
-                              userData!['profilePicture'] == null
+                      child: (userData!['profile_picture'] != null &&
+                                  userData!['profile_picture'] == '') ||
+                              userData!['profile_picture'] == null
                           ? const Icon(Icons.person,
                               size: 40, color: Colors.white)
                           : null,
