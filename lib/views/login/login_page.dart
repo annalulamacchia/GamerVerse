@@ -39,12 +39,14 @@ class LoginPage extends StatelessWidget {
       backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         backgroundColor: AppColors.darkGreen,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            : null,
       ),
       body: Container(
         // Gradient background for an elegant look

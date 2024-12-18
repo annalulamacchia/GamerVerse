@@ -27,7 +27,6 @@ class _ProfilePostsState extends State<ProfilePosts> {
   WishlistService wishlistService = WishlistService();
   List<GameProfile> wishlistGames = [];
   List<Post> posts = [];
-  List<String> usernames = [];
   List<String> gamesNames = [];
   List<String> gamesCovers = [];
   String? currentUser;
@@ -71,13 +70,6 @@ class _ProfilePostsState extends State<ProfilePosts> {
             .cast<Post>()
             .toList();
 
-        List<String> usernamesList = (result["usernames"] as List<dynamic>?)
-                ?.map((username) => username != null && username is String
-                    ? username
-                    : "Deleted Account")
-                .toList() ??
-            [];
-
         List<String> gamesNamesList = (result["game_names"] as List<dynamic>?)
                 ?.map((gameName) => gameName != null && gameName is String
                     ? gameName
@@ -120,7 +112,6 @@ class _ProfilePostsState extends State<ProfilePosts> {
 
         setState(() {
           posts = postsList;
-          usernames = usernamesList;
           gamesNames = gamesNamesList;
           gamesCovers = gamesCoversList;
           likeCounts = likeCountsTemp;
@@ -180,7 +171,6 @@ class _ProfilePostsState extends State<ProfilePosts> {
                   itemCount: posts.length,
                   itemBuilder: (context, index) {
                     final post = posts[index];
-                    final username = usernames[index];
                     final gameName = gamesNames[index];
                     final cover = gamesCovers[index];
 
@@ -192,21 +182,18 @@ class _ProfilePostsState extends State<ProfilePosts> {
                         likeUsersList.isNotEmpty ? likeUsersList[index] : [];
 
                     return PostCard(
-                      postId: post.id,
-                      gameId: post.gameId,
-                      userId: post.writerId,
-                      content: post.description,
-                      imageUrl: cover,
-                      timestamp: post.timestamp,
-                      likeCount: likeCount,
-                      commentCount: commentCount,
-                      likedBy: likedBy,
-                      currentUser: currentUser,
-                      username: username,
-                      gameName: gameName,
-                      gameCover: cover,
-                      onPostDeleted: _updatePosts, profilePicture: '',
-                    );
+                        postId: post.id,
+                        gameId: post.gameId,
+                        userId: post.writerId,
+                        content: post.description,
+                        timestamp: post.timestamp,
+                        likeCount: likeCount,
+                        commentCount: commentCount,
+                        likedBy: likedBy,
+                        currentUser: currentUser,
+                        gameName: gameName,
+                        gameCover: cover,
+                        onPostDeleted: _updatePosts);
                   },
                 ),
       floatingActionButton: FloatingActionButton(
@@ -227,7 +214,7 @@ class _ProfilePostsState extends State<ProfilePosts> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: Colors.grey[900],
       builder: (BuildContext context) {
         return NewPostBottomSheet(
           wishlistGames: wishlistGames,

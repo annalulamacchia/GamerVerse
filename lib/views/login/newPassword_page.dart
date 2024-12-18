@@ -91,34 +91,68 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                   color: AppColors.lightestGreen),
             ),
             const SizedBox(height: 20),
-            TextField(
-              controller: newPasswordController,
-              decoration: InputDecoration(
-                labelText: 'New Password',
-                labelStyle: const TextStyle(color: AppColors.lightestGreen),
-                fillColor: AppColors.veryDarkGreen,
-                filled: true,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none),
+            Theme(
+              data: Theme.of(context).copyWith(
+                textSelectionTheme: const TextSelectionThemeData(
+                    selectionHandleColor: AppColors.mediumGreen,
+                    cursorColor: AppColors.mediumGreen,
+                    selectionColor: AppColors.mediumGreen),
               ),
-              obscureText: true,
-              style: const TextStyle(color: AppColors.lightestGreen),
+              //Text Area
+              child: TextField(
+                controller: newPasswordController,
+                decoration: InputDecoration(
+                  labelText: 'New Password',
+                  labelStyle: const TextStyle(color: AppColors.lightestGreen),
+                  fillColor: AppColors.veryDarkGreen,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.mediumGreen),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                obscureText: true,
+                style: const TextStyle(color: AppColors.lightestGreen),
+              ),
             ),
             const SizedBox(height: 15),
-            TextField(
-              controller: repeatPasswordController,
-              decoration: InputDecoration(
-                labelText: 'Repeat Password',
-                labelStyle: const TextStyle(color: AppColors.lightestGreen),
-                fillColor: AppColors.veryDarkGreen,
-                filled: true,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none),
+            Theme(
+              data: Theme.of(context).copyWith(
+                textSelectionTheme: const TextSelectionThemeData(
+                    selectionHandleColor: AppColors.mediumGreen,
+                    cursorColor: AppColors.mediumGreen,
+                    selectionColor: AppColors.mediumGreen),
               ),
-              obscureText: true,
-              style: const TextStyle(color: AppColors.lightestGreen),
+              //Text Area
+              child: TextField(
+                controller: repeatPasswordController,
+                decoration: InputDecoration(
+                  labelText: 'Repeat Password',
+                  labelStyle: const TextStyle(color: AppColors.lightestGreen),
+                  fillColor: AppColors.veryDarkGreen,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.mediumGreen),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                obscureText: true,
+                style: const TextStyle(color: AppColors.lightestGreen),
+              ),
             ),
             const SizedBox(height: 20),
             isLoading

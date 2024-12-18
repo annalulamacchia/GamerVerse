@@ -124,8 +124,7 @@ class _ReviewPageState extends State<ReviewPage> {
                           SizedBox(width: 5),
                           Text(
                             widget.game.criticsRating != 0
-                                ? ((widget.game.criticsRating * 5) / 100)
-                                    .toStringAsFixed(1)
+                                ? widget.game.criticsRating.toStringAsFixed(1)
                                 : 'N/A',
                             style: TextStyle(fontSize: 20, color: Colors.white),
                           ),

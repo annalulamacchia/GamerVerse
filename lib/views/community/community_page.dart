@@ -89,10 +89,14 @@ class _CommunityPageState extends State<CommunityPage> {
                 .toList() ??
             [];
 
-        List<String> profilePicturesList = (result["profile_pictures"] as List<dynamic>?)
-            ?.map((profilePicture) => profilePicture != null && profilePicture is String ? profilePicture : "")
-            .toList() ??
-            [];
+        List<String> profilePicturesList =
+            (result["profile_pictures"] as List<dynamic>?)
+                    ?.map((profilePicture) =>
+                        profilePicture != null && profilePicture is String
+                            ? profilePicture
+                            : "")
+                    .toList() ??
+                [];
 
         // Otteniamo i like, commenti e gli utenti che mettono like
         List<List<String>> likeUsersListTemp =
@@ -167,6 +171,14 @@ class _CommunityPageState extends State<CommunityPage> {
       appBar: AppBar(
         title: const Text('Community', style: TextStyle(color: Colors.white)),
         backgroundColor: AppColors.darkGreen,
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            : null,
         actions: [
           IconButton(
             icon: const Icon(Icons.person_add, color: Colors.white),
@@ -236,7 +248,7 @@ class _CommunityPageState extends State<CommunityPage> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      backgroundColor: const Color(0xff051f20),
+      backgroundColor: Colors.grey[900],
       builder: (BuildContext context) {
         return NewPostBottomSheet(
           wishlistGames: wishlistGames,

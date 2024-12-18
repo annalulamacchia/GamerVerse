@@ -20,6 +20,7 @@ class ReportMenu extends StatelessWidget {
   void _showReport(BuildContext context, String type, String? reportedId) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.grey[900],
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),

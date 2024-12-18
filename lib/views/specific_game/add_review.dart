@@ -165,7 +165,6 @@ class _AddReviewState extends State<AddReview> {
                     ),
                     maxLines: 4,
                     style: const TextStyle(color: Colors.white70),
-                    cursorColor: Colors.white70,
                   ),
                 ),
           const SizedBox(height: 16),

@@ -89,8 +89,8 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => _checkAndRequestPermission(),
-              child: const Text('Grant Permission'),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green[800]),  // Bottone con colore verde scuro
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green[800]),
+              child: const Text('Grant Permission'),  // Bottone con colore verde scuro
             ),
           ],
         ),

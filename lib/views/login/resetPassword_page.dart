@@ -102,18 +102,35 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   color: AppColors.lightestGreen),
             ),
             const SizedBox(height: 20),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                labelText: 'E-mail',
-                labelStyle: const TextStyle(color: AppColors.darkGreen),
-                fillColor: AppColors.lightGreen,
-                filled: true,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none),
+            Theme(
+              data: Theme.of(context).copyWith(
+                textSelectionTheme: const TextSelectionThemeData(
+                    selectionHandleColor: AppColors.mediumGreen,
+                    cursorColor: AppColors.mediumGreen,
+                    selectionColor: AppColors.mediumGreen),
               ),
-              style: const TextStyle(color: AppColors.darkGreen),
+              //Text Area
+              child: TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: 'E-mail',
+                  labelStyle: const TextStyle(color: AppColors.darkGreen),
+                  fillColor: AppColors.lightGreen,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.mediumGreen),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                style: const TextStyle(color: AppColors.darkGreen),
+              ),
             ),
             const SizedBox(height: 15),
             DropdownButtonFormField<String>(
@@ -137,27 +154,46 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
               ),
               dropdownColor: AppColors.lightestGreen,
               hint: const Text(
-                'Select a question', // Testo visibile quando nulla è selezionato
+                'Select a question',
+                // Testo visibile quando nulla è selezionato
                 style: TextStyle(color: AppColors.darkGreen),
               ),
             ),
             const SizedBox(height: 15),
-            TextField(
-              controller: answerController,
-              decoration: InputDecoration(
-                labelText: 'Reset Password Answer',
-                labelStyle: const TextStyle(color: AppColors.darkGreen),
-                fillColor: AppColors.lightGreen,
-                filled: true,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none),
+            Theme(
+              data: Theme.of(context).copyWith(
+                textSelectionTheme: const TextSelectionThemeData(
+                    selectionHandleColor: AppColors.mediumGreen,
+                    cursorColor: AppColors.mediumGreen,
+                    selectionColor: AppColors.mediumGreen),
               ),
-              style: const TextStyle(color: AppColors.darkGreen),
+              //Text Area
+              child: TextField(
+                controller: answerController,
+                decoration: InputDecoration(
+                  labelText: 'Reset Password Answer',
+                  labelStyle: const TextStyle(color: AppColors.darkGreen),
+                  fillColor: AppColors.lightGreen,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.mediumGreen),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                style: const TextStyle(color: AppColors.darkGreen),
+              ),
             ),
             const SizedBox(height: 20),
             isLoading

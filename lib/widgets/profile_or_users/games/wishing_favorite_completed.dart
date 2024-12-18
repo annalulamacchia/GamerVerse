@@ -8,6 +8,7 @@ class GameListSection extends StatefulWidget {
   final List<GameProfile> wishlist;
   final ValueNotifier<bool>? blockedNotifier;
   final String? currentUser;
+  final ValueNotifier<bool>? gamesLoadingNotifier;
 
   const GameListSection({
     super.key,
@@ -15,6 +16,7 @@ class GameListSection extends StatefulWidget {
     required this.wishlist,
     this.blockedNotifier,
     required this.currentUser,
+    this.gamesLoadingNotifier,
   });
 
   @override
@@ -22,17 +24,10 @@ class GameListSection extends StatefulWidget {
 }
 
 class GameListSectionState extends State<GameListSection> {
-  bool isLoading = false;
   List<GameProfile> liked = [];
   List<GameProfile> playing = [];
   List<GameProfile> completed = [];
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  // Load and filter wishlist into different categories
   @override
   Widget build(BuildContext context) {
     liked = widget.wishlist.where((game) => game.liked == true).toList();
@@ -45,7 +40,6 @@ class GameListSectionState extends State<GameListSection> {
         ? ValueListenableBuilder<bool>(
             valueListenable: widget.blockedNotifier!,
             builder: (context, isBlocked, child) {
-              // If the user is blocked, show NoDataList
               if (isBlocked) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -61,67 +55,57 @@ class GameListSectionState extends State<GameListSection> {
                 );
               }
 
-              // If not blocked, display the game list
-              return isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Colors.teal))
-                  : ListView(
-                      children: [
-                        if (liked.isEmpty &&
-                            playing.isEmpty &&
-                            completed.isEmpty)
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              NoDataList(
-                                textColor: Colors.white,
-                                icon: HugeIcons.strokeRoundedAircraftGame,
-                                message: 'No games added yet',
-                                subMessage:
-                                    'Start adding games to your list to keep track of your progress.',
-                                color: Colors.grey[500]!,
-                              ),
-                            ],
-                          ),
-                        if (liked.isNotEmpty)
-                          _buildGameSection(context, 'Wishlist', liked,
-                              Icons.favorite_outline),
-                        if (playing.isNotEmpty)
-                          _buildGameSection(context, 'Playing', playing,
-                              Icons.videogame_asset_outlined),
-                        if (completed.isNotEmpty)
-                          _buildGameSection(context, 'Completed', completed,
-                              Icons.check_circle_outline),
-                        const SizedBox(height: 20),
-                      ],
-                    );
+              return _buildGameList();
             },
           )
-        : isLoading
-            ? const Center(child: CircularProgressIndicator(color: Colors.teal))
-            : ListView(
-                children: [
-                  if (liked.isEmpty && playing.isEmpty && completed.isEmpty)
-                    NoDataList(
-                      textColor: Colors.white,
-                      icon: HugeIcons.strokeRoundedAircraftGame,
-                      message: 'No games added yet',
-                      subMessage:
-                          'Start adding games to your list to keep track of your progress.',
-                      color: Colors.grey[500]!,
-                    ),
-                  if (liked.isNotEmpty)
-                    _buildGameSection(
-                        context, 'Wishlist', liked, Icons.favorite_outline),
-                  if (playing.isNotEmpty)
-                    _buildGameSection(context, 'Playing', playing,
-                        Icons.videogame_asset_outlined),
-                  if (completed.isNotEmpty)
-                    _buildGameSection(context, 'Completed', completed,
-                        Icons.check_circle_outline),
-                  const SizedBox(height: 20),
-                ],
-              );
+        : _buildGameList();
+  }
+
+  Widget _buildGameList() {
+    return widget.gamesLoadingNotifier != null
+        ? ValueListenableBuilder<bool>(
+            valueListenable: widget.gamesLoadingNotifier!,
+            builder: (context, isLoading, child) {
+              if (isLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: Colors.teal),
+                );
+              }
+
+              return _buildGameListView();
+            },
+          )
+        : _buildGameListView();
+  }
+
+  Widget _buildGameListView() {
+    return ListView(
+      children: [
+        if (liked.isEmpty && playing.isEmpty && completed.isEmpty)
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              NoDataList(
+                textColor: Colors.white,
+                icon: HugeIcons.strokeRoundedAircraftGame,
+                message: 'No games added yet',
+                subMessage:
+                    'Start adding games to your list to keep track of your progress.',
+                color: Colors.grey[500]!,
+              ),
+            ],
+          ),
+        if (liked.isNotEmpty)
+          _buildGameSection(context, 'Wishlist', liked, Icons.favorite_outline),
+        if (playing.isNotEmpty)
+          _buildGameSection(
+              context, 'Playing', playing, Icons.videogame_asset_outlined),
+        if (completed.isNotEmpty)
+          _buildGameSection(
+              context, 'Completed', completed, Icons.check_circle_outline),
+        const SizedBox(height: 20),
+      ],
+    );
   }
 
   Widget _buildGameSection(BuildContext context, String title,
