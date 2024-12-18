@@ -18,6 +18,12 @@ class LoginWithEmailService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        if(data['success'] == 'False'){//account is blocked
+          return {
+            'success': false,
+            'message': 'User is blocked.',
+          };
+        }
         final customToken = data['token'];
         final uid = data['uid'];
 

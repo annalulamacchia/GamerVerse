@@ -423,21 +423,34 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   const Spacer(),
 
                   // Pulsante Logout
+                  // Updated Logout Button to call the new LogoutService
                   Center(
                     child: ElevatedButton(
-                      onPressed: () => Logout.logout(context),
+                      onPressed: () async {
+                        final result = await LogoutService.logout(context);
+                        if (result['success']) {
+                          // Optionally, show a success message if the logout is successful
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(result['message'])),
+                          );
+                        } else {
+                          // Show an error message if logout fails
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(result['message'])),
+                          );
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 80, vertical: 15),
+                        padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                         backgroundColor: const Color(0xff3e6259),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text('Logout',
-                          style: TextStyle(color: Colors.white)),
+                      child: const Text('Logout', style: TextStyle(color: Colors.white)),
                     ),
                   ),
+
                   const SizedBox(height: 10),
 // Pulsante Elimina Account
                   Center(
