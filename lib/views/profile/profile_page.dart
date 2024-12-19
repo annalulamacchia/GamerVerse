@@ -122,7 +122,7 @@ class ProfilePageState extends State<ProfilePage> {
               userId: userId,
               currentUser: userId,
               wishlist: wishlist.isNotEmpty ? wishlist : [],
-              gamesLoadingNotifier: gamesLoadingNotifier
+              gamesLoadingNotifier: gamesLoadingNotifier,
             ),
           ),
         ],

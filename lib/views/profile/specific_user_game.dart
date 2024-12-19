@@ -3,6 +3,7 @@ import 'package:gamerverse/models/game_post.dart';
 import 'package:gamerverse/models/game_profile.dart';
 import 'package:gamerverse/services/Community/post_service.dart';
 import 'package:gamerverse/utils/colors.dart';
+import 'package:gamerverse/widgets/profile_or_users/posts/NewPostSpecificUserGame.dart';
 import 'package:gamerverse/widgets/profile_or_users/posts/post_user_game.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
@@ -12,12 +13,14 @@ class SpecificUserGame extends StatefulWidget {
   final GameProfile game;
   final String currentUser;
   final String userId;
+  final ValueNotifier<List<dynamic>>? currentFollowedNotifier;
 
   const SpecificUserGame(
       {super.key,
       required this.game,
       required this.currentUser,
-      required this.userId});
+      required this.userId,
+      this.currentFollowedNotifier});
 
   @override
   SpecificUserGameState createState() => SpecificUserGameState();
@@ -39,8 +42,37 @@ class SpecificUserGameState extends State<SpecificUserGame> {
     });
   }
 
+  Future<void> _createPost(
+      BuildContext context, String description, String gameId) async {
+    print('Creating post with description: $description and game ID: $gameId');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Post creato con successo')),
+    );
+  }
+
+  void _showNewPostBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.grey[900],
+      builder: (BuildContext context) {
+        return NewPostSpecificUserGame(
+          onPostCreated: (description, gameId) {
+            _createPost(context, description, gameId);
+          },
+          onCreated: _loadPostsByGame,
+          gameId: widget.game.gameId,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(widget.currentFollowedNotifier);
     return Scaffold(
       backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
@@ -168,6 +200,33 @@ class SpecificUserGameState extends State<SpecificUserGame> {
           const SizedBox(height: 10),
         ],
       ),
+      floatingActionButton: widget.currentFollowedNotifier != null
+          ? ValueListenableBuilder<List<dynamic>>(
+              valueListenable: widget.currentFollowedNotifier!,
+              builder: (context, followedList, child) {
+                final shouldShow = widget.userId == widget.currentUser ||
+                    followedList
+                        .any((follower) => follower['id'] == widget.userId);
+                return shouldShow
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          _showNewPostBottomSheet(context);
+                        },
+                        backgroundColor: AppColors.mediumGreen,
+                        child: const Icon(Icons.add, color: Colors.white),
+                      )
+                    : SizedBox.shrink();
+              },
+            )
+          : (widget.userId == widget.currentUser
+              ? FloatingActionButton(
+                  onPressed: () {
+                    _showNewPostBottomSheet(context);
+                  },
+                  backgroundColor: AppColors.mediumGreen,
+                  child: const Icon(Icons.add, color: Colors.white),
+                )
+              : SizedBox.shrink()),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 2,
       ),

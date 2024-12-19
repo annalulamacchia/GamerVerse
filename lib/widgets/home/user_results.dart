@@ -78,6 +78,7 @@ class _UserResultsState extends State<UserResults> {
             final user = users[index];
             return ListTile(
               leading: CircleAvatar(
+                radius: 25,
                 backgroundImage: user['profile_picture'].isNotEmpty
                     ? NetworkImage(user['profile_picture'])
                     : null,
@@ -87,11 +88,11 @@ class _UserResultsState extends State<UserResults> {
               ),
               title: Text(
                 user['username'],
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white, fontSize: 16),
               ),
               subtitle: Text(
                 user['name'],
-                style: const TextStyle(color: Colors.white70),
+                style: const TextStyle(color: Colors.white70, fontSize: 14),
               ),
               onTap: () {
                 // Handle user selection (e.g., navigate to user profile page)

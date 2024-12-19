@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/colors.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+
 // Importa il widget UserCard
 import 'package:gamerverse/widgets/community/similar_games_users_widget.dart'; // Importa il widget SimilarGamesUsersWidget
 import 'package:gamerverse/widgets/community/NearbyUsersWidget.dart'; // Importa il widget NearbyUsersWidget
@@ -11,17 +14,24 @@ class AdvisedUsersPage extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: const Color(0xff051f20), // Verde scuro per tutto lo sfondo
+        backgroundColor: AppColors.darkestGreen,
         appBar: AppBar(
-          backgroundColor: const Color(0xff163832),
+          backgroundColor: AppColors.darkGreen,
           title: const Text(
             'Suggested Users',
-            style: TextStyle(color: Colors.white), // Colore del testo dell'AppBar
+            style:
+                TextStyle(color: Colors.white), // Colore del testo dell'AppBar
+          ),
+          iconTheme: const IconThemeData(
+            color: Colors.white, // Set the arrow (back icon) color to white
           ),
           bottom: const TabBar(
-            indicatorColor: Colors.white, // Indica la selezione con bianco
-            labelColor: Colors.white, // Colore dei testi delle tab
-            unselectedLabelColor: Colors.white70, // Colore dei testi non selezionati
+            indicatorColor: Colors.white,
+            // Indica la selezione con bianco
+            labelColor: Colors.white,
+            // Colore dei testi delle tab
+            unselectedLabelColor: Colors.white70,
+            // Colore dei testi non selezionati
             tabs: [
               Tab(text: 'Nearby Users'),
               Tab(text: 'Similar Games'),
@@ -34,6 +44,7 @@ class AdvisedUsersPage extends StatelessWidget {
             SimilarGamesUsersWidget(),
           ],
         ),
+        bottomNavigationBar: const CustomBottomNavBar(currentIndex: 0),
       ),
     );
   }

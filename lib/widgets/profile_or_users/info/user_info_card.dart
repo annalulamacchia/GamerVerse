@@ -13,6 +13,7 @@ class UserInfoCard extends StatefulWidget {
   final ValueNotifier<bool>? blockedNotifier;
   final ValueNotifier<bool>? isFollowedNotifier;
   final ValueNotifier<int>? followersNotifier;
+  final ValueNotifier<List<dynamic>>? currentFollowedNotifier;
   final String? currentUser;
 
   const UserInfoCard({
@@ -23,6 +24,7 @@ class UserInfoCard extends StatefulWidget {
     this.isFollowedNotifier,
     this.followersNotifier,
     this.currentUser,
+    this.currentFollowedNotifier,
   });
 
   @override
@@ -40,8 +42,6 @@ class _UserInfoCardState extends State<UserInfoCard> {
   List<dynamic> followed = [];
   List<dynamic> followers = [];
   List<dynamic> currentUserFollowed = [];
-  final ValueNotifier<List<dynamic>>? followersListNotifier =
-      ValueNotifier<List<dynamic>>([]);
 
   @override
   void initState() {
@@ -59,6 +59,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
           isLoadingCurrentUser = false;
 
           currentUserFollowed = currentUserData!['followed'] ?? [];
+          widget.currentFollowedNotifier!.value = currentUserFollowed;
         });
       } else {
         setState(() {
@@ -134,8 +135,6 @@ class _UserInfoCardState extends State<UserInfoCard> {
                 follower['id'] != widget.userId;
           }).toList();
 
-          followersListNotifier!.value = followers;
-
           followed = followedList.where((followedUser) {
             return followedUser['isBlocked'] == false &&
                 followedUser['isFriend'] &&
@@ -170,6 +169,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
           userData!['followers_count'] = userData!['followers_count'] - 1;
           widget.followersNotifier!.value--;
           fetchUserData();
+          fetchCurrentUserData();
         } else {
           throw Exception(response['message']);
         }
@@ -179,6 +179,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
           userData!['followers_count'] = userData!['followers_count'] + 1;
           widget.followersNotifier!.value++;
           fetchUserData();
+          fetchCurrentUserData();
         } else {
           throw Exception(response['message']);
         }
@@ -218,7 +219,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
   @override
   Widget build(BuildContext context) {
     BuildContext parentContext = context;
-    if (isLoading && isLoadingCurrentUser) {
+    if (isLoading || isLoadingCurrentUser) {
       return const Center(child: CircularProgressIndicator(color: Colors.teal));
     }
 
@@ -267,17 +268,17 @@ class _UserInfoCardState extends State<UserInfoCard> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 3),
-                        image: userData!['profilePicture'] != null &&
-                                userData!['profilePicture'] != ''
+                        image: userData!['profile_picture'] != null &&
+                                userData!['profile_picture'] != ''
                             ? DecorationImage(
                                 image:
-                                    NetworkImage(userData!['profilePicture']),
+                                    NetworkImage(userData!['profile_picture']),
                                 fit: BoxFit.cover)
                             : null,
                       ),
-                      child: (userData!['profilePicture'] != null &&
-                                  userData!['profilePicture'] != '') ||
-                              userData!['profilePicture'] == null
+                      child: (userData!['profile_picture'] != null &&
+                                  userData!['profile_picture'] == '') ||
+                              userData!['profile_picture'] == null
                           ? const Icon(Icons.person,
                               size: 40, color: Colors.white)
                           : null,
