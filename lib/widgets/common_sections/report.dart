@@ -74,15 +74,17 @@ class ReportWidgetState extends State<ReportWidget> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
+              color: Colors.white
             ),
           ),
 
           //Reasons
           if (widget.type == 'User')
             RadioListTile<String>(
-              title: const Text('Offensive Content'),
+              title: const Text('Offensive Content', style: TextStyle(color: Colors.white)),
               value: 'Offensive Content',
               groupValue: _selectedOption,
+              activeColor: AppColors.lightGreen,
               onChanged: (value) {
                 setState(() {
                   _selectedOption = value;
@@ -93,9 +95,10 @@ class ReportWidgetState extends State<ReportWidget> {
               widget.type == 'Post' ||
               widget.type == 'Comment')
             RadioListTile<String>(
-              title: const Text('Spoiler'),
+              title: const Text('Spoiler', style: TextStyle(color: Colors.white)),
               value: 'Spoiler',
               groupValue: _selectedOption,
+              activeColor: AppColors.lightGreen,
               onChanged: (value) {
                 setState(() {
                   _selectedOption = value;
@@ -103,9 +106,10 @@ class ReportWidgetState extends State<ReportWidget> {
               },
             ),
           RadioListTile<String>(
-            title: const Text('Spam'),
+            title: const Text('Spam', style: TextStyle(color: Colors.white)),
             value: 'Spam',
             groupValue: _selectedOption,
+            activeColor: AppColors.lightGreen,
             onChanged: (value) {
               setState(() {
                 _selectedOption = value;
@@ -113,9 +117,10 @@ class ReportWidgetState extends State<ReportWidget> {
             },
           ),
           RadioListTile<String>(
-            title: const Text('Abuse'),
+            title: const Text('Abuse', style: TextStyle(color: Colors.white)),
             value: 'Abuse',
             groupValue: _selectedOption,
+            activeColor: AppColors.lightGreen,
             onChanged: (value) {
               setState(() {
                 _selectedOption = value;
@@ -123,9 +128,10 @@ class ReportWidgetState extends State<ReportWidget> {
             },
           ),
           RadioListTile<String>(
-            title: const Text('Other'),
+            title: const Text('Other', style: TextStyle(color: Colors.white)),
             value: 'Other',
             groupValue: _selectedOption,
+            activeColor: AppColors.lightGreen,
             onChanged: (value) {
               setState(() {
                 _selectedOption = value;

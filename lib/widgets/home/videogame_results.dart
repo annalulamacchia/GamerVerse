@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
+import 'package:gamerverse/utils/colors.dart';
 
 class VideoGameResults extends StatefulWidget {
   final String searchQuery;
@@ -42,7 +43,6 @@ class _VideoGameResultsState extends State<VideoGameResults> {
     return FutureBuilder<List<Map<String, dynamic>>?>(
       future: _gamesFuture,
       builder: (context, snapshot) {
-        // Loading State with a Material Design progress indicator
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(
@@ -51,11 +51,13 @@ class _VideoGameResultsState extends State<VideoGameResults> {
           );
         }
 
-        // Error State with Snackbar option
         if (snapshot.hasError) {
           Future.delayed(Duration.zero, () {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: ${snapshot.error}'), backgroundColor: Colors.red),
+              SnackBar(
+                content: Text('Error: ${snapshot.error}'),
+                backgroundColor: Colors.red,
+              ),
             );
           });
 
@@ -65,7 +67,10 @@ class _VideoGameResultsState extends State<VideoGameResults> {
               children: [
                 Icon(Icons.error_outline, color: Colors.red, size: 50),
                 SizedBox(height: 10),
-                Text('Something went wrong. Please try again later.', style: TextStyle(color: Colors.red)),
+                Text(
+                  'Something went wrong. Please try again later.',
+                  style: TextStyle(color: Colors.red),
+                ),
                 SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: _fetchGames,
@@ -77,67 +82,116 @@ class _VideoGameResultsState extends State<VideoGameResults> {
           );
         }
 
-        // Empty State with a search icon and clear message
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.search_off, color: Colors.white70, size: 50),
+                Icon(Icons.search_off, color: Colors.white, size: 50),
                 SizedBox(height: 10),
-                Text('No games found for "${widget.searchQuery}".', style: TextStyle(color: Colors.white70, fontSize: 16)),
+                Text(
+                  'No games found for "${widget.searchQuery}".',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ],
             ),
           );
         }
 
-        // Data State: Show list of games
         final games = snapshot.data!;
         return ListView.builder(
           itemCount: games.length,
           itemBuilder: (context, index) {
             final game = games[index];
-            final gameId = game['id']; // Assuming each game has an 'id'
+            final gameId = game['id'];
 
             return InkWell(
               onTap: () {
-                // Navigate to the SpecificGame page when the card is tapped
                 Navigator.pushNamed(
                   context,
-                  '/game', // Route name
-                  arguments: gameId, // Pass the game ID to the new page
+                  '/game',
+                  arguments: gameId,
                 );
               },
               child: Card(
-                child: ListTile(
-                  leading: game['coverUrl'] != null
-                      ? ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.network(
-                      game['coverUrl']!,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
+                color: Colors.white, // White card background
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // Rounded corners for card
+                ),
+                child: Row(
+                  children: [
+                    // Game Cover - Occupies the left side
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
+                      ),
+                      child: game['coverUrl'] != null
+                          ? Image.network(
+                        game['coverUrl']!,
+                        width: 125,
+                        height: 125,
+                        fit: BoxFit.cover,
+                      )
+                          : Container(
+                        width: 125,
+                        height: 125,
+                        color: AppColors.lightGreenishWhite,
+                        child: const Icon(
+                          Icons.image_not_supported,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
-                  )
-                      : const Icon(Icons.image_not_supported),
-                  title: Text(
-                    game['name'] ?? 'Unknown Game',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+
+                    // Game Details - Occupies the right side
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              game['name'] ?? 'Unknown Game',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Click to view details',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                  subtitle: Text('Click to view details'),
+
+                    // Navigation Icon
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: const Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.black45,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
             );
           },
         );
-
-
-
       },
     );
   }
@@ -154,8 +208,9 @@ class AnimatedCard extends StatelessWidget {
       opacity: 1.0,
       duration: Duration(milliseconds: 500),
       child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+        color: Colors.white, // White card background
         elevation: 8,
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -163,34 +218,34 @@ class AnimatedCard extends StatelessWidget {
           contentPadding: const EdgeInsets.all(15),
           leading: game['coverUrl'] != null
               ? ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(10),
             child: Image.network(
               game['coverUrl']!,
-              width: 60,
-              height: 60,
+              width: 90,
+              height: 90,
               fit: BoxFit.cover,
             ),
           )
-              : const Icon(Icons.image_not_supported, size: 60, color: Colors.grey),
+              : const Icon(
+            Icons.image_not_supported,
+            size: 90,
+            color: Colors.grey,
+          ),
           title: Text(
             game['name'] ?? 'Unknown Game',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Text(
-              'Click to view details',
-              style: TextStyle(color: Colors.grey, fontSize: 14),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.black, // Dark text color
             ),
           ),
-          trailing: IconButton(
-            icon: Icon(Icons.arrow_forward_ios),
-            onPressed: () {
-              // Navigate to game details page
-            },
+          subtitle: const Text(
+            'Click to view details',
+            style: TextStyle(color: Colors.grey, fontSize: 14),
           ),
+          trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black45),
           onTap: () {
-            // Show more information about the selected game
+            // Action on tap
           },
         ),
       ),

@@ -13,6 +13,7 @@ class UserInfoCard extends StatefulWidget {
   final ValueNotifier<bool>? blockedNotifier;
   final ValueNotifier<bool>? isFollowedNotifier;
   final ValueNotifier<int>? followersNotifier;
+  final ValueNotifier<List<dynamic>>? currentFollowedNotifier;
   final String? currentUser;
 
   const UserInfoCard({
@@ -23,6 +24,7 @@ class UserInfoCard extends StatefulWidget {
     this.isFollowedNotifier,
     this.followersNotifier,
     this.currentUser,
+    this.currentFollowedNotifier,
   });
 
   @override
@@ -50,22 +52,20 @@ class _UserInfoCardState extends State<UserInfoCard> {
 
   Future<void> fetchCurrentUserData() async {
     try {
-      if (widget.currentUser != null) {
-        final response =
-            await UserProfileService.getUserByUid(widget.currentUser);
-        if (response['success']) {
-          setState(() {
-            currentUserData = response['data'];
-            isLoadingCurrentUser = false;
+      final response = await UserProfileService.getUserByUid();
+      if (response['success']) {
+        setState(() {
+          currentUserData = response['data'];
+          isLoadingCurrentUser = false;
 
-            currentUserFollowed = currentUserData!['followed'] ?? [];
-          });
-        } else {
-          setState(() {
-            errorMessage = response['message'] ?? 'Error fetching user data';
-            isLoadingCurrentUser = false;
-          });
-        }
+          currentUserFollowed = currentUserData!['followed'] ?? [];
+          widget.currentFollowedNotifier!.value = currentUserFollowed;
+        });
+      } else {
+        setState(() {
+          errorMessage = response['message'] ?? 'Error fetching user data';
+          isLoadingCurrentUser = false;
+        });
       }
     } catch (e) {
       setState(() {
@@ -131,12 +131,14 @@ class _UserInfoCardState extends State<UserInfoCard> {
 
           followers = followersList.where((follower) {
             return follower['isBlocked'] == false &&
-                follower['isFriend'] == true && follower['id'] != widget.userId;
+                follower['isFriend'] == true &&
+                follower['id'] != widget.userId;
           }).toList();
 
           followed = followedList.where((followedUser) {
             return followedUser['isBlocked'] == false &&
-                followedUser['isFriend'] && followedUser['id'] != widget.userId;
+                followedUser['isFriend'] &&
+                followedUser['id'] != widget.userId;
           }).toList();
         });
       } else {
@@ -166,6 +168,8 @@ class _UserInfoCardState extends State<UserInfoCard> {
         if (response['success']) {
           userData!['followers_count'] = userData!['followers_count'] - 1;
           widget.followersNotifier!.value--;
+          fetchUserData();
+          fetchCurrentUserData();
         } else {
           throw Exception(response['message']);
         }
@@ -174,6 +178,8 @@ class _UserInfoCardState extends State<UserInfoCard> {
         if (response['success']) {
           userData!['followers_count'] = userData!['followers_count'] + 1;
           widget.followersNotifier!.value++;
+          fetchUserData();
+          fetchCurrentUserData();
         } else {
           throw Exception(response['message']);
         }
@@ -213,7 +219,7 @@ class _UserInfoCardState extends State<UserInfoCard> {
   @override
   Widget build(BuildContext context) {
     BuildContext parentContext = context;
-    if (isLoading && isLoadingCurrentUser) {
+    if (isLoading || isLoadingCurrentUser) {
       return const Center(child: CircularProgressIndicator(color: Colors.teal));
     }
 
@@ -262,17 +268,17 @@ class _UserInfoCardState extends State<UserInfoCard> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 3),
-                        image: userData!['profilePicture'] != null &&
-                                userData!['profilePicture'] != ''
+                        image: userData!['profile_picture'] != null &&
+                                userData!['profile_picture'] != ''
                             ? DecorationImage(
                                 image:
-                                    NetworkImage(userData!['profilePicture']),
+                                    NetworkImage(userData!['profile_picture']),
                                 fit: BoxFit.cover)
                             : null,
                       ),
-                      child: (userData!['profilePicture'] != null &&
-                                  userData!['profilePicture'] != '') ||
-                              userData!['profilePicture'] == null
+                      child: (userData!['profile_picture'] != null &&
+                                  userData!['profile_picture'] == '') ||
+                              userData!['profile_picture'] == null
                           ? const Icon(Icons.person,
                               size: 40, color: Colors.white)
                           : null,
@@ -300,9 +306,12 @@ class _UserInfoCardState extends State<UserInfoCard> {
                             'Followed ',
                             Icons.person_search,
                             FollowersPage(
-                                users: followed,
-                                currentUser: widget.currentUser,
-                                currentFollowed: currentUserFollowed),
+                              users: followed,
+                              currentUser: widget.currentUser,
+                              currentFollowed: currentUserFollowed,
+                              blockedNotifier: widget.blockedNotifier,
+                              onFollow: fetchCurrentUserData,
+                            ),
                           ),
                           if (widget.followersNotifier != null)
                             ValueListenableBuilder<int>(
@@ -314,9 +323,12 @@ class _UserInfoCardState extends State<UserInfoCard> {
                                   'Followers',
                                   Icons.group,
                                   FollowersPage(
-                                      users: followers,
-                                      currentUser: widget.currentUser,
-                                      currentFollowed: currentUserFollowed),
+                                    users: followers,
+                                    currentUser: widget.currentUser,
+                                    currentFollowed: currentUserFollowed,
+                                    blockedNotifier: widget.blockedNotifier,
+                                    onFollow: fetchCurrentUserData,
+                                  ),
                                 );
                               },
                             ),
@@ -327,9 +339,12 @@ class _UserInfoCardState extends State<UserInfoCard> {
                               'Followers',
                               Icons.group,
                               FollowersPage(
-                                  users: followers,
-                                  currentUser: widget.currentUser,
-                                  currentFollowed: currentUserFollowed),
+                                users: followers,
+                                currentUser: widget.currentUser,
+                                currentFollowed: currentUserFollowed,
+                                blockedNotifier: widget.blockedNotifier,
+                                onFollow: fetchCurrentUserData,
+                              ),
                             )
                         ],
                       ),

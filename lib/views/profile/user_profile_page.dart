@@ -27,6 +27,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
   ValueNotifier<bool> blockedNotifier = ValueNotifier<bool>(false);
   ValueNotifier<bool> isFollowedNotifier = ValueNotifier<bool>(false);
   ValueNotifier<int> followersNotifier = ValueNotifier<int>(0);
+  ValueNotifier<List<dynamic>>? currentFollowedNotifier =
+      ValueNotifier<List<dynamic>>([]);
 
   @override
   void initState() {
@@ -118,12 +120,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: UserInfoCard(
-                      userId: userId,
-                      gamesCounter: gamesCounter,
-                      blockedNotifier: blockedNotifier,
-                      isFollowedNotifier: isFollowedNotifier,
-                      followersNotifier: followersNotifier,
-                      currentUser: currentUser),
+                    userId: userId,
+                    gamesCounter: gamesCounter,
+                    blockedNotifier: blockedNotifier,
+                    isFollowedNotifier: isFollowedNotifier,
+                    followersNotifier: followersNotifier,
+                    currentUser: currentUser,
+                    currentFollowedNotifier: currentFollowedNotifier,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Expanded(
@@ -141,6 +145,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       currentUser: currentUser,
                       wishlist: wishlist,
                       blockedNotifier: blockedNotifier,
+                      currentFollowedNotifier: currentFollowedNotifier,
                     ),
                   ),
                 ),

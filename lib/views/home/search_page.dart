@@ -27,7 +27,8 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.darkGreen, // Background color for the app bar
+        backgroundColor: AppColors.darkGreen,
+        // Background color for the app bar
         title: const Text(
           'Search',
           style: TextStyle(
@@ -36,9 +37,15 @@ class _SearchPageState extends State<SearchPage> {
             color: Colors.white, // White color for contrast
           ),
         ),
-        centerTitle: true, // Center the title for a modern feel
+        centerTitle: true,
+        // Center the title for a modern feel
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Set the arrow (back icon) color to white
+        ),
       ),
-      backgroundColor: AppColors.lightGreen, // Set the background color of the entire page
+
+      backgroundColor: AppColors.darkestGreen,
+      // Set the background color of the entire page
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -46,29 +53,43 @@ class _SearchPageState extends State<SearchPage> {
             // Search Bar
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
-              child: TextField(
-                onSubmitted: handleSearch,
-                decoration: InputDecoration(
-                  hintText: 'Search for games or users...',
-                  prefixIcon: const Icon(Icons.search, color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.white38,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  textSelectionTheme: const TextSelectionThemeData(
+                      selectionHandleColor: AppColors.mediumGreen,
+                      cursorColor: AppColors.mediumGreen,
+                      selectionColor: AppColors.mediumGreen),
                 ),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                //Text Area
+                child: TextField(
+                  onSubmitted: handleSearch,
+                  decoration: InputDecoration(
+                    hintText: 'Search for games or users...',
+                    prefixIcon: const Icon(Icons.search, color: Colors.black),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 18, horizontal: 20),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    hintStyle: const TextStyle(
+                        color: Colors.black54), // Hint text color
+                  ),
+                  style: const TextStyle(
+                    color: Colors.black, // Set the input text color to black
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
+
             // Search Type Toggle Buttons
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Space the buttons evenly
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              // Space the buttons evenly
               children: [
                 Expanded(
                   child: ElevatedButton(
@@ -78,7 +99,9 @@ class _SearchPageState extends State<SearchPage> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isVideoGameSearch ? Colors.green : Colors.grey, // Use backgroundColor
+                      backgroundColor: isVideoGameSearch
+                          ? Colors.green
+                          : Colors.grey, // Use backgroundColor
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
@@ -95,7 +118,8 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 10), // Add a little space between the buttons
+                const SizedBox(width: 10),
+                // Add a little space between the buttons
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -104,7 +128,9 @@ class _SearchPageState extends State<SearchPage> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: !isVideoGameSearch ? Colors.green : Colors.grey, // Use backgroundColor
+                      backgroundColor: !isVideoGameSearch
+                          ? Colors.green
+                          : Colors.grey, // Use backgroundColor
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),

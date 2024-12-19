@@ -65,6 +65,9 @@ class LoginWithGoogleService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        if(data['success'] == 'False'){
+          return {'success': false, 'message': data['error']};
+        }
         if (data['success']) {
 
           final String? idToken = await FirebaseAuthHelper.exchangeCustomTokenForIdToken(data['token']);
@@ -73,7 +76,7 @@ class LoginWithGoogleService {
 
           return {'success': true, 'message': 'Login successful!', 'data': data};
         } else {
-          return {'success': false, 'message': data['message']};
+          return {'success': false, 'message': data['error']};
         }
       } else {
         return {'success': false, 'message': 'Server error: ${response.statusCode}'};

@@ -44,7 +44,7 @@ class _SimilarGamesUsersWidgetState extends State<SimilarGamesUsersWidget> {
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? const Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator(color: Colors.teal))
         : similarGameUsers.isEmpty
         ? const Center(child: Text('No users with similar games found'))
         : ListView.builder(

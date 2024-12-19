@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:gamerverse/models/game_profile.dart';
 import 'package:gamerverse/services/Community/post_service.dart';
 import 'package:gamerverse/utils/colors.dart'; // Importa il servizio
 
-class NewPostBottomSheet extends StatefulWidget {
+class NewPostSpecificUserGame extends StatefulWidget {
   final Function(String description, String gameId) onPostCreated;
-  final List<GameProfile> wishlistGames;
   final VoidCallback? onCreated;
+  final String gameId;
 
-  const NewPostBottomSheet({
+  const NewPostSpecificUserGame({
     super.key,
     required this.onPostCreated,
-    required this.wishlistGames,
     required this.onCreated,
+    required this.gameId,
   });
 
   @override
-  _NewPostBottomSheetState createState() => _NewPostBottomSheetState();
+  NewPostSpecificUserGameState createState() => NewPostSpecificUserGameState();
 }
 
-class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
-  String? selectedGameId;
+class NewPostSpecificUserGameState extends State<NewPostSpecificUserGame> {
   TextEditingController descriptionController = TextEditingController();
   bool isLoading = false; // Per gestire lo stato di caricamento
 
@@ -37,46 +35,6 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
                 fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 10),
-
-          // Dropdown menu
-          DropdownButtonFormField<String>(
-            value: selectedGameId,
-            items: widget.wishlistGames.map((GameProfile game) {
-              return DropdownMenuItem<String>(
-                value: game.gameId,
-                child: Text(
-                  game.gameName,
-                  style: TextStyle(color: Colors.white),
-                ),
-              );
-            }).toList(),
-            onChanged: (newValue) {
-              setState(() {
-                selectedGameId = newValue;
-              });
-            },
-            decoration: InputDecoration(
-              labelText: 'Game',
-              filled: true,
-              fillColor: Colors.white12,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.white70),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.mediumGreen),
-              ),
-              labelStyle: TextStyle(color: Colors.white70),
-            ),
-            dropdownColor: Colors.grey[900],
-          ),
-
-          const SizedBox(height: 20),
 
           // Text field for the description
           Theme(
@@ -125,7 +83,7 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
             onPressed: () async {
               String description = descriptionController.text;
 
-              if (selectedGameId != null && description.isNotEmpty) {
+              if (description.isNotEmpty) {
                 // Mostra un indicatore di caricamento
                 showDialog(
                   context: context,
@@ -138,7 +96,7 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
                 );
                 // Chiama il servizio per inviare il post
                 final result =
-                    await PostService.sendPost(description, selectedGameId!);
+                    await PostService.sendPost(description, widget.gameId);
 
                 // Chiudi l'indicatore di caricamento
                 Navigator.of(context).pop();

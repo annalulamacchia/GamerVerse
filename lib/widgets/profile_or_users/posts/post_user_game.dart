@@ -131,14 +131,14 @@ class UserPostState extends State<UserPost> {
       children: [
         Card(
           color: const Color(0xfff0f9f1),
-          margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          elevation: 8,
-          shadowColor: Colors.black.withOpacity(0.5),
+          elevation: 6,
+          shadowColor: Colors.black.withOpacity(0.3),
           child: Padding(
-            padding: const EdgeInsets.only(right: 15, left: 15, top: 15),
+            padding: const EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -151,13 +151,16 @@ class UserPostState extends State<UserPost> {
                       backgroundImage: widget.imageUrl != ''
                           ? NetworkImage(widget.imageUrl)
                           : null,
-                      radius: 20,
+                      radius: 25,
                       child: widget.imageUrl != ''
                           ? null
-                          : Icon(Icons.person,
-                              color: Colors.grey[700], size: 30),
+                          : const Icon(
+                              Icons.person,
+                              color: Colors.grey,
+                              size: 30,
+                            ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 10),
 
                     // Username and timestamp
                     Expanded(
@@ -174,17 +177,15 @@ class UserPostState extends State<UserPost> {
                                     arguments: widget.userId);
                               }
                             },
-                            child: Container(
-                              width: 250,
-                              alignment: Alignment.bottomLeft,
+                            child: SizedBox(
+                              width: 270,
                               child: Text(
                                 widget.username,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
+                                  fontSize: 16,
                                 ),
-                                maxLines: null,
-                                softWrap: true,
                               ),
                             ),
                           ),
@@ -193,7 +194,7 @@ class UserPostState extends State<UserPost> {
                             _getRelativeTime(widget.timestamp),
                             style: const TextStyle(
                               color: Colors.grey,
-                              fontSize: 14,
+                              fontSize: 12,
                             ),
                           ),
                         ],
@@ -202,6 +203,7 @@ class UserPostState extends State<UserPost> {
                   ],
                 ),
                 const SizedBox(height: 10),
+
                 // Descrizione
                 Text(
                   widget.content,
@@ -225,9 +227,12 @@ class UserPostState extends State<UserPost> {
                     ),
                   ),
                 const SizedBox(height: 15),
+
+                // Footer con icone di interazione
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Pulsante Like
                     Row(
                       children: [
                         LikeButton(
@@ -236,12 +241,22 @@ class UserPostState extends State<UserPost> {
                           initialLikeCount: widget.likeCount,
                           initialLikedUsers: widget.likedBy,
                         ),
-                        const SizedBox(width: 20),
+                        const SizedBox(width: 5),
+                        const Text(
+                          "likes",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+
+                    // Commenti
+                    Row(
+                      children: [
                         IconButton(
                           icon: Icon(
                             Icons.comment_outlined,
                             color: Colors.grey[700],
-                            size: 26,
+                            size: 24,
                           ),
                           onPressed: () {
                             Navigator.pushNamed(
@@ -250,7 +265,7 @@ class UserPostState extends State<UserPost> {
                               arguments: {
                                 'postId': widget.postId,
                                 'currentUser': widget.currentUser,
-                                'commentNotifier': commentNotifier
+                                'commentNotifier': commentNotifier,
                               },
                             );
                           },
@@ -259,11 +274,8 @@ class UserPostState extends State<UserPost> {
                           valueListenable: commentNotifier,
                           builder: (context, commentCount, child) {
                             return Text(
-                              "$commentCount",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
+                              "$commentCount comments",
+                              style: const TextStyle(fontSize: 14),
                             );
                           },
                         ),
@@ -276,8 +288,8 @@ class UserPostState extends State<UserPost> {
           ),
         ),
         Positioned(
-          top: 25,
-          right: 20,
+          top: 20,
+          right: 15,
           child: Row(
             children: [
               if (widget.currentUser != widget.userId)
@@ -291,10 +303,7 @@ class UserPostState extends State<UserPost> {
               if (widget.currentUser == widget.userId)
                 IconButton(
                   icon: _isDeleting
-                      ? const Opacity(
-                          opacity: 0,
-                          child: CircularProgressIndicator(),
-                        )
+                      ? const CircularProgressIndicator(strokeWidth: 2)
                       : const Icon(
                           Icons.delete_outline,
                           color: Colors.black54,

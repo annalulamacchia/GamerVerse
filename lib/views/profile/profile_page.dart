@@ -19,6 +19,7 @@ class ProfilePageState extends State<ProfilePage> {
   List<GameProfile> wishlist = [];
   int gamesCounter = 0;
   bool isLoading = true;
+  final ValueNotifier<bool>? gamesLoadingNotifier = ValueNotifier<bool>(true);
 
   @override
   void initState() {
@@ -41,11 +42,13 @@ class ProfilePageState extends State<ProfilePage> {
         wishlist = games;
         gamesCounter = games.length;
         isLoading = false;
+        gamesLoadingNotifier!.value = false;
       });
     } catch (e) {
       setState(() {
         wishlist = [];
         isLoading = false;
+        gamesLoadingNotifier!.value = false;
       });
       debugPrint('Error loading wishlist: $e');
     }
@@ -58,12 +61,14 @@ class ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: AppColors.darkGreen,
         title: const Text('My Profile', style: TextStyle(color: Colors.white)),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            : null,
         actions: [
           IconButton(
             icon: const Icon(
@@ -117,6 +122,7 @@ class ProfilePageState extends State<ProfilePage> {
               userId: userId,
               currentUser: userId,
               wishlist: wishlist.isNotEmpty ? wishlist : [],
+              gamesLoadingNotifier: gamesLoadingNotifier,
             ),
           ),
         ],

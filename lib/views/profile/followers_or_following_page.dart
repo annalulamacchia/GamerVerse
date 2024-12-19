@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/utils/colors.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/profile_or_users/info/user_follower_card.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 
@@ -7,12 +8,18 @@ class FollowersPage extends StatelessWidget {
   final List<dynamic> users;
   final String? currentUser;
   final List<dynamic>? currentFollowed;
+  final ValueNotifier<int>? followedNotifier;
+  final ValueNotifier<bool>? blockedNotifier;
+  final Future<void> Function()? onFollow;
 
   const FollowersPage(
       {super.key,
       required this.users,
       required this.currentUser,
-      this.currentFollowed});
+      this.currentFollowed,
+      this.onFollow,
+      this.followedNotifier,
+      this.blockedNotifier});
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +47,14 @@ class FollowersPage extends StatelessWidget {
               subMessage: 'Looks like there’s nothing to show at the moment.',
               color: Colors.white,
             );
+          } else if (blockedNotifier != null && blockedNotifier!.value) {
+            return NoDataList(
+              textColor: Colors.grey,
+              icon: Icons.person_outline,
+              message: 'The user is blocked!',
+              subMessage: 'Please unblock to see their friends',
+              color: Colors.white,
+            );
           } else {
             final user = users[index];
             bool isIdInFollowed = false;
@@ -54,26 +69,28 @@ class FollowersPage extends StatelessWidget {
                   followed['isBlocked'] == true);
             }
             return UserCard(
-              username: user['username'],
-              profilePicture: user['profilePicture'],
-              index: user['id'],
-              currentUser: currentUser,
-              isFollowed: isIdInFollowed,
-              parentContext: parentContext,
-              onTap: () {
-                if (user['id'] != currentUser || currentUser == null) {
-                  Navigator.pushNamed(context, '/userProfile',
-                      arguments: user['id']);
-                } else {
-                  Navigator.pushNamed(context, '/profile',
-                      arguments: user['id']);
-                }
-              },
-              isBlocked: isBlocked,
-            );
+                username: user['username'],
+                profilePicture: user['profilePicture'],
+                index: user['id'],
+                currentUser: currentUser,
+                isFollowed: isIdInFollowed,
+                parentContext: parentContext,
+                onTap: () {
+                  if (user['id'] != currentUser || currentUser == null) {
+                    Navigator.pushNamed(context, '/userProfile',
+                        arguments: user['id']);
+                  } else {
+                    Navigator.pushNamed(context, '/profile',
+                        arguments: user['id']);
+                  }
+                },
+                isBlocked: isBlocked,
+                followedNotifier: followedNotifier,
+                onFollow: onFollow);
           }
         },
       ),
+      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 1),
     );
   }
 }

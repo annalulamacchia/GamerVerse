@@ -288,19 +288,35 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget _buildTextField(
       String hintText, TextEditingController controller, bool obscureText) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        hintText: hintText,
-        filled: true,
-        fillColor: AppColors.lightGreen,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.0),
-          borderSide: BorderSide.none,
-        ),
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textSelectionTheme: const TextSelectionThemeData(
+            selectionHandleColor: AppColors.mediumGreen,
+            cursorColor: AppColors.mediumGreen,
+            selectionColor: AppColors.mediumGreen),
+      ),
+      //Text Area
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+            hintText: hintText,
+            filled: true,
+            fillColor: AppColors.lightGreen,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.mediumGreen),
+              borderRadius: BorderRadius.circular(5.0),
+            )),
       ),
     );
   }

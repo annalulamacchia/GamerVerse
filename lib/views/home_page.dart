@@ -48,13 +48,15 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         title: const Text('Home', style: TextStyle(color: Colors.white)),
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            : null,
         backgroundColor: AppColors.darkGreen,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         actions: [
           IconButton(
             icon: const Icon(

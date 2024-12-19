@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/utils/colors.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:gamerverse/services/Community/advised_user_service.dart'; // Importa il servizio
 import 'package:gamerverse/widgets/profile_or_users/info/user_follower_card.dart'; // Aggiungi il widget UserCard
@@ -75,7 +76,7 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator(color: Colors.teal));
     }
 
     if (!hasPermission) {
@@ -92,8 +93,8 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => _checkAndRequestPermission(),
-              child: const Text('Grant Permission'),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green[800]),  // Bottone con colore verde scuro
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green[800]),
+              child: const Text('Grant Permission'),  // Bottone con colore verde scuro
             ),
           ],
         ),
@@ -101,9 +102,7 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
     }
 
     return Scaffold(
-
-      backgroundColor: const Color(0xff051f20), // Sfondo verde scuro
-
+      backgroundColor: AppColors.darkestGreen, // Sfondo verde scuro
       body: nearbyUsers.isEmpty
           ? const Center(child: Text('No nearby users found', style: TextStyle(color: Colors.white)))
           : ListView.builder(

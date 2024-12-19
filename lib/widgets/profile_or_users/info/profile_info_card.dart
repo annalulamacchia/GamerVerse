@@ -20,6 +20,7 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
   String errorMessage = '';
   List<dynamic> followers = [];
   List<dynamic> followed = [];
+  ValueNotifier<int>? followedNotifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -38,20 +39,30 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
         List<dynamic> followedList = userData!['data']['followed'] ?? [];
 
         userData!['data']['followers_count'] = followersList.where((follower) {
-          return follower['isBlocked'] == false && follower['isFriend'] && follower['id'] != widget.currentUser;
+          return follower['isBlocked'] == false &&
+              follower['isFriend'] &&
+              follower['id'] != widget.currentUser;
         }).length;
 
         userData!['data']['followed_count'] =
             followedList.where((followedUser) {
-          return followedUser['isBlocked'] == false && followedUser['isFriend'] && followedUser['id'] != widget.currentUser;
+          return followedUser['isBlocked'] == false &&
+              followedUser['isFriend'] &&
+              followedUser['id'] != widget.currentUser;
         }).length;
 
+        followedNotifier!.value = userData!['data']['followed_count'];
+
         followed = followedList.where((followedUser) {
-          return followedUser['isBlocked'] == false && followedUser['isFriend'] && followedUser['id'] != widget.currentUser;
+          return followedUser['isBlocked'] == false &&
+              followedUser['isFriend'] &&
+              followedUser['id'] != widget.currentUser;
         }).toList();
 
         followers = followersList.where((follower) {
-          return follower['isBlocked'] == false && follower['isFriend'] && follower['id'] != widget.currentUser;
+          return follower['isBlocked'] == false &&
+              follower['isFriend'] &&
+              follower['id'] != widget.currentUser;
         }).toList();
       });
     } else {
@@ -122,17 +133,39 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
                             'Games   ',
                             Icons.videogame_asset,
                           ),
-                          _buildClickableStatColumn(
-                            context,
-                            userData!['data']['followed_count']?.toString() ??
-                                '0',
-                            'Followed ',
-                            Icons.person_search,
-                            FollowersPage(
+                          if (followedNotifier != null)
+                            ValueListenableBuilder<int>(
+                              valueListenable: followedNotifier!,
+                              builder: (context, followedCount, child) {
+                                return _buildClickableStatColumn(
+                                  context,
+                                  followedCount.toString(),
+                                  'Followed ',
+                                  Icons.person_search,
+                                  FollowersPage(
+                                      users: followed,
+                                      currentUser: widget.currentUser,
+                                      currentFollowed: followed,
+                                      followedNotifier: followedNotifier,
+                                      onFollow: fetchUserData),
+                                );
+                              },
+                            ),
+                          if (followedNotifier == null)
+                            _buildClickableStatColumn(
+                              context,
+                              userData!['data']['followed_count']?.toString() ??
+                                  '0',
+                              'Followed ',
+                              Icons.person_search,
+                              FollowersPage(
                                 users: followed,
                                 currentUser: widget.currentUser,
-                                currentFollowed: followed),
-                          ),
+                                currentFollowed: followed,
+                                followedNotifier: followedNotifier,
+                                onFollow: fetchUserData,
+                              ),
+                            ),
                           _buildClickableStatColumn(
                             context,
                             userData!['data']['followers_count']?.toString() ??
@@ -140,10 +173,11 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
                             'Followers',
                             Icons.group,
                             FollowersPage(
-                              users: followers,
-                              currentUser: widget.currentUser,
-                              currentFollowed: followers,
-                            ),
+                                users: followers,
+                                currentUser: widget.currentUser,
+                                currentFollowed: followed,
+                                followedNotifier: followedNotifier,
+                                onFollow: fetchUserData),
                           ),
                         ],
                       ),

@@ -7,12 +7,14 @@ class AllGamesUserPage extends StatelessWidget {
   final List<GameProfile> games;
   final String currentUser;
   final String userId;
+  final ValueNotifier<List<dynamic>>? currentFollowedNotifier;
 
   const AllGamesUserPage(
       {super.key,
       required this.games,
       required this.currentUser,
-      required this.userId});
+      required this.userId,
+      this.currentFollowedNotifier});
 
   @override
   Widget build(BuildContext context) {

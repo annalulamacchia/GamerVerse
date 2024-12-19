@@ -12,6 +12,8 @@ class TabBarSection extends StatefulWidget {
   final String? userId;
   final List<GameProfile> wishlist;
   final ValueNotifier<bool>? blockedNotifier;
+  final ValueNotifier<bool>? gamesLoadingNotifier;
+  final ValueNotifier<List<dynamic>>? currentFollowedNotifier;
 
   const TabBarSection(
       {super.key,
@@ -20,7 +22,9 @@ class TabBarSection extends StatefulWidget {
       this.userId,
       required this.currentUser,
       required this.wishlist,
-      this.blockedNotifier});
+      this.blockedNotifier,
+      this.gamesLoadingNotifier,
+      this.currentFollowedNotifier});
 
   @override
   TabBarSectionState createState() => TabBarSectionState();
@@ -149,10 +153,13 @@ class TabBarSectionState extends State<TabBarSection> {
       return const Center(child: Text('User not found'));
     }
     return ProfileGames(
-        userId: widget.userId!,
-        wishlist: widget.wishlist,
-        blockedNotifier: widget.blockedNotifier,
-        currentUser: widget.currentUser);
+      userId: widget.userId!,
+      wishlist: widget.wishlist,
+      blockedNotifier: widget.blockedNotifier,
+      currentUser: widget.currentUser,
+      gamesLoadingNotifier: widget.gamesLoadingNotifier,
+      currentFollowedNotifier: widget.currentFollowedNotifier,
+    );
   }
 
   Widget _buildProfileGamesWidget() {
@@ -162,7 +169,8 @@ class TabBarSectionState extends State<TabBarSection> {
     return ProfileGames(
         userId: widget.userId!,
         wishlist: widget.wishlist,
-        currentUser: widget.currentUser);
+        currentUser: widget.currentUser,
+        gamesLoadingNotifier: widget.gamesLoadingNotifier);
   }
 
   Widget _buildUserReviewsWidget() {
