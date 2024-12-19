@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DeleteUserService {
   static const String _baseUrl = "https://gamerversemobile.pythonanywhere.com";
@@ -14,6 +15,13 @@ class DeleteUserService {
       );
       print(response.body);
       if (response.statusCode == 200) {
+
+        final prefs = await SharedPreferences.getInstance();
+
+        await prefs.remove('auth_token');
+        await prefs.remove('user_uid');
+        await prefs.remove('token_expiration_time');
+
         return json.decode(response.body);
       } else {
 

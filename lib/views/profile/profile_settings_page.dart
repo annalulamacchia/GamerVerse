@@ -115,6 +115,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Account deleted successfully.')),
       );
+      Navigator.pushReplacementNamed(context, '/home');
+
     } else if (response.containsKey('error')) {
       // If there's an "error" key, handle the error
       ScaffoldMessenger.of(context).showSnackBar(
