@@ -11,7 +11,8 @@ class UserCard extends StatefulWidget {
   final bool isFollowed;
   final bool isBlocked;
   final BuildContext parentContext;
-  final double? distance; // Nuovo campo opzionale per la distanza
+  final double? distance;
+  final int? commonGames;
 
   const UserCard({
     super.key,
@@ -23,7 +24,8 @@ class UserCard extends StatefulWidget {
     required this.isFollowed,
     required this.isBlocked,
     required this.parentContext,
-    this.distance, // Aggiunto parametro opzionale
+    this.distance,
+    this.commonGames,
   });
 
   @override
@@ -51,16 +53,10 @@ class UserCardState extends State<UserCard> {
     try {
       if (widget.isFollowed) {
         final response = await FriendService.removeFriend(userId: widget.index);
-        if (response['success']) {
-        } else {
-          throw Exception(response['message']);
-        }
+        if (!response['success']) throw Exception(response['message']);
       } else {
         final response = await FriendService.addFriend(userId: widget.index);
-        if (response['success']) {
-        } else {
-          throw Exception(response['message']);
-        }
+        if (!response['success']) throw Exception(response['message']);
       }
 
       setState(() {
@@ -72,16 +68,14 @@ class UserCardState extends State<UserCard> {
       });
     } finally {
       setState(() {
-        isButtonDisabled = false; // Riabilita il pulsante
+        isButtonDisabled = false;
       });
     }
   }
 
   Future<void> unblockUser(BuildContext context) async {
     final result = await FriendService.blockUnblockUser(
-        userId: widget.currentUser!,
-        blockedId: widget.index,
-        action: 'unblock');
+        userId: widget.currentUser!, blockedId: widget.index, action: 'unblock');
     if (result) {
       setState(() {
         isBlocked = !isBlocked;
@@ -99,72 +93,125 @@ class UserCardState extends State<UserCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
       child: Card(
-        color: const Color(0xff000000),
-        elevation: 4,
+        elevation: 10,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(20.0),
         ),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: ListTile(
-            contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            leading: CircleAvatar(
-              radius: 25,
-              child: widget.profilePicture != ''
-                  ? Image.network(widget.profilePicture)
-                  : const Icon(Icons.person, color: Colors.white),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF212121), Color(0xFF2B2B2B)], // Gradient scuro
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.username,
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
+            borderRadius: BorderRadius.circular(20.0),
+            border: Border.all(
+              color: const Color(0xFF055E14), // Verde brillante per il bordo
+              width: 1.8,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF055C13).withOpacity(0.7), // Verde per l'ombra
+                blurRadius: 16,
+                spreadRadius: 2,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: GestureDetector(
+            onTap: widget.onTap,
+            child: ListTile(
+              contentPadding:
+              const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0),
+              leading: CircleAvatar(
+                radius: 30,
+                backgroundColor: const Color(0xFF3C3C3C), // Sfondo avatar scuro
+                child: widget.profilePicture.isNotEmpty
+                    ? ClipOval(
+                  child: Image.network(
+                    widget.profilePicture,
+                    fit: BoxFit.cover,
+                    width: 60,
+                    height: 60,
+                  ),
+                )
+                    : const Icon(
+                  Icons.person,
+                  color: Color(0xFF08931F),
+                  size: 28,
                 ),
-                // Aggiungi la riga per la distanza se presente
-                if (widget.distance != null)
+              ),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    'Distance: ${widget.distance?.toStringAsFixed(2)} km', // Mostra la distanza con 2 decimali
+                    widget.username,
                     style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-              ],
-            ),
-            trailing: widget.currentUser != null && widget.currentUser != widget.index
-                ? TextButton(
-              onPressed: isButtonDisabled
-                  ? null
-                  : () {
-                if (widget.isBlocked) {
-                  unblockUser(widget.parentContext);
-                } else {
-                  toggleFollow();
-                }
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: isBlocked
-                    ? Colors.orange
-                    : (isFriend ? Color(0xFF871C1C) : Color(0xBE17A828)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  if (widget.distance != null)
+                    Text(
+                      'Distance: ${widget.distance?.toStringAsFixed(2)} km',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  if (widget.commonGames != null)
+                    Text(
+                      'Common Games: ${widget.commonGames}',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                ],
+              ),
+              trailing: widget.currentUser != null &&
+                  widget.currentUser != widget.index
+                  ? TextButton(
+                onPressed: isButtonDisabled
+                    ? null
+                    : () {
+                  if (widget.isBlocked) {
+                    unblockUser(widget.parentContext);
+                  } else {
+                    toggleFollow();
+                  }
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: isBlocked
+                      ? const Color(0xFF871C1C)
+                      : (isFriend
+                      ? const Color(0xFF871C1C)
+                      : const Color(0xFF08931F)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 15.0,
+                  ),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 9.0, horizontal: 15.0),
-                textStyle: const TextStyle(fontSize: 16),
-              ),
-              child: Text(
-                isBlocked
-                    ? 'Unblock'
-                    : (isFriend ? 'Unfollow' : 'Follow'),
-                style: const TextStyle(color: Colors.white),
-              ),
-            )
-                : null,
+                child: Text(
+                  isBlocked
+                      ? 'Unblock'
+                      : (isFriend ? 'Unfollow' : 'Follow'),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+                  : null,
+            ),
           ),
         ),
       ),

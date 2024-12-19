@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/widgets/profile_or_users/info/user_follower_card.dart'; // Importa il widget UserCard
 import 'package:gamerverse/widgets/community/similar_games_users_widget.dart'; // Importa il widget SimilarGamesUsersWidget
 import 'package:gamerverse/widgets/community/NearbyUsersWidget.dart'; // Importa il widget NearbyUsersWidget
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 
 class AdvisedUsersPage extends StatelessWidget {
   const AdvisedUsersPage({Key? key}) : super(key: key);
@@ -26,13 +27,18 @@ class AdvisedUsersPage extends StatelessWidget {
               Tab(text: 'Nearby Users'),
               Tab(text: 'Similar Games'),
             ],
+
           ),
         ),
-        body: const TabBarView(
+        body:
+        const TabBarView(
           children: [
             NearbyUsersWidget(),
             SimilarGamesUsersWidget(),
           ],
+        ),
+        bottomNavigationBar: const CustomBottomNavBar(
+          currentIndex: 2,
         ),
       ),
     );

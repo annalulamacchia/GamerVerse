@@ -111,7 +111,7 @@ class AdvisedUsersService {
   // Metodo per ottenere utenti consigliati in base ai giochi
   static Future<List<Map<String, dynamic>>> fetchUsersByGames() async {
     try {
-      final url = Uri.parse("$_baseUrl/get-advised-users-games");
+      final url = Uri.parse("$_baseUrl//get-similar-game-users");
       final prefs = await SharedPreferences.getInstance();
       final String? userId = prefs.getString('user_uid'); // ID utente salvato localmente
 
