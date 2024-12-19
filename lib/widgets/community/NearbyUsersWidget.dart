@@ -16,7 +16,8 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
   bool isLoading = true;
   bool hasPermission = false;
   List<Map<String, dynamic>> nearbyUsers = [];
-  List<double> userDistances = [];  // Rinomina la lista delle
+  List<double> userDistances = [];
+  List<bool> isFollowed = []; // Lista per tenere traccia dello stato di follow
   String? currentUserId;
 
   @override
@@ -46,23 +47,24 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
       final position = await AdvisedUsersService.getPosition();
       final latitude = position.latitude;
       final longitude = position.longitude;
-      print(latitude);
-      print(longitude);
 
-      // Assicurati che fetchUsersByLocation ritorni una struttura corretta
       final result = await AdvisedUsersService.fetchUsersByLocation(latitude, longitude);
       final prefs = await SharedPreferences.getInstance();
-      print(result);
+
       setState(() {
         currentUserId = prefs.getString('user_uid') ?? 'default_user';
         nearbyUsers = result["users"] is List
             ? List<Map<String, dynamic>>.from(result["users"] as Iterable)
             : [];
-        print(nearbyUsers);
         userDistances = result["distances"] is List
             ? List<double>.from(result["distances"] as Iterable)
             : [];
-        print(userDistances);
+
+        // Crea una lista di booleani che rappresentano lo stato di follow di ogni utente
+        isFollowed = List.generate(nearbyUsers.length, (index) {
+          return false; // Puoi inizializzare come false o come preferisci
+        });
+
         isLoading = false;
       });
     } catch (e) {
@@ -71,6 +73,13 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
         isLoading = false;
       });
     }
+  }
+
+  // Funzione per aggiornare lo stato di follow
+  Future<void> _toggleFollow(int index) async {
+    setState(() {
+      isFollowed[index] = !isFollowed[index];
+    });
   }
 
   @override
@@ -94,7 +103,7 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
             ElevatedButton(
               onPressed: () => _checkAndRequestPermission(),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.green[800]),
-              child: const Text('Grant Permission'),  // Bottone con colore verde scuro
+              child: const Text('Grant Permission'),
             ),
           ],
         ),
@@ -102,7 +111,7 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.darkestGreen, // Sfondo verde scuro
+      backgroundColor: AppColors.darkestGreen,
       body: nearbyUsers.isEmpty
           ? const Center(child: Text('No nearby users found', style: TextStyle(color: Colors.white)))
           : ListView.builder(
@@ -115,30 +124,31 @@ class _NearbyUsersWidgetState extends State<NearbyUsersWidget> {
             children: [
               const SizedBox(height: 10),
               UserCard(
-                index: user['user_id'], // Assumendo che ogni utente abbia un 'id'
+                index: user['user_id'],
                 username: user["username"],
-                profilePicture: user["profile_picture"] ?? '', // Se manca la foto, usa una stringa vuota
-                distance: distance, // Passa la distanza corretta
+                profilePicture: user["profile_picture"] ?? '',
+                distance: distance,
                 onTap: () {
                   if (user["user_id"] != currentUserId || currentUserId == null) {
-                    Navigator.pushNamed(context, '/userProfile',
-                        arguments: user["user_id"]);
+                    Navigator.pushNamed(context, '/userProfile', arguments: user["user_id"]);
                   } else {
-                    Navigator.pushNamed(context, '/profile',
-                        arguments: user["user_id"]);
+                    Navigator.pushNamed(context, '/profile', arguments: user["user_id"]);
                   }
-
                 },
-                currentUser: currentUserId, // Puoi passare l'ID dell'utente corrente se necessario
-                isFollowed: false, // Passa lo stato di follow (modifica se necessario)
-                isBlocked: false, // Passa lo stato di blocco (modifica se necessario)
+                currentUser: currentUserId,
+                isFollowed: isFollowed[index], // Passa lo stato di follow
+                isBlocked: false,
                 parentContext: context,
+                onFollow: () async {
+                  await _toggleFollow(index); // Toggle stato di follow
+                },
               ),
             ],
           );
         },
       ),
     );
-
   }
 }
+
+

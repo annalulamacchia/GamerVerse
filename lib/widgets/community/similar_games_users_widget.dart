@@ -14,6 +14,7 @@ class SimilarGamesUsersWidget extends StatefulWidget {
 class _SimilarGamesUsersWidgetState extends State<SimilarGamesUsersWidget> {
   bool isLoading = true;
   List<Map<String, dynamic>> similarGameUsers = [];
+  List<bool> isFollowed = []; // Lista per tenere traccia dello stato di follow
   String? currentUserId; // Aggiungi una variabile per l'ID utente corrente
 
   @override
@@ -22,8 +23,6 @@ class _SimilarGamesUsersWidgetState extends State<SimilarGamesUsersWidget> {
     _fetchSimilarGameUsers();
   }
 
-
-
   Future<void> _fetchSimilarGameUsers() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -31,6 +30,12 @@ class _SimilarGamesUsersWidgetState extends State<SimilarGamesUsersWidget> {
       setState(() {
         currentUserId = prefs.getString('user_uid') ?? 'default_user';
         similarGameUsers = users;
+
+        // Crea una lista di booleani che rappresentano lo stato di follow di ogni utente
+        isFollowed = List.generate(similarGameUsers.length, (index) {
+          return false; // Inizializza con 'false' per ogni utente
+        });
+
         isLoading = false;
       });
     } catch (e) {
@@ -39,6 +44,13 @@ class _SimilarGamesUsersWidgetState extends State<SimilarGamesUsersWidget> {
         isLoading = false;
       });
     }
+  }
+
+  // Funzione per aggiornare lo stato di follow
+  Future<void> _toggleFollow(int index) async {
+    setState(() {
+      isFollowed[index] = !isFollowed[index]; // Inverte lo stato di follow
+    });
   }
 
   @override
@@ -52,13 +64,12 @@ class _SimilarGamesUsersWidgetState extends State<SimilarGamesUsersWidget> {
       itemBuilder: (context, index) {
         final user = similarGameUsers[index];
         return Padding(
-          padding: const EdgeInsets.symmetric(
-              vertical: 8.0), // Spazio verticale tra gli elementi
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: UserCard(
             index: user["user_id"],
             username: user["username"],
             profilePicture: user["profile_picture"],
-            isFollowed: false,
+            isFollowed: isFollowed[index], // Passa lo stato di follow
             isBlocked: false,
             parentContext: context,
             onTap: () {
@@ -69,10 +80,12 @@ class _SimilarGamesUsersWidgetState extends State<SimilarGamesUsersWidget> {
                 Navigator.pushNamed(context, '/profile',
                     arguments: user["user_id"]);
               }
-
             },
-            currentUser: currentUserId, // Passa l'ID utente corrente
+            currentUser: currentUserId,
             commonGames: user["common_games"],
+            onFollow: () async {
+              await _toggleFollow(index); // Toggle stato di follow
+            },
           ),
         );
       },

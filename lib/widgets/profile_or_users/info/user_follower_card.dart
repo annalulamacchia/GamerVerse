@@ -14,7 +14,6 @@ class UserCard extends StatefulWidget {
   final double? distance;
   final Future<void> Function()? onFollow;
   final ValueNotifier<int>? followedNotifier;
-  final double? distance;
   final int? commonGames;
 
   const UserCard({
@@ -29,7 +28,6 @@ class UserCard extends StatefulWidget {
     required this.parentContext,
     this.distance,
     this.commonGames,
-    this.distance,
     this.onFollow,
     this.followedNotifier,
   });
@@ -189,79 +187,54 @@ class UserCardState extends State<UserCard> {
                     Text(
                       'Common Games: ${widget.commonGames}',
                       style: const TextStyle(
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            leading: CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.grey[200],
-              child: ClipOval(
-                child: widget.profilePicture != ''
-                    ? Image.network(
-                        widget.profilePicture,
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      )
-                    : Icon(Icons.person, color: Colors.white),
-              ),
-            ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.username,
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
-                ),
-                // Aggiungi la riga per la distanza se presente
-                if (widget.distance != null)
-                  Text(
-                    'Distance: ${widget.distance?.toStringAsFixed(2)} km',
-                    // Mostra la distanza con 2 decimali
-                    style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 14,
-                        fontStyle: FontStyle.italic),
-                  ),
-              ],
-            ),
-            trailing: widget.currentUser != null &&
-                    widget.currentUser != widget.index
-                ? TextButton(
-                    onPressed: isButtonDisabled
-                        ? null
-                        : () {
-                            if (widget.isBlocked) {
-                              unblockUser(widget.parentContext);
-                            } else {
-                              toggleFollow();
-                            }
-                          },
-                    style: TextButton.styleFrom(
-                      backgroundColor: isBlocked
-                          ? Colors.orange
-                          : (isFriend ? Color(0xFF871C1C) : Color(0xBE17A828)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        fontStyle: FontStyle.italic,
                       ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 9.0, horizontal: 15.0),
-                      textStyle: const TextStyle(fontSize: 16),
                     ),
-                    child: Text(
-                      isBlocked
-                          ? 'Unblock'
-                          : (isFriend ? 'Unfollow' : 'Follow'),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  )
-                : null,
+                ],
+              ),
+              trailing: widget.currentUser != null &&
+                  widget.currentUser != widget.index
+                  ? TextButton(
+                onPressed: isButtonDisabled
+                    ? null
+                    : () {
+                  if (widget.isBlocked) {
+                    unblockUser(widget.parentContext);
+                  } else {
+                    toggleFollow();
+                  }
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: isBlocked
+                      ? const Color(0xFF871C1C)
+                      : (isFriend
+                      ? const Color(0xFF871C1C)
+                      : const Color(0xFF08931F)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 15.0,
+                  ),
+                ),
+                child: Text(
+                  isBlocked
+                      ? 'Unblock'
+                      : (isFriend ? 'Unfollow' : 'Follow'),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+                  : null,
+            ),
           ),
         ),
       ),
     );
   }
-
 }
