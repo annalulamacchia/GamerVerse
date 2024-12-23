@@ -154,10 +154,9 @@ class _SignupPageState extends State<SignupPage> {
           },
         ),
         title: const Text(
-          'GamerVerse',
+          'Signup',
           style: TextStyle(color: AppColors.lightestGreen),
         ),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -180,16 +179,16 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.videogame_asset,
-                    size: 60,
-                    color: AppColors.lightestGreen,
+                  Image.asset(
+                    'assets/gamerverse.png',
+                    width: 75,
+                    height: 75,
+                    fit: BoxFit.cover,
                   ),
-                  SizedBox(width: 10),
-                  Text(
+                  const Text(
                     'Signup',
                     style: TextStyle(
                       fontSize: 24,
@@ -199,7 +198,7 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 5),
               GestureDetector(
                 onTap: _showImageSourceOptions,
                 child: CircleAvatar(
@@ -277,6 +276,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 child: const Text('Sign-up'),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
