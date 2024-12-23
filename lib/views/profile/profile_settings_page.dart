@@ -171,7 +171,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
         const SnackBar(content: Text('Account deleted successfully.')),
       );
       Navigator.pushReplacementNamed(context, '/home');
-
     } else if (response.containsKey('error')) {
       // If there's an "error" key, handle the error
       ScaffoldMessenger.of(context).showSnackBar(
@@ -202,7 +201,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       return;
     }
     if (_profileImage != null) {
-      final uploadedImageUrl = await UpdateUserService.uploadImage(_profileImage!);
+      final uploadedImageUrl =
+          await UpdateUserService.uploadImage(_profileImage!);
 
       if (uploadedImageUrl == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -234,7 +234,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
         fetchUserData();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response['message'] ?? 'Failed to update profile')),
+          SnackBar(
+              content: Text(response['message'] ?? 'Failed to update profile')),
         );
       }
     }
@@ -265,7 +266,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
         ),
         backgroundColor: AppColors.darkGreen,
       ),
-      body: (isLoading)
+      body: isLoading
           ? Center(child: CircularProgressIndicator(color: Colors.teal))
           : LayoutBuilder(
               builder: (context, constraints) {
@@ -287,23 +288,28 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                    _showImageSourceOptions
-                                    }
-
+                                      _showImageSourceOptions();
                                     },
                                     child: CircleAvatar(
                                       radius: 40,
                                       backgroundColor: Colors.grey[800],
                                       backgroundImage: _profileImage != null
                                           ? FileImage(_profileImage!)
-                                          : (userData?['profile_picture'] != null && userData!['profile_picture'].isNotEmpty
-                                          ? NetworkImage(userData!['profile_picture'])
-                                          : null),
-
+                                          : (userData?['profile_picture'] !=
+                                                      null &&
+                                                  userData!['profile_picture']
+                                                      .isNotEmpty
+                                              ? NetworkImage(
+                                                  userData!['profile_picture'])
+                                              : null),
                                       child: _profileImage == null &&
-                                          userData?['profile_picture'] == null
-                                          ? const Icon(Icons.person,
-                                          size: 40, color: Colors.white70)
+                                              userData?['profile_picture'] ==
+                                                  null
+                                          ? const Icon(
+                                              Icons.person,
+                                              size: 40,
+                                              color: Colors.white70,
+                                            )
                                           : null,
                                     ),
                                   ),
@@ -334,7 +340,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                                 selectionColor:
                                                     AppColors.mediumGreen),
                                       ),
-                                      //Text Area
                                       child: TextField(
                                         controller: nameController,
                                         decoration: const InputDecoration(
@@ -361,7 +366,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                                 selectionColor:
                                                     AppColors.mediumGreen),
                                       ),
-                                      //Text Area
                                       child: TextField(
                                         controller: usernameController,
                                         decoration: const InputDecoration(
@@ -383,7 +387,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                             ],
                           ),
                           const SizedBox(height: 20),
-
                           const Text(
                             'Modify Account',
                             style: TextStyle(
@@ -392,7 +395,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                 color: Colors.white),
                           ),
                           const SizedBox(height: 10),
-
                           // Email
                           Theme(
                             data: Theme.of(context).copyWith(
@@ -401,7 +403,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                   cursorColor: AppColors.mediumGreen,
                                   selectionColor: AppColors.mediumGreen),
                             ),
-                            //Text Area
                             child: TextField(
                               controller: emailController,
                               decoration: const InputDecoration(
@@ -416,7 +417,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                             ),
                           ),
                           const SizedBox(height: 10),
-
                           // Password Fields
                           Theme(
                             data: Theme.of(context).copyWith(
@@ -425,7 +425,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                   cursorColor: AppColors.mediumGreen,
                                   selectionColor: AppColors.mediumGreen),
                             ),
-                            //Text Area
                             child: TextField(
                               controller: oldPasswordController,
                               decoration: const InputDecoration(
@@ -447,7 +446,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                   cursorColor: AppColors.mediumGreen,
                                   selectionColor: AppColors.mediumGreen),
                             ),
-                            //Text Area
                             child: TextField(
                               controller: newPasswordController,
                               decoration: const InputDecoration(
@@ -469,7 +467,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                   cursorColor: AppColors.mediumGreen,
                                   selectionColor: AppColors.mediumGreen),
                             ),
-                            //Text Area
                             child: TextField(
                               controller: repeatPasswordController,
                               decoration: const InputDecoration(
@@ -485,7 +482,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                             ),
                           ),
                           const SizedBox(height: 20),
-
                           // Pulsanti Conferma/Annulla
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -493,36 +489,29 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                               IconButton(
                                 icon: const Icon(Icons.close,
                                     size: 40, color: Colors.red),
-                                onPressed: _hasChanges()
-                                    ? fetchUserData
-                                    : null, // Disabilita se non ci sono modifiche
+                                onPressed: _hasChanges() ? fetchUserData : null,
                               ),
                               const SizedBox(width: 40),
                               IconButton(
                                 icon: const Icon(Icons.check,
                                     size: 40, color: Colors.green),
-                                onPressed: _hasChanges()
-                                    ? updateUserData
-                                    : null, // Disabilita se non ci sono modifiche
+                                onPressed:
+                                    _hasChanges() ? updateUserData : null,
                               ),
                             ],
                           ),
                           const Spacer(),
-
                           // Pulsante Logout
-                          // Updated Logout Button to call the new LogoutService
                           Center(
                             child: ElevatedButton(
                               onPressed: () async {
                                 final result =
                                     await LogoutService.logout(context);
                                 if (result['success']) {
-                                  // Optionally, show a success message if the logout is successful
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(result['message'])),
                                   );
                                 } else {
-                                  // Show an error message if logout fails
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(result['message'])),
                                   );
@@ -540,13 +529,11 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                   style: TextStyle(color: Colors.white)),
                             ),
                           ),
-
                           const SizedBox(height: 10),
-// Pulsante Elimina Account
+                          // Pulsante Elimina Account
                           Center(
                             child: ElevatedButton(
                               onPressed: () => _showDeleteConfirmation(),
-                              // Funzione per eliminare l'account
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 80, vertical: 15),
@@ -566,8 +553,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 );
               },
             ),
-      bottomNavigationBar:
-          const CustomBottomNavBar(currentIndex: 2), // Navbar personalizzata
+      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 2),
     );
   }
 }

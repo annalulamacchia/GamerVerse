@@ -80,17 +80,12 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.videogame_asset,
-                size: 60, color: AppColors.lightestGreen),
-            const SizedBox(height: 20),
-            const Text(
-              'Reset Password',
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.lightestGreen),
+            Image.asset(
+              'assets/gamerverse.png',
+              width: 200,
+              height: 200,
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 20),
             Theme(
               data: Theme.of(context).copyWith(
                 textSelectionTheme: const TextSelectionThemeData(

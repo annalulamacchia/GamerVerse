@@ -47,6 +47,10 @@ class LoginPage extends StatelessWidget {
                 },
               )
             : null,
+        title: const Text(
+          'Login',
+          style: TextStyle(color: AppColors.lightestGreen),
+        ),
       ),
       body: Container(
         // Gradient background for an elegant look
@@ -63,21 +67,13 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.videogame_asset,
-                  size: 100,
-                  color: AppColors.lightestGreen,
+                Image.asset(
+                  'assets/gamerverse.png',
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
                 ),
-                const SizedBox(height: 20),
-                const Text(
-                  'GamerVerse',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.lightestGreen,
-                  ),
-                ),
-                const SizedBox(height: 40),
+
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/emailLogin');
