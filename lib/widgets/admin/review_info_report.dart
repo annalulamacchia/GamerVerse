@@ -7,8 +7,9 @@ import 'package:gamerverse/services/report_service.dart';
 
 class ReviewInfoReport extends StatefulWidget {
   final Report report;
+  final String currentUser;
 
-  const ReviewInfoReport({super.key, required this.report});
+  const ReviewInfoReport({super.key, required this.report, required this.currentUser});
 
   @override
   ReviewInfoReportState createState() => ReviewInfoReportState();
@@ -80,13 +81,13 @@ class ReviewInfoReportState extends State<ReviewInfoReport> {
                           borderRadius: BorderRadius.circular(5),
                           child: Image.network(
                             widget.report.gameCover!,
-                            width: 50,
-                            height: 60,
+                            width: 60,
+                            height: 70,
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 10),
 
                       // Username
                       Column(
@@ -94,14 +95,23 @@ class ReviewInfoReportState extends State<ReviewInfoReport> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/userProfile',
-                                arguments: additionalReviewInfo.writerId,
-                              );
+                              if (additionalReviewInfo.writerId ==
+                                  widget.currentUser) {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/profile',
+                                  arguments: additionalReviewInfo.writerId,
+                                );
+                              } else {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/userProfile',
+                                  arguments: additionalReviewInfo.writerId,
+                                );
+                              }
                             },
                             child: Container(
-                              width: 150,
+                              width: 180,
                               alignment: Alignment.bottomLeft,
                               child: Text(
                                 widget.report.username,
@@ -207,8 +217,8 @@ class ReviewInfoReportState extends State<ReviewInfoReport> {
               ),
             ),
             Positioned(
-              top: 10,
-              right: 15,
+              top: 2.5,
+              right: 10,
               child: Text(
                 additionalReviewInfo.status,
                 style: TextStyle(

@@ -26,8 +26,14 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 16,
+        bottom:
+            MediaQuery.of(context).viewInsets.bottom + 16, // Gestione tastiera
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -44,9 +50,15 @@ class _NewPostBottomSheetState extends State<NewPostBottomSheet> {
             items: widget.wishlistGames.map((GameProfile game) {
               return DropdownMenuItem<String>(
                 value: game.gameId,
-                child: Text(
-                  game.gameName,
-                  style: TextStyle(color: Colors.white),
+                child: SizedBox(
+                  width: 300,
+                  child: Text(
+                    game.gameName,
+                    style: TextStyle(color: Colors.white),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
+                  ),
                 ),
               );
             }).toList(),

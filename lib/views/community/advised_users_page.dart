@@ -5,7 +5,6 @@ import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 // Importa il widget UserCard
 import 'package:gamerverse/widgets/community/similar_games_users_widget.dart'; // Importa il widget SimilarGamesUsersWidget
 import 'package:gamerverse/widgets/community/NearbyUsersWidget.dart'; // Importa il widget NearbyUsersWidget
-import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 
 class AdvisedUsersPage extends StatelessWidget {
   const AdvisedUsersPage({super.key});

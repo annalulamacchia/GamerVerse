@@ -106,13 +106,15 @@ class ReportCardWidget extends StatelessWidget {
 
               //Users
               if (title == 'Users' || title == 'Temporarily Blocked Users')
-                UserInfo(title: title, report: report),
+                UserInfo(report: report, currentUser: userId),
 
               //Posts
-              if (title == 'Posts') PostInfoReport(report: report),
+              if (title == 'Posts')
+                PostInfoReport(report: report, currentUser: userId),
 
               //Reviews
-              if (title == 'Reviews') ReviewInfoReport(report: report),
+              if (title == 'Reviews')
+                ReviewInfoReport(report: report, currentUser: userId),
               const SizedBox(height: 16),
 
               //Reason

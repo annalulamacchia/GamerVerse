@@ -210,20 +210,36 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 3),
-            image: profilePictureUrl != null && profilePictureUrl != ''
-                ? DecorationImage(
-                    image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
-                : null,
-          ),
-          child: profilePictureUrl != null && profilePictureUrl == ''
-              ? const Icon(Icons.person, size: 40, color: Colors.white)
-              : null,
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 3),
+                image: profilePictureUrl != null && profilePictureUrl != ''
+                    ? DecorationImage(
+                        image: NetworkImage(profilePictureUrl),
+                        fit: BoxFit.cover)
+                    : null,
+              ),
+              child: profilePictureUrl != null && profilePictureUrl == ''
+                  ? const Icon(Icons.person, size: 40, color: Colors.white)
+                  : null,
+            ),
+            if (userData != null && userData!['data']['isAdmin'] == true)
+              Positioned(
+                bottom: -1.5,
+                right: 0,
+                child: Icon(
+                  Icons.verified,
+                  color: AppColors.lightestGreen,
+                  size: 22,
+                ),
+              ),
+          ],
         ),
       ],
     );

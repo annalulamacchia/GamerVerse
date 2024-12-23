@@ -5,12 +5,14 @@ class ImageCardProfileWidget extends StatelessWidget {
   final GameProfile game;
   final String currentUser;
   final String userId;
+  final ValueNotifier<List<dynamic>>? currentFollowedNotifier;
 
   const ImageCardProfileWidget({
     super.key,
     required this.game,
     required this.currentUser,
     required this.userId,
+    this.currentFollowedNotifier,
   });
 
   @override
@@ -20,7 +22,8 @@ class ImageCardProfileWidget extends StatelessWidget {
         Navigator.pushNamed(context, '/userGame', arguments: {
           'game': game,
           'currentUser': currentUser,
-          'userId': userId
+          'userId': userId,
+          'currentFollowedNotifier': currentFollowedNotifier
         });
       },
       child: Card(

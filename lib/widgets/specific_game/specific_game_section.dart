@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/utils/colors.dart';
@@ -34,7 +36,7 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Text(
-                  widget.storyline,
+                  utf8.decode(widget.storyline.codeUnits),
                   style: TextStyle(fontSize: 14, color: Colors.black87),
                 ),
               )),
@@ -97,7 +99,7 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
             }
           },
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 5),
+            margin: const EdgeInsets.symmetric(horizontal: 7.5),
             padding: const EdgeInsets.symmetric(vertical: 7.5, horizontal: 12),
             decoration: BoxDecoration(
               color: AppColors.mediumGreen,

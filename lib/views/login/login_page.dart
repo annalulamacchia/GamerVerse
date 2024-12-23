@@ -120,7 +120,7 @@ class LoginPage extends StatelessWidget {
                         Navigator.pushNamed(context, '/signup');
                       },
                       child: const Text(
-                        'Register',
+                        'Sign-up',
                         style: TextStyle(
                           color: AppColors.lightestGreen,
                           fontWeight: FontWeight.bold,

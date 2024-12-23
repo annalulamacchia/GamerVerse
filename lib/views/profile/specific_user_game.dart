@@ -72,8 +72,8 @@ class SpecificUserGameState extends State<SpecificUserGame> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.currentFollowedNotifier);
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         backgroundColor: AppColors.darkGreen,
@@ -87,119 +87,121 @@ class SpecificUserGameState extends State<SpecificUserGame> {
             style: const TextStyle(color: Colors.white)),
       ),
       body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Game Image
-          Container(
-            height: 200,
-            color: Colors.grey[300],
-            child: Image.network(
-              widget.game.cover,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Game Image
+            Container(
               height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
+              color: Colors.grey[300],
+              child: Image.network(
+                widget.game.cover,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
+            const SizedBox(height: 8),
 
-          // Game Status and Timestamp
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (widget.game.status != '')
-                  Text(
-                    '${widget.game.status[0].toUpperCase() + widget.game.status.substring(1).toLowerCase()} since: ${DateFormat('d MMMM yyyy').format(DateTime.parse(widget.game.timestamp).toLocal())}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                if (widget.game.status == '')
-                  Text(
-                    'Liked since: ${DateFormat('d MMMM yyyy').format(DateTime.parse(widget.game.timestamp).toLocal())}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const Divider(color: Colors.white24, thickness: 1),
-
-          // More Details
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, '/game',
-                  arguments: int.parse(widget.game.gameId));
-            },
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            // Game Status and Timestamp
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'More Details on the Game',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                  Icon(Icons.keyboard_arrow_right,
-                      color: Colors.white, size: 25),
+                  if (widget.game.status != '')
+                    Text(
+                      '${widget.game.status[0].toUpperCase() + widget.game.status.substring(1).toLowerCase()} since: ${DateFormat('d MMMM yyyy').format(DateTime.parse(widget.game.timestamp).toLocal())}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  if (widget.game.status == '')
+                    Text(
+                      'Liked since: ${DateFormat('d MMMM yyyy').format(DateTime.parse(widget.game.timestamp).toLocal())}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                 ],
               ),
             ),
-          ),
+            const Divider(color: Colors.white24, thickness: 1),
 
-          // Post section
-          FutureBuilder<List<GamePost>>(
-            future: postsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: CircularProgressIndicator(color: Colors.teal));
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return NoDataList(
-                  textColor: Colors.white,
-                  icon: Icons.notifications_off,
-                  message: 'No posts available!',
-                  subMessage: 'Come back later for new updates.',
-                  color: Colors.grey,
-                );
-              } else {
-                final posts = snapshot.data!;
+            // More Details
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/game',
+                    arguments: int.parse(widget.game.gameId));
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'More Details on the Game',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    Icon(Icons.keyboard_arrow_right,
+                        color: Colors.white, size: 25),
+                  ],
+                ),
+              ),
+            ),
 
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: posts.length,
-                    itemBuilder: (context, index) {
-                      final post = posts[index];
-                      return UserPost(
-                        postId: post.postId,
-                        userId: post.writerId,
-                        content: post.description,
-                        imageUrl: post.profilePicture,
-                        timestamp: post.timestamp,
-                        likeCount: post.likes.length,
-                        commentCount: post.commentsCount,
-                        likedBy: post.likes,
-                        currentUser: widget.currentUser,
-                        username: post.username,
-                        onPostDeleted: _loadPostsByGame,
-                      );
-                    },
-                  ),
-                );
-              }
-            },
-          ),
-          const SizedBox(height: 10),
-        ],
-      ),
+            // Post section
+            FutureBuilder<List<GamePost>>(
+              future: postsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: CircularProgressIndicator(color: Colors.teal));
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return NoDataList(
+                    textColor: Colors.white,
+                    icon: Icons.notifications_off,
+                    message: 'No posts available!',
+                    subMessage: 'Come back later for new updates.',
+                    color: Colors.grey,
+                  );
+                } else {
+                  final posts = snapshot.data!;
+
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) {
+                        final post = posts[index];
+                        return UserPost(
+                          postId: post.postId,
+                          userId: post.writerId,
+                          content: post.description,
+                          imageUrl: post.profilePicture,
+                          timestamp: post.timestamp,
+                          likeCount: post.likes.length,
+                          commentCount: post.commentsCount,
+                          likedBy: post.likes,
+                          currentUser: widget.currentUser,
+                          username: post.username,
+                          onPostDeleted: _loadPostsByGame,
+                        );
+                      },
+                    ),
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+
       floatingActionButton: widget.currentFollowedNotifier != null
           ? ValueListenableBuilder<List<dynamic>>(
               valueListenable: widget.currentFollowedNotifier!,

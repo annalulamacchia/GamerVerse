@@ -127,44 +127,47 @@ class PlayCompleteButtonsState extends State<PlayCompleteButtons> {
               child: CircularProgressIndicator(),
             ),
           )
-        : Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              //Playing Button
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: widget.userId != null
-                      ? _onPlayingPressed
-                      : _toLoginForStatus,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isPlayingPressed ? Colors.yellow : Colors.white,
-                  ),
-                  child: const Text('Playing'),
-                ),
-              ),
-              const SizedBox(width: 14),
-
-              //Completed Button
-              Expanded(
-                child: ElevatedButton(
+        : Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                //Playing Button
+                Expanded(
+                  child: ElevatedButton(
                     onPressed: widget.userId != null
-                        ? _onCompletedPressed
-                        : _toLoginForStatus,
-                    onLongPress: widget.userId != null
-                        ? _zeroCompleted
+                        ? _onPlayingPressed
                         : _toLoginForStatus,
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
-                          isCompletedPressed ? Colors.green : Colors.white,
+                          isPlayingPressed ? Colors.yellow : Colors.white,
                     ),
-                    child: completed >= 2
-                        ? Text('Completed x$completed',
-                            style: const TextStyle(color: Colors.black54))
-                        : const Text('Completed',
-                            style: TextStyle(color: Colors.black54))),
-              ),
-            ],
+                    child: const Text('Playing', style: TextStyle(color: Colors.black54)),
+                  ),
+                ),
+                const SizedBox(width: 14),
+
+                //Completed Button
+                Expanded(
+                  child: ElevatedButton(
+                      onPressed: widget.userId != null
+                          ? _onCompletedPressed
+                          : _toLoginForStatus,
+                      onLongPress: widget.userId != null
+                          ? _zeroCompleted
+                          : _toLoginForStatus,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            isCompletedPressed ? Colors.green : Colors.white,
+                      ),
+                      child: completed >= 2
+                          ? Text('Completed x$completed',
+                              style: const TextStyle(color: Colors.black54))
+                          : const Text('Completed',
+                              style: TextStyle(color: Colors.black54))),
+                ),
+              ],
+            ),
           );
   }
 }

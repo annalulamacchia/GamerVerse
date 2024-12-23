@@ -125,8 +125,14 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom +
+                16, // Gestione tastiera
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -210,6 +216,7 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
             builder: (context, averageTime, child) {
               return Container(
                 padding: const EdgeInsets.all(12),
+                margin: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                   color: Colors.grey[800],
                   borderRadius: BorderRadius.circular(12),

@@ -3,10 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:core';
 
 class GameApiService {
-  static const String clientId =
-      '59now2vf9ty36w63um7grxsio0jivn';
-  static const String accessToken =
-      'of7hm9lpfashde892p0d7zurciwugx';
+  static const String clientId = '59now2vf9ty36w63um7grxsio0jivn';
+  static const String accessToken = 'of7hm9lpfashde892p0d7zurciwugx';
 
   static Future<Map<String, dynamic>?> fetchGameData(int gameId) async {
     final url = Uri.parse('https://api.igdb.com/v4/games');
@@ -435,12 +433,13 @@ class GameApiService {
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
         return List<Map<String, dynamic>>.from(decoded.map((game) => {
-          'id': game['id'],
-          'name': game['name'],
-          'coverUrl': game['cover']?['url'] != null
-              ? "https:${game['cover']['url']}".replaceAll('t_thumb', 't_cover_big')
-              : null, // Transform thumbnail URLs if necessary
-        }));
+              'id': game['id'],
+              'name': game['name'],
+              'coverUrl': game['cover']?['url'] != null
+                  ? "https:${game['cover']['url']}"
+                      .replaceAll('t_thumb', 't_cover_big')
+                  : null, // Transform thumbnail URLs if necessary
+            }));
       } else {
         print('Error: ${response.statusCode}');
         print('Message: ${response.body}');
@@ -452,7 +451,8 @@ class GameApiService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>?> fetchGameDataList({int offset = 0}) async {
+  static Future<List<Map<String, dynamic>>?> fetchGameDataList(
+      {int offset = 0}) async {
     final query = '''
     fields id, name, cover.url;
     where cover != null; 
@@ -463,8 +463,8 @@ class GameApiService {
     return fetchGames(query);
   }
 
-
-  static Future<List<Map<String, dynamic>>?> fetchPopularGames({int offset = 0}) async {
+  static Future<List<Map<String, dynamic>>?> fetchPopularGames(
+      {int offset = 0}) async {
     final query = '''
     fields id, name, cover.url;
     where cover != null; 
@@ -475,9 +475,12 @@ class GameApiService {
     return fetchGames(query);
   }
 
-
-  static Future<List<Map<String, dynamic>>?> fetchReleasedThisMonthGames({int offset = 0}) async {
-    final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30)).millisecondsSinceEpoch ~/ 1000;
+  static Future<List<Map<String, dynamic>>?> fetchReleasedThisMonthGames(
+      {int offset = 0}) async {
+    final thirtyDaysAgo = DateTime.now()
+            .subtract(const Duration(days: 30))
+            .millisecondsSinceEpoch ~/
+        1000;
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final query = '''
     fields id, name, cover.url, first_release_date;
@@ -489,8 +492,8 @@ class GameApiService {
     return fetchGames(query); // Your existing method to make API calls
   }
 
-
-  static Future<List<Map<String, dynamic>>?> fetchUpcomingGames({int offset = 0}) async {
+  static Future<List<Map<String, dynamic>>?> fetchUpcomingGames(
+      {int offset = 0}) async {
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final query = '''
     fields id, name, cover.url, first_release_date;
@@ -502,8 +505,8 @@ class GameApiService {
     return fetchGames(query); // Your existing method to make API calls
   }
 
-
-  static Future<List<Map<String, dynamic>>?> fetchGamesByName(String searchQuery) async {
+  static Future<List<Map<String, dynamic>>?> fetchGamesByName(
+      String searchQuery) async {
     final query = '''
   fields id, name, cover.url;
   where name ~ *"$searchQuery"*;
@@ -513,8 +516,6 @@ class GameApiService {
     print("Generated Query: $query"); // Debugging log
     return fetchGames(query);
   }
-
-
 
   static Future<List<Map<String, dynamic>>> fetchFilteredGames({
     String? orderBy,
@@ -543,13 +544,16 @@ class GameApiService {
     // Handle sorting logic
     var sortClause = orderBy != null
         ? {
-      'Alphabetical': 'sort name asc;',
-      'Popularity': 'sort popularity desc;', // Fixed order for Popularity
-      'Rating': 'sort rating desc;',
-    }[orderBy] ?? ''
+              'Alphabetical': 'sort name asc;',
+              'Popularity':
+                  'sort popularity desc;', // Fixed order for Popularity
+              'Rating': 'sort rating desc;',
+            }[orderBy] ??
+            ''
         : '';
 
-    if (sortClause == '' && (page == 'UPCOMING' || page == 'RELEASED_THIS_MONTH')) {
+    if (sortClause == '' &&
+        (page == 'UPCOMING' || page == 'RELEASED_THIS_MONTH')) {
       sortClause += 'sort first_release_date asc;';
     }
 
@@ -560,7 +564,10 @@ class GameApiService {
 
     // Add date filtering for specific pages
     if (page == 'RELEASED_THIS_MONTH') {
-      final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30)).millisecondsSinceEpoch ~/ 1000;
+      final thirtyDaysAgo = DateTime.now()
+              .subtract(const Duration(days: 30))
+              .millisecondsSinceEpoch ~/
+          1000;
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       whereConditions.add('first_release_date > $thirtyDaysAgo');
       whereConditions.add('first_release_date < $now');
@@ -569,7 +576,9 @@ class GameApiService {
       whereConditions.add('first_release_date > $now');
     }
 
-    final whereClause = whereConditions.isNotEmpty ? 'where ${whereConditions.join(' & ')};' : '';
+    final whereClause = whereConditions.isNotEmpty
+        ? 'where ${whereConditions.join(' & ')};'
+        : '';
 
     try {
       final String url = 'https://api.igdb.com/v4/games';
@@ -588,7 +597,8 @@ class GameApiService {
       offset $offset;
     ''';
 
-      final response = await http.post(Uri.parse(url), headers: headers, body: body);
+      final response =
+          await http.post(Uri.parse(url), headers: headers, body: body);
 
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
@@ -599,7 +609,8 @@ class GameApiService {
             'id': game['id'],
             'name': game['name'],
             'coverUrl': game['cover']?['url'] != null
-                ? "https:${game['cover']['url']}".replaceAll('t_thumb', 't_cover_big')
+                ? "https:${game['cover']['url']}"
+                    .replaceAll('t_thumb', 't_cover_big')
                 : null,
           };
         }).toList();
@@ -610,11 +621,4 @@ class GameApiService {
       throw Exception('Error fetching games: $e');
     }
   }
-
-
-
-
-
-
-
 }

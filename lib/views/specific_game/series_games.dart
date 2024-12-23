@@ -67,7 +67,7 @@ class SeriesGameState extends State<SeriesGame> {
                   mainAxisSpacing: 4,
                   childAspectRatio: 0.8,
                 ),
-                itemCount: widget.gameIds.length,
+                itemCount: coverGames?.length,
                 itemBuilder: (context, index) {
                   int gameId = widget.gameIds[index];
                   if (gameId == coverGames?[index]['game']) {
