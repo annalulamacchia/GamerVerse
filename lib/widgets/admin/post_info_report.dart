@@ -6,8 +6,10 @@ import 'package:gamerverse/services/report_service.dart';
 
 class PostInfoReport extends StatefulWidget {
   final Report report;
+  final String currentUser;
 
-  const PostInfoReport({super.key, required this.report});
+  const PostInfoReport(
+      {super.key, required this.report, required this.currentUser});
 
   @override
   PostInfoReportState createState() => PostInfoReportState();
@@ -77,13 +79,13 @@ class PostInfoReportState extends State<PostInfoReport> {
                       borderRadius: BorderRadius.circular(5),
                       child: Image.network(
                         widget.report.gameCover!,
-                        width: 50,
-                        height: 60,
+                        width: 60,
+                        height: 70,
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 20),
+                  const SizedBox(width: 10),
 
                   // Game Name
                   Column(
@@ -98,12 +100,12 @@ class PostInfoReportState extends State<PostInfoReport> {
                           );
                         },
                         child: SizedBox(
-                          width: 220,
+                          width: 185,
                           child: Text(
                             additionalPostInfo.gameName,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                              fontSize: 17.5,
                               color: Colors.white,
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -114,21 +116,30 @@ class PostInfoReportState extends State<PostInfoReport> {
                       // Username
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/userProfile',
-                            arguments: additionalPostInfo.writerId,
-                          );
+                          if (additionalPostInfo.writerId ==
+                              widget.currentUser) {
+                            Navigator.pushNamed(
+                              context,
+                              '/profile',
+                              arguments: additionalPostInfo.writerId,
+                            );
+                          } else {
+                            Navigator.pushNamed(
+                              context,
+                              '/userProfile',
+                              arguments: additionalPostInfo.writerId,
+                            );
+                          }
                         },
                         child: Row(
                           children: [
                             Container(
-                              width: 220,
+                              width: 185,
                               alignment: Alignment.bottomLeft,
                               child: Text(
                                 'Author: ${widget.report.username}',
                                 style: const TextStyle(
-                                    fontSize: 16, color: Colors.white),
+                                    fontSize: 15, color: Colors.white),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),

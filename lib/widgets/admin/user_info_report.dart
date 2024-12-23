@@ -4,10 +4,10 @@ import 'package:gamerverse/services/report_service.dart';
 import 'package:gamerverse/utils/colors.dart';
 
 class UserInfo extends StatefulWidget {
-  final String title;
   final Report report;
+  final String currentUser;
 
-  const UserInfo({super.key, required this.title, required this.report});
+  const UserInfo({super.key, required this.report, required this.currentUser});
 
   @override
   UserInfoState createState() => UserInfoState();
@@ -145,28 +145,35 @@ class UserInfoState extends State<UserInfo> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Name
-              if (widget.title == 'Users' ||
-                  widget.title == 'Temporarily Blocked Users')
-                GestureDetector(
-                  onTap: () {
+
+              GestureDetector(
+                onTap: () {
+                  if (widget.report.reportedId == widget.currentUser) {
+                    Navigator.pushNamed(
+                      context,
+                      '/profile',
+                      arguments: widget.report.reportedId,
+                    );
+                  } else {
                     Navigator.pushNamed(
                       context,
                       '/userProfile',
                       arguments: widget.report.reportedId,
                     );
-                  },
-                  child: SizedBox(
-                    width: 275,
-                    child: Text(
-                      additionalInfo.name,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                  }
+                },
+                child: SizedBox(
+                  width: 275,
+                  child: Text(
+                    additionalInfo.name,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
                 ),
+              ),
               // Username
               SizedBox(
                 width: 275,

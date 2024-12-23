@@ -638,11 +638,14 @@ class SpecificGameState extends State<SpecificGame> {
 
             //Suggested Games
             if (gameData?['similar_games'] != null)
-              const Text('Suggested Games',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold)),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: Text('Suggested Games',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold)),
+              ),
             const SizedBox(height: 7.5),
             Padding(
               padding: const EdgeInsets.all(1),

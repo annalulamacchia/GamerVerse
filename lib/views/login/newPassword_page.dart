@@ -103,8 +103,8 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                 controller: newPasswordController,
                 decoration: InputDecoration(
                   labelText: 'New Password',
-                  labelStyle: const TextStyle(color: AppColors.lightestGreen),
-                  fillColor: AppColors.veryDarkGreen,
+                  labelStyle: const TextStyle(color: AppColors.darkGreen),
+                  fillColor: AppColors.lightGreen,
                   filled: true,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -119,7 +119,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                   ),
                 ),
                 obscureText: true,
-                style: const TextStyle(color: AppColors.lightestGreen),
+                style: const TextStyle(color: AppColors.darkGreen),
               ),
             ),
             const SizedBox(height: 15),
@@ -135,8 +135,8 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                 controller: repeatPasswordController,
                 decoration: InputDecoration(
                   labelText: 'Repeat Password',
-                  labelStyle: const TextStyle(color: AppColors.lightestGreen),
-                  fillColor: AppColors.veryDarkGreen,
+                  labelStyle: const TextStyle(color: AppColors.darkGreen),
+                  fillColor: AppColors.lightGreen,
                   filled: true,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -151,7 +151,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                   ),
                 ),
                 obscureText: true,
-                style: const TextStyle(color: AppColors.lightestGreen),
+                style: const TextStyle(color: AppColors.darkGreen),
               ),
             ),
             const SizedBox(height: 20),

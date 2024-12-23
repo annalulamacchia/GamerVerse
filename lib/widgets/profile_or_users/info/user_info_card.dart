@@ -262,26 +262,41 @@ class _UserInfoCardState extends State<UserInfoCard> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 8),
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 3),
-                        image: userData!['profile_picture'] != null &&
-                                userData!['profile_picture'] != ''
-                            ? DecorationImage(
-                                image:
-                                    NetworkImage(userData!['profile_picture']),
-                                fit: BoxFit.cover)
-                            : null,
-                      ),
-                      child: (userData!['profile_picture'] != null &&
-                                  userData!['profile_picture'] == '') ||
-                              userData!['profile_picture'] == null
-                          ? const Icon(Icons.person,
-                              size: 40, color: Colors.white)
-                          : null,
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 3),
+                            image: userData!['profile_picture'] != null &&
+                                    userData!['profile_picture'] != ''
+                                ? DecorationImage(
+                                    image: NetworkImage(
+                                        userData!['profile_picture']),
+                                    fit: BoxFit.cover)
+                                : null,
+                          ),
+                          child: (userData!['profile_picture'] != null &&
+                                      userData!['profile_picture'] == '') ||
+                                  userData!['profile_picture'] == null
+                              ? const Icon(Icons.person,
+                                  size: 40, color: Colors.white)
+                              : null,
+                        ),
+                        if (userData != null && userData!['isAdmin'] == true)
+                          Positioned(
+                            bottom: -1.5,
+                            right: 0,
+                            child: Icon(
+                              Icons.verified,
+                              color: AppColors.lightestGreen,
+                              size: 22,
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),

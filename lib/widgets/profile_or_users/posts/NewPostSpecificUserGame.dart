@@ -24,8 +24,14 @@ class NewPostSpecificUserGameState extends State<NewPostSpecificUserGame> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 16,
+        bottom:
+            MediaQuery.of(context).viewInsets.bottom + 16, // Gestione tastiera
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -48,7 +48,11 @@ class AllGamesUserPage extends StatelessWidget {
               width: 180,
               margin: const EdgeInsets.symmetric(horizontal: 1),
               child: ImageCardProfileWidget(
-                  game: games[index], currentUser: currentUser, userId: userId),
+                game: games[index],
+                currentUser: currentUser,
+                userId: userId,
+                currentFollowedNotifier: currentFollowedNotifier,
+              ),
             );
           },
         ),

@@ -47,13 +47,14 @@ dependencies:
   hugeicons: ^0.0.7
   crypto: ^3.0.0
   shared_preferences: ^2.1.0
-  google_sign_in: ^5.2.4
+  google_sign_in: ^6.2.2
   fluttertoast: ^8.0.9
   youtube_player_flutter: ^9.1.1
   timeago: ^3.7.0
   intl: ^0.19.0
-  geolocator: ^10.0.1
+  geolocator: ^13.0.2
   permission_handler: ^11.3.1
+  flutter_launcher_icons: ^0.14.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -64,6 +65,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+flutter_icons:
+  android: true
+  image_path: "assets/GAMERVERSE.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -65,146 +65,162 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
           },
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.darkestGreen, AppColors.veryDarkGreen],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.videogame_asset,
-                  size: 80,
-                  color: AppColors.lightestGreen,
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Login',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.lightestGreen,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight - 25,
+              ),
+              child: IntrinsicHeight(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppColors.darkestGreen, AppColors.veryDarkGreen],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                Theme(
-                  data: Theme.of(context).copyWith(
-                    textSelectionTheme: const TextSelectionThemeData(
-                        selectionHandleColor: AppColors.mediumGreen,
-                        cursorColor: AppColors.mediumGreen,
-                        selectionColor: AppColors.mediumGreen),
-                  ),
-                  //Text Area
-                  child: TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: 'E-mail',
-                      filled: true,
-                      fillColor: AppColors.lightGreen,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.mediumGreen),
-                        borderRadius: BorderRadius.circular(8.0),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.videogame_asset,
+                            size: 80,
+                            color: AppColors.lightestGreen,
+                          ),
+                          const SizedBox(height: 20),
+                          const Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.lightestGreen,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Theme(
+                            data: Theme.of(context).copyWith(
+                              textSelectionTheme: const TextSelectionThemeData(
+                                  selectionHandleColor: AppColors.mediumGreen,
+                                  cursorColor: AppColors.mediumGreen,
+                                  selectionColor: AppColors.mediumGreen),
+                            ),
+                            //Text Area
+                            child: TextField(
+                              controller: _emailController,
+                              decoration: InputDecoration(
+                                hintText: 'E-mail',
+                                filled: true,
+                                fillColor: AppColors.lightGreen,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: AppColors.mediumGreen),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          Theme(
+                            data: Theme.of(context).copyWith(
+                              textSelectionTheme: const TextSelectionThemeData(
+                                  selectionHandleColor: AppColors.mediumGreen,
+                                  cursorColor: AppColors.mediumGreen,
+                                  selectionColor: AppColors.mediumGreen),
+                            ),
+                            //Text Area
+                            child: TextField(
+                              controller: _passwordController,
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                filled: true,
+                                fillColor: AppColors.lightGreen,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: AppColors.mediumGreen),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: _isLoading ? null : _handleLogin,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.lightestGreen,
+                              foregroundColor: AppColors.darkGreen,
+                              minimumSize: const Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            child: _isLoading
+                                ? const CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        AppColors.darkGreen),
+                                  )
+                                : const Text('Log-in'),
+                          ),
+                          const SizedBox(height: 20),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/signup');
+                            },
+                            child: const Text(
+                              "Not subscribed? Sign-up",
+                              style: TextStyle(
+                                color: AppColors.lightestGreen,
+                                decoration: TextDecoration.underline,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            onTap: () {
+                              // Navigate to the reset-password page
+                              Navigator.pushNamed(context, '/resetPassword');
+                            },
+                            child: const Text(
+                              "Forgot your password? Reset here",
+                              style: TextStyle(
+                                color: AppColors.lightestGreen,
+                                decoration: TextDecoration.underline,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
-                Theme(
-                  data: Theme.of(context).copyWith(
-                    textSelectionTheme: const TextSelectionThemeData(
-                        selectionHandleColor: AppColors.mediumGreen,
-                        cursorColor: AppColors.mediumGreen,
-                        selectionColor: AppColors.mediumGreen),
-                  ),
-                  //Text Area
-                  child: TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      filled: true,
-                      fillColor: AppColors.lightGreen,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.mediumGreen),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _isLoading ? null : _handleLogin,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.lightestGreen,
-                    foregroundColor: AppColors.darkGreen,
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.darkGreen),
-                        )
-                      : const Text('Log-in'),
-                ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/signup');
-                  },
-                  child: const Text(
-                    "Not subscribed? Sign-up",
-                    style: TextStyle(
-                      color: AppColors.lightestGreen,
-                      decoration: TextDecoration.underline,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    // Navigate to the reset-password page
-                    Navigator.pushNamed(context, '/resetPassword');
-                  },
-                  child: const Text(
-                    "Forgot your password? Reset here",
-                    style: TextStyle(
-                      color: AppColors.lightestGreen,
-                      decoration: TextDecoration.underline,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
       bottomNavigationBar: const CustomBottomNavBar(
         currentIndex: 2,

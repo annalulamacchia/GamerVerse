@@ -167,94 +167,97 @@ class SpecificGameListState extends State<SpecificGameList> {
     if (!isLoading &&
         (widget.title == 'First Release Date' ||
             (details != null && details!.isNotEmpty))) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          //Title
-          Text(
-            '${widget.title}:',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white38,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(width: 7.5),
-          Expanded(
-            child: RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
-                children: [
-                  //Platforms
-                  if (widget.title == 'Platforms' && details != null)
-                    ...details!.map((elem) => TextSpan(
-                          text: elem['abbreviation'] != null
-                              ? '${elem['abbreviation']}    '
-                              : '${elem['name']}    ',
-                        )),
-
-                  //Developers
-                  if (widget.title == 'Developers' && details != null)
-                    ...details!.map((elem) => TextSpan(
-                          text: '${elem['name']}    ',
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushNamed(
-                                context,
-                                '/series',
-                                arguments: {
-                                  'gameIds': elem['published'],
-                                  'title': 'Developed Games',
-                                },
-                              );
-                            },
-                          style: const TextStyle(
-                            color: Colors.blue,
-                          ),
-                        )),
-
-                  //Publishers
-                  if (widget.title == 'Publishers' && details != null)
-                    ...details!.map((elem) => TextSpan(
-                          text: '${elem['name']}    ',
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushNamed(
-                                context,
-                                '/series',
-                                arguments: {
-                                  'gameIds': elem['published'],
-                                  'title': 'Published Games',
-                                },
-                              );
-                            },
-                          style: const TextStyle(
-                            color: Colors.blue,
-                          ),
-                        )),
-
-                  //Genres
-                  if (widget.title == 'Genres' && details != null)
-                    ...details!.map((elem) => TextSpan(
-                          text: '${elem['name']}    ',
-                        )),
-
-                  //First Release Date
-                  if (widget.title == 'First Release Date')
-                    TextSpan(
-                      text: releaseDate != null ? '$releaseDate    ' : 'TBD',
-                    ),
-                ],
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //Title
+            Text(
+              '${widget.title}:',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white38,
+                fontSize: 16,
               ),
-              maxLines: null,
-              softWrap: true,
             ),
-          ),
-          const SizedBox(height: 27.5),
-        ],
+            const SizedBox(width: 7.5),
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                  children: [
+                    //Platforms
+                    if (widget.title == 'Platforms' && details != null)
+                      ...details!.map((elem) => TextSpan(
+                            text: elem['abbreviation'] != null
+                                ? '${elem['abbreviation']}    '
+                                : '${elem['name']}    ',
+                          )),
+
+                    //Developers
+                    if (widget.title == 'Developers' && details != null)
+                      ...details!.map((elem) => TextSpan(
+                            text: '${elem['name']}    ',
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/series',
+                                  arguments: {
+                                    'gameIds': elem['developed'],
+                                    'title': 'Developed Games',
+                                  },
+                                );
+                              },
+                            style: const TextStyle(
+                              color: Colors.blue,
+                            ),
+                          )),
+
+                    //Publishers
+                    if (widget.title == 'Publishers' && details != null)
+                      ...details!.map((elem) => TextSpan(
+                            text: '${elem['name']}    ',
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/series',
+                                  arguments: {
+                                    'gameIds': elem['published'],
+                                    'title': 'Published Games',
+                                  },
+                                );
+                              },
+                            style: const TextStyle(
+                              color: Colors.blue,
+                            ),
+                          )),
+
+                    //Genres
+                    if (widget.title == 'Genres' && details != null)
+                      ...details!.map((elem) => TextSpan(
+                            text: '${elem['name']}    ',
+                          )),
+
+                    //First Release Date
+                    if (widget.title == 'First Release Date')
+                      TextSpan(
+                        text: releaseDate != null ? '$releaseDate    ' : 'TBD',
+                      ),
+                  ],
+                ),
+                maxLines: null,
+                softWrap: true,
+              ),
+            ),
+            const SizedBox(height: 27.5),
+          ],
+        ),
       );
     } else {
       return Container();

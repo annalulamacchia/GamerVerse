@@ -46,10 +46,10 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
 
         userData!['data']['followed_count'] =
             followedList.where((followedUser) {
-              return followedUser['isBlocked'] == false &&
-                  followedUser['isFriend'] &&
-                  followedUser['id'] != widget.currentUser;
-            }).length;
+          return followedUser['isBlocked'] == false &&
+              followedUser['isFriend'] &&
+              followedUser['id'] != widget.currentUser;
+        }).length;
 
         followedNotifier!.value = userData!['data']['followed_count'];
 
@@ -93,6 +93,7 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [AppColors.darkGreen, AppColors.mediumGreen],
+            // Gradiente della card precedente
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -114,7 +115,7 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildAvatarWithName(
-                  userData!['data']!['profile_picture'], // Pass the profile picture URL
+                  userData!['data']!['profile_picture'],
                   userData!['data']!['username'],
                 ),
                 const SizedBox(width: 16),
@@ -153,7 +154,8 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
                           if (followedNotifier == null)
                             _buildClickableStatColumn(
                               context,
-                              userData!['data']['followed_count']?.toString() ?? '0',
+                              userData!['data']['followed_count']?.toString() ??
+                                  '0',
                               'Followed ',
                               Icons.person_search,
                               FollowersPage(
@@ -166,7 +168,8 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
                             ),
                           _buildClickableStatColumn(
                             context,
-                            userData!['data']['followers_count']?.toString() ?? '0',
+                            userData!['data']['followers_count']?.toString() ??
+                                '0',
                             'Followers',
                             Icons.group,
                             FollowersPage(
@@ -207,20 +210,36 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 3),
-            image: profilePictureUrl != null && profilePictureUrl.isNotEmpty
-                ? DecorationImage(
-                image: NetworkImage(profilePictureUrl), fit: BoxFit.cover)
-                : null,
-          ),
-          child: profilePictureUrl != null && profilePictureUrl.isEmpty
-              ? const Icon(Icons.person, size: 40, color: Colors.white)
-              : null,
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 3),
+                image: profilePictureUrl != null && profilePictureUrl != ''
+                    ? DecorationImage(
+                        image: NetworkImage(profilePictureUrl),
+                        fit: BoxFit.cover)
+                    : null,
+              ),
+              child: profilePictureUrl != null && profilePictureUrl == ''
+                  ? const Icon(Icons.person, size: 40, color: Colors.white)
+                  : null,
+            ),
+            if (userData != null && userData!['data']['isAdmin'] == true)
+              Positioned(
+                bottom: -1.5,
+                right: 0,
+                child: Icon(
+                  Icons.verified,
+                  color: AppColors.lightestGreen,
+                  size: 22,
+                ),
+              ),
+          ],
         ),
       ],
     );
@@ -256,4 +275,3 @@ class _ProfileInfoCardState extends State<ProfileInfoCard> {
     );
   }
 }
-

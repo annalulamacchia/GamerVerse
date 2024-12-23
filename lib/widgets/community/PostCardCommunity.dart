@@ -232,7 +232,7 @@ class PostCardState extends State<PostCard> {
                                   }
                                 },
                                 child: SizedBox(
-                                  width: 275,
+                                  width: 250,
                                   child: Text(
                                     widget.username,
                                     style: const TextStyle(
