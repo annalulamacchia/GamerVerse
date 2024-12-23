@@ -6,6 +6,8 @@ import 'package:gamerverse/services/user/Get_user_info.dart'; // Servizio per ot
 import 'package:gamerverse/services/user/update_user_service.dart'; // Servizio per aggiornare dati utente
 import 'package:gamerverse/services/user/delete_user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart'; // Importa la libreria per la selezione delle immagini
+import 'dart:io'; // Per gestire i file immagine
 
 class AccountSettingsPage extends StatefulWidget {
   const AccountSettingsPage({super.key});
@@ -16,6 +18,8 @@ class AccountSettingsPage extends StatefulWidget {
 
 class _AccountSettingsPageState extends State<AccountSettingsPage> {
   Map<String, dynamic>? userData; // Contiene i dati utente
+  final ImagePicker _picker = ImagePicker();
+  File? _selectedImage;
   bool isLoading = true;
 
   final TextEditingController nameController = TextEditingController();
@@ -24,7 +28,9 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   final TextEditingController oldPasswordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController repeatPasswordController =
-      TextEditingController();
+  TextEditingController();
+
+  File? _profileImage; // Variabile per l'immagine del profilo
 
   @override
   void initState() {
@@ -64,7 +70,56 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     }
   }
 
-//Function for the deleting of the account
+  // Funzione per cambiare l'immagine del profilo
+  Future<void> _pickImageFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+        _profileImage = _selectedImage;
+      });
+    }
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+        _profileImage = _selectedImage;
+      });
+    }
+  }
+
+  void _showImageSourceOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Take a Photo'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImageFromCamera();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Choose from Gallery'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImageFromGallery();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   void _showDeleteConfirmation() {
     showDialog(
@@ -116,7 +171,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
         const SnackBar(content: Text('Account deleted successfully.')),
       );
       Navigator.pushReplacementNamed(context, '/home');
-
     } else if (response.containsKey('error')) {
       // If there's an "error" key, handle the error
       ScaffoldMessenger.of(context).showSnackBar(
@@ -130,7 +184,6 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     }
   }
 
-//Function for the updating of the account
   Future<void> updateUserData() async {
     if (oldPasswordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -146,39 +199,47 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       );
       return;
     }
+    if (_profileImage != null) {
+      final uploadedImageUrl = await UpdateUserService.uploadImage(_profileImage!);
 
-    setState(() {
-      isLoading = true;
-    });
-    final prefs = await SharedPreferences.getInstance();
-    final uid = prefs.getString('user_uid');
-    final dataToUpdate = {
-      'name': nameController.text,
-      'username': usernameController.text,
-      'email': emailController.text,
-      'password': oldPasswordController.text,
-      'new_password': newPasswordController.text,
-      'uid': uid,
-    };
+      if (uploadedImageUrl == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to upload image.')),
+        );
+        return;
+      }
 
-    final response = await UpdateUserService.updateUser(dataToUpdate);
+      // Aggiorna i dati utente con l'URL dell'immagine
+      final prefs = await SharedPreferences.getInstance();
+      final uid = prefs.getString('user_uid');
 
-    setState(() {
-      isLoading = false;
-    });
+      final dataToUpdate = {
+        'name': nameController.text,
+        'username': usernameController.text,
+        'email': emailController.text,
+        'password': oldPasswordController.text,
+        'new_password': newPasswordController.text,
+        'uid': uid,
+        'profile_picture': uploadedImageUrl,
+      };
 
-    if (response['success']) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully!')),
-      );
-      fetchUserData(); // Ricarica i dati aggiornati
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(response['message'] ?? 'Failed to update profile')),
-      );
+      final response = await UpdateUserService.updateUser(dataToUpdate);
+
+      if (response['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile updated successfully!')),
+        );
+        fetchUserData();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['message'] ?? 'Failed to update profile')),
+        );
+      }
     }
   }
+
+
+
 
   bool _hasChanges() {
     return nameController.text != (userData?['name'] ?? '') ||
@@ -207,275 +268,271 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       body: (isLoading)
           ? Center(child: CircularProgressIndicator(color: Colors.teal))
           : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Immagine del profilo
-                  Row(
-                    children: [
-                      Stack(
-                        alignment: Alignment.bottomRight,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              // Logica per cambiare immagine profilo
-                            },
-                            child: CircleAvatar(
-                              radius: 40,
-                              backgroundColor: Colors.grey[800],
-                              backgroundImage: userData?['profile_picture'] !=
-                                      null
-                                  ? NetworkImage(userData!['profile_picture'])
-                                  : null,
-                              child: userData?['profile_picture'] == null
-                                  ? const Icon(Icons.person,
-                                      size: 40, color: Colors.white70)
-                                  : null,
-                            ),
-                          ),
-                          const Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: CircleAvatar(
-                              radius: 12,
-                              backgroundColor: Colors.blue,
-                              child: Icon(Icons.edit,
-                                  size: 14, color: Colors.white),
-                            ),
-                          ),
-                        ],
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Immagine del profilo
+            Row(
+              children: [
+                Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    GestureDetector(
+                      onTap: _showImageSourceOptions, // Cambia l'immagine
+                      child: CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.grey[800],
+                        backgroundImage: _profileImage != null
+                            ? FileImage(_profileImage!)
+                            : (userData?['profile_picture'] != null && userData!['profile_picture'].isNotEmpty
+                            ? NetworkImage(userData!['profile_picture'])
+                            : null),
+
+                        child: _profileImage == null &&
+                            userData?['profile_picture'] == null
+                            ? const Icon(Icons.person,
+                            size: 40, color: Colors.white70)
+                            : null,
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Theme(
-                              data: Theme.of(context).copyWith(
-                                textSelectionTheme:
-                                    const TextSelectionThemeData(
-                                        selectionHandleColor:
-                                            AppColors.mediumGreen,
-                                        cursorColor: AppColors.mediumGreen,
-                                        selectionColor: AppColors.mediumGreen),
-                              ),
-                              //Text Area
-                              child: TextField(
-                                controller: nameController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Name',
-                                  labelStyle: TextStyle(color: Colors.white70),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: AppColors.mediumGreen),
-                                  ),
-                                ),
-                                style: const TextStyle(color: Colors.white),
-                              ),
+                    ),
+                    const Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: Colors.blue,
+                        child: Icon(Icons.edit,
+                            size: 14, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                          textSelectionTheme:
+                          const TextSelectionThemeData(
+                              selectionHandleColor:
+                              AppColors.mediumGreen,
+                              cursorColor: AppColors.mediumGreen,
+                              selectionColor: AppColors.mediumGreen),
+                        ),
+                        //Text Area
+                        child: TextField(
+                          controller: nameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Name',
+                            labelStyle: TextStyle(color: Colors.white70),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: AppColors.mediumGreen),
                             ),
-                            Theme(
-                              data: Theme.of(context).copyWith(
-                                textSelectionTheme:
-                                    const TextSelectionThemeData(
-                                        selectionHandleColor:
-                                            AppColors.mediumGreen,
-                                        cursorColor: AppColors.mediumGreen,
-                                        selectionColor: AppColors.mediumGreen),
-                              ),
-                              //Text Area
-                              child: TextField(
-                                controller: usernameController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Username',
-                                  labelStyle: TextStyle(color: Colors.white70),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: AppColors.mediumGreen),
-                                  ),
-                                ),
-                                style: const TextStyle(color: Colors.white),
-                              ),
+                          ),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                          textSelectionTheme:
+                          const TextSelectionThemeData(
+                              selectionHandleColor:
+                              AppColors.mediumGreen,
+                              cursorColor: AppColors.mediumGreen,
+                              selectionColor: AppColors.mediumGreen),
+                        ),
+                        //Text Area
+                        child: TextField(
+                          controller: usernameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Username',
+                            labelStyle: TextStyle(color: Colors.white70),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: AppColors.mediumGreen),
                             ),
-                          ],
+                          ),
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
 
-                  const Text(
-                    'Modify Account',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  const SizedBox(height: 10),
+            const Text(
+              'Modify Account',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            const SizedBox(height: 10),
 
-                  // Email
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      textSelectionTheme: const TextSelectionThemeData(
-                          selectionHandleColor: AppColors.mediumGreen,
-                          cursorColor: AppColors.mediumGreen,
-                          selectionColor: AppColors.mediumGreen),
-                    ),
-                    //Text Area
-                    child: TextField(
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(color: Colors.white70),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.mediumGreen),
-                        ),
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                    ),
+            // Email
+            Theme(
+              data: Theme.of(context).copyWith(
+                textSelectionTheme: const TextSelectionThemeData(
+                    selectionHandleColor: AppColors.mediumGreen,
+                    cursorColor: AppColors.mediumGreen,
+                    selectionColor: AppColors.mediumGreen),
+              ),
+              //Text Area
+              child: TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  labelStyle: TextStyle(color: Colors.white70),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.mediumGreen),
                   ),
-                  const SizedBox(height: 10),
-
-                  // Password Fields
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      textSelectionTheme: const TextSelectionThemeData(
-                          selectionHandleColor: AppColors.mediumGreen,
-                          cursorColor: AppColors.mediumGreen,
-                          selectionColor: AppColors.mediumGreen),
-                    ),
-                    //Text Area
-                    child: TextField(
-                      controller: oldPasswordController,
-                      decoration: const InputDecoration(
-                        labelText: 'Old Password',
-                        labelStyle: TextStyle(color: Colors.white70),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.mediumGreen),
-                        ),
-                      ),
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      textSelectionTheme: const TextSelectionThemeData(
-                          selectionHandleColor: AppColors.mediumGreen,
-                          cursorColor: AppColors.mediumGreen,
-                          selectionColor: AppColors.mediumGreen),
-                    ),
-                    //Text Area
-                    child: TextField(
-                      controller: newPasswordController,
-                      decoration: const InputDecoration(
-                        labelText: 'New Password',
-                        labelStyle: TextStyle(color: Colors.white70),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.mediumGreen),
-                        ),
-                      ),
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      textSelectionTheme: const TextSelectionThemeData(
-                          selectionHandleColor: AppColors.mediumGreen,
-                          cursorColor: AppColors.mediumGreen,
-                          selectionColor: AppColors.mediumGreen),
-                    ),
-                    //Text Area
-                    child: TextField(
-                      controller: repeatPasswordController,
-                      decoration: const InputDecoration(
-                        labelText: 'Repeat Password',
-                        labelStyle: TextStyle(color: Colors.white70),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.mediumGreen),
-                        ),
-                      ),
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Pulsanti Conferma/Annulla
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.close,
-                            size: 40, color: Colors.red),
-                        onPressed: _hasChanges()
-                            ? fetchUserData
-                            : null, // Disabilita se non ci sono modifiche
-                      ),
-                      const SizedBox(width: 40),
-                      IconButton(
-                        icon: const Icon(Icons.check,
-                            size: 40, color: Colors.green),
-                        onPressed: _hasChanges()
-                            ? updateUserData
-                            : null, // Disabilita se non ci sono modifiche
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-
-                  // Pulsante Logout
-                  // Updated Logout Button to call the new LogoutService
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final result = await LogoutService.logout(context);
-                        if (result['success']) {
-                          // Optionally, show a success message if the logout is successful
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(result['message'])),
-                          );
-                        } else {
-                          // Show an error message if logout fails
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(result['message'])),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-                        backgroundColor: const Color(0xff3e6259),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text('Logout', style: TextStyle(color: Colors.white)),
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-// Pulsante Elimina Account
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () => _showDeleteConfirmation(),
-                      // Funzione per eliminare l'account
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 80, vertical: 15),
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text('Delete Account',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  ),
-                ],
+                ),
+                style: const TextStyle(color: Colors.white),
               ),
             ),
+            const SizedBox(height: 10),
+
+            // Password Fields
+            Theme(
+              data: Theme.of(context).copyWith(
+                textSelectionTheme: const TextSelectionThemeData(
+                    selectionHandleColor: AppColors.mediumGreen,
+                    cursorColor: AppColors.mediumGreen,
+                    selectionColor: AppColors.mediumGreen),
+              ),
+              //Text Area
+              child: TextField(
+                controller: oldPasswordController,
+                decoration: const InputDecoration(
+                  labelText: 'Old Password',
+                  labelStyle: TextStyle(color: Colors.white70),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.mediumGreen),
+                  ),
+                ),
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            Theme(
+              data: Theme.of(context).copyWith(
+                textSelectionTheme: const TextSelectionThemeData(
+                    selectionHandleColor: AppColors.mediumGreen,
+                    cursorColor: AppColors.mediumGreen,
+                    selectionColor: AppColors.mediumGreen),
+              ),
+              //Text Area
+              child: TextField(
+                controller: newPasswordController,
+                decoration: const InputDecoration(
+                  labelText: 'New Password',
+                  labelStyle: TextStyle(color: Colors.white70),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.mediumGreen),
+                  ),
+                ),
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            Theme(
+              data: Theme.of(context).copyWith(
+                textSelectionTheme: const TextSelectionThemeData(
+                    selectionHandleColor: AppColors.mediumGreen,
+                    cursorColor: AppColors.mediumGreen,
+                    selectionColor: AppColors.mediumGreen),
+              ),
+              //Text Area
+              child: TextField(
+                controller: repeatPasswordController,
+                decoration: const InputDecoration(
+                  labelText: 'Repeat Password',
+                  labelStyle: TextStyle(color: Colors.white70),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.mediumGreen),
+                  ),
+                ),
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Pulsanti Conferma/Annulla
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.close,
+                      size: 40, color: Colors.red),
+                  onPressed: _hasChanges()
+                      ? fetchUserData
+                      : null, // Disabilita se non ci sono modifiche
+                ),
+                const SizedBox(width: 40),
+                IconButton(
+                  icon: const Icon(Icons.check,
+                      size: 40, color: Colors.green),
+                  onPressed: _hasChanges()
+                      ? updateUserData
+                      : null, // Disabilita se non ci sono modifiche
+                ),
+              ],
+            ),
+            const Spacer(),
+
+            // Pulsante Logout
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  final result = await LogoutService.logout(context);
+                  if (result['success']) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(result['message'])),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(result['message'])),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                  backgroundColor: const Color(0xff3e6259),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text('Logout', style: TextStyle(color: Colors.white)),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+            // Pulsante Elimina Account
+            Center(
+              child: ElevatedButton(
+                onPressed: () => _showDeleteConfirmation(),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text('Delete Account',
+                    style: TextStyle(color: Colors.white)),
+              ),
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar:
-          const CustomBottomNavBar(currentIndex: 2), // Navbar personalizzata
+      const CustomBottomNavBar(currentIndex: 2), // Navbar personalizzata
     );
   }
 }

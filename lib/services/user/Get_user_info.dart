@@ -42,6 +42,7 @@ class UserProfileService {
 
         // Gestione dei valori nulli per ciascun campo
         final String? profilePicture = profileData['profile_picture']; // Può essere null o stringa
+        print(profilePicture);
         final String name = profileData['name'] ?? 'Unknown';
         final String surname = profileData['surname'] ?? ' ';
         final String email = profileData['email'] ?? 'No email provided';
