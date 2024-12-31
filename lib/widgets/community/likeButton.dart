@@ -32,22 +32,24 @@ class LikeButtonState extends State<LikeButton> {
 
   Future<void> _toggleLike() async {
     // Chiamata al servizio per cambiare lo stato del like
-    final result = await PostService.toggleLike(
-        widget.postId, widget.currentUser, isLiked);
+    if(widget.currentUser!='') {
+      final result = await PostService.toggleLike(
+          widget.postId, widget.currentUser, isLiked);
 
-    if (result['success']) {
-      setState(() {
-        isLiked = !isLiked;
-        likeCount += isLiked ? 1 : -1;
-      });
-    } else {
-      // Gestire errori di rete
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to update like: ${result['message']}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (result['success']) {
+        setState(() {
+          isLiked = !isLiked;
+          likeCount += isLiked ? 1 : -1;
+        });
+      } else {
+        // Gestire errori di rete
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update like: ${result['message']}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

@@ -120,7 +120,7 @@ class CommentCardState extends State<CommentCard> {
                                 '/userProfile',
                                 arguments: widget.comment.writerId,
                               );
-                            } else if (widget.currentUser != null &&
+                            } else if (widget.currentUser != '' &&
                                 widget.currentUser == widget.comment.writerId) {
                               Navigator.pushNamed(
                                 context,

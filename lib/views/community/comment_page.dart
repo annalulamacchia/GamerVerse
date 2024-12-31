@@ -54,31 +54,33 @@ class CommentsPageState extends State<CommentsPage> {
 
   // Funzione per inviare il commento
   Future<void> _sendComment(String commentText) async {
-    setState(() {
-      _isSending = true;
-    });
+    if (widget.currentUser != null) {
+      setState(() {
+        _isSending = true;
+      });
 
-    final success = await PostService.addComment(
-      postId: widget.postId,
-      userId: widget.currentUser!,
-      comment: commentText,
-    );
-
-    setState(() {
-      _isSending = false;
-    });
-
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Comment added successfully!')),
+      final success = await PostService.addComment(
+        postId: widget.postId,
+        userId: widget.currentUser!,
+        comment: commentText,
       );
-      _commentController.clear();
-      _loadComments();
-      widget.commentNotifier.value++;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to add comment.')),
-      );
+
+      setState(() {
+        _isSending = false;
+      });
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Comment added successfully!')),
+        );
+        _commentController.clear();
+        _loadComments();
+        widget.commentNotifier.value++;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to add comment.')),
+        );
+      }
     }
   }
 

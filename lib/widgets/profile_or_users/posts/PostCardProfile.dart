@@ -303,26 +303,29 @@ class PostCardState extends State<PostCard> {
               Positioned(
                 top: 0,
                 right: 0,
-                child: widget.currentUser != widget.userId
+                child: widget.currentUser == ''
+                    ? SizedBox.shrink() // Non mostra nulla se currentUser è null
+                    : widget.currentUser != widget.userId
                     ? ReportMenu(
-                        userId: widget.currentUser,
-                        reportedId: widget.postId,
-                        parentContext: context,
-                        writerId: widget.userId,
-                        type: 'Post',
-                      )
+                  userId: widget.currentUser,
+                  reportedId: widget.postId,
+                  parentContext: context,
+                  writerId: widget.userId,
+                  type: 'Post',
+                )
                     : IconButton(
-                        icon: _isDeleting
-                            ? const Opacity(
-                                opacity: 0,
-                                child: CircularProgressIndicator(),
-                              )
-                            : const Icon(
-                                Icons.delete_outline,
-                                color: Colors.black54,
-                              ),
-                        onPressed: _isDeleting ? null : _showDeleteConfirmation,
-                      ),
+                  icon: _isDeleting
+                      ? const Opacity(
+                    opacity: 0,
+                    child: CircularProgressIndicator(),
+                  )
+                      : const Icon(
+                    Icons.delete_outline,
+                    color: Colors.black54,
+                  ),
+                  onPressed: _isDeleting ? null : _showDeleteConfirmation,
+                ),
+
               ),
             ],
           ),

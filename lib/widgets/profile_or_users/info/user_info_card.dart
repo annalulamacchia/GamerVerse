@@ -52,20 +52,26 @@ class _UserInfoCardState extends State<UserInfoCard> {
 
   Future<void> fetchCurrentUserData() async {
     try {
-      final response = await UserProfileService.getUserByUid();
-      if (response['success']) {
-        setState(() {
-          currentUserData = response['data'];
-          isLoadingCurrentUser = false;
+      if (widget.currentUser != null) {
+        final response = await UserProfileService.getUserByUid();
+        if (response['success']) {
+          setState(() {
+            currentUserData = response['data'];
+            isLoadingCurrentUser = false;
 
-          currentUserFollowed = currentUserData!['followed'] ?? [];
-          widget.currentFollowedNotifier!.value = currentUserFollowed;
-        });
-      } else {
-        setState(() {
-          errorMessage = response['message'] ?? 'Error fetching user data';
-          isLoadingCurrentUser = false;
-        });
+            currentUserFollowed = currentUserData!['followed'] ?? [];
+            widget.currentFollowedNotifier!.value = currentUserFollowed;
+          });
+        } else {
+          setState(() {
+            errorMessage = response['message'] ?? 'Error fetching user data';
+            isLoadingCurrentUser = false;
+          });
+        }
+      }
+      else {
+        setState(() {isLoadingCurrentUser = false;});
+
       }
     } catch (e) {
       setState(() {
@@ -398,45 +404,45 @@ class _UserInfoCardState extends State<UserInfoCard> {
                           valueListenable: widget.blockedNotifier!,
                           builder: (context, isBlocked, child) {
                             return TextButton(
-                              onPressed: isButtonDisabled
+                              onPressed: widget.currentUser == null || isButtonDisabled
                                   ? null
                                   : () {
-                                      if (widget.blockedNotifier!.value) {
-                                        unblockUser(
-                                            parentContext); // Funzione per sbloccare l'utente
-                                      } else {
-                                        toggleFollow(); // Funzione per seguire/smettere di seguire
-                                      }
-                                    },
+                                if (widget.blockedNotifier!.value) {
+                                  unblockUser(parentContext); // Funzione per sbloccare l'utente
+                                } else {
+                                  toggleFollow(); // Funzione per seguire/smettere di seguire
+                                }
+                              },
                               style: TextButton.styleFrom(
-                                backgroundColor: isBlocked
-                                    ? Colors
-                                        .orange // Colore per il pulsante "Unblock"
+                                backgroundColor: widget.currentUser == null
+                                    ? Colors.grey // Grigio per utente corrente nullo
+                                    : (isBlocked
+                                    ? Colors.orange // Colore per il pulsante "Unblock"
                                     : (widget.isFollowedNotifier!.value
-                                        ? Color(
-                                            0xFF871C1C) // Colore per "Unfollow"
-                                        : Color(0xBE17A828)),
-                                // Colore per "Follow"
+                                    ? const Color(0xFF871C1C) // Colore per "Unfollow"
+                                    : const Color(0xBE17A828))), // Colore per "Follow"
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 9.0, horizontal: 15.0),
-                                // Maggiore padding
+                                    vertical: 9.0, horizontal: 15.0), // Maggiore padding
                                 textStyle: const TextStyle(
                                     fontSize: 16), // Font uniforme per entrambi
                               ),
                               child: Text(
-                                isBlocked
+                                widget.currentUser == null
+                                    ? 'Follow'
+                                    : (isBlocked
                                     ? 'Unblock'
                                     : (widget.isFollowedNotifier!.value
-                                        ? 'Unfollow'
-                                        : 'Follow'),
+                                    ? 'Unfollow'
+                                    : 'Follow')),
                                 style: const TextStyle(color: Colors.white),
                               ),
                             );
                           },
                         ),
+
                     ],
                   ),
                 )
