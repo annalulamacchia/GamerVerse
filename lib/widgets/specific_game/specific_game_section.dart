@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/utils/colors.dart';
@@ -53,12 +52,20 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
     super.initState();
     if (widget.title == 'Series' && widget.games.isNotEmpty) {
       _loadCollections();
+      isLoading = false;
     }
-    isLoading = false;
   }
 
   //load the collections of the game
   Future<void> _loadCollections() async {
+    if (widget.games.isEmpty) {
+      setState(() {
+        gameIds = [];
+        isLoading = false;
+      });
+      return;
+    }
+
     final coll = await GameApiService.fetchCollections(widget.games);
 
     final games = [];
