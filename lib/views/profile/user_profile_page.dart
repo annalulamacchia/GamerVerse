@@ -29,6 +29,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   ValueNotifier<int> followersNotifier = ValueNotifier<int>(0);
   ValueNotifier<List<dynamic>>? currentFollowedNotifier =
       ValueNotifier<List<dynamic>>([]);
+  final ValueNotifier<bool>? gamesLoadingNotifier = ValueNotifier<bool>(true);
 
   @override
   void initState() {
@@ -49,12 +50,23 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Future<void> _loadWishlist(String userId) async {
-    final games = await WishlistService.getWishlist(userId);
-    setState(() {
-      wishlist = games;
-      gamesCounter = games.length;
-      isLoading = false;
-    });
+    try {
+      final games = await WishlistService.getWishlist(userId);
+      setState(() {
+        wishlist = games;
+        gamesCounter = games.length;
+        isLoading = false;
+        gamesLoadingNotifier!.value = false;
+      });
+    } catch (e) {
+      setState(() {
+        wishlist = [];
+        gamesCounter = 0;
+        isLoading = false;
+        gamesLoadingNotifier!.value = false;
+      });
+      debugPrint('Error loading wishlist: $e');
+    }
   }
 
   @override
@@ -146,6 +158,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       wishlist: wishlist,
                       blockedNotifier: blockedNotifier,
                       currentFollowedNotifier: currentFollowedNotifier,
+                      gamesLoadingNotifier: gamesLoadingNotifier,
                     ),
                   ),
                 ),

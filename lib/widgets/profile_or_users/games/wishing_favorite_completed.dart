@@ -166,7 +166,7 @@ class GameListSectionState extends State<GameListSection> {
                 onTap: () {
                   Navigator.pushNamed(context, '/userGame', arguments: {
                     'game': games[index],
-                    'currentUser': widget.currentUser,
+                    'currentUser': widget.currentUser ?? '',
                     'userId': widget.userId,
                     'currentFollowedNotifier': widget.currentFollowedNotifier
                   });

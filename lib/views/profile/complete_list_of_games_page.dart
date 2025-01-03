@@ -5,7 +5,7 @@ import 'package:gamerverse/widgets/profile_or_users/games/user_card_game.dart';
 
 class AllGamesUserPage extends StatelessWidget {
   final List<GameProfile> games;
-  final String currentUser;
+  final String? currentUser;
   final String userId;
   final ValueNotifier<List<dynamic>>? currentFollowedNotifier;
 
@@ -49,7 +49,7 @@ class AllGamesUserPage extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 1),
               child: ImageCardProfileWidget(
                 game: games[index],
-                currentUser: currentUser,
+                currentUser: currentUser ?? '',
                 userId: userId,
                 currentFollowedNotifier: currentFollowedNotifier,
               ),

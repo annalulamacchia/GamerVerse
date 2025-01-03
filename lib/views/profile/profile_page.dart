@@ -47,6 +47,7 @@ class ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       setState(() {
         wishlist = [];
+        gamesCounter = 0;
         isLoading = false;
         gamesLoadingNotifier!.value = false;
       });
