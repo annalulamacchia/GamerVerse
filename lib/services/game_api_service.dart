@@ -10,7 +10,7 @@ class GameApiService {
     final url = Uri.parse('https://api.igdb.com/v4/games');
 
     final String requestBody = '''
-      fields id, cover, name, similar_games, collections, first_release_date, aggregated_rating, storyline, summary, videos, artworks, screenshots, involved_companies, genres, platforms, similar_games;
+      fields *;
       where id = $gameId;
     ''';
 
@@ -305,7 +305,7 @@ class GameApiService {
     String companiesIdsFormatted = '(${companiesIds.join(',')})';
 
     final String requestBody = '''
-      fields id, developer, company, publisher;
+      fields *;
       limit 500;
       where id = $companiesIdsFormatted;
     ''';
@@ -344,7 +344,7 @@ class GameApiService {
     String devOrPubIdsFormatted = '(${devOrPubIds.join(',')})';
 
     final String requestBody = '''
-      fields id, name;
+      fields *;
       limit 500;
       where id = $devOrPubIdsFormatted; sort name asc;
     ''';

@@ -208,7 +208,7 @@ class SpecificGameListState extends State<SpecificGameList> {
                                   context,
                                   '/series',
                                   arguments: {
-                                    'gameIds': elem['developed'],
+                                    'gameIds': elem['developed'] ?? [],
                                     'title': 'Developed Games',
                                   },
                                 );
@@ -228,7 +228,7 @@ class SpecificGameListState extends State<SpecificGameList> {
                                   context,
                                   '/series',
                                   arguments: {
-                                    'gameIds': elem['published'],
+                                    'gameIds': elem['published'] ?? [],
                                     'title': 'Published Games',
                                   },
                                 );

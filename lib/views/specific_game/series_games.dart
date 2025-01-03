@@ -60,7 +60,7 @@ class SeriesGameState extends State<SeriesGame> {
         padding: const EdgeInsets.all(8.0),
         child: isLoading
             ? const Center(child: CircularProgressIndicator(color: Colors.teal))
-            : widget.gameIds.isEmpty
+            : widget.gameIds != null && widget.gameIds.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
