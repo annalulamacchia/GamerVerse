@@ -171,7 +171,7 @@ class GameListSectionState extends State<GameListSection> {
                     'currentFollowedNotifier': widget.currentFollowedNotifier
                   });
                 },
-                child: _buildGameCard(games[index].cover),
+                child: _buildGameCard(games[index]),
               );
             },
           ),
@@ -180,7 +180,7 @@ class GameListSectionState extends State<GameListSection> {
     );
   }
 
-  Widget _buildGameCard(String imageUrl) {
+  Widget _buildGameCard(GameProfile game) {
     return Card(
       margin: const EdgeInsets.only(left: 15.0, right: 5),
       elevation: 4,
@@ -191,10 +191,16 @@ class GameListSectionState extends State<GameListSection> {
           width: 140,
           height: 175,
           child: Image.network(
-            imageUrl,
+            game.cover,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.broken_image);
+              return SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: Text(game.gameName,
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold)),
+                  ));
             },
           ),
         ),

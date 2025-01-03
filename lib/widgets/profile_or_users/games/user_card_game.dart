@@ -39,6 +39,16 @@ class ImageCardProfileWidget extends StatelessWidget {
             height: 200,
             width: double.infinity,
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return SizedBox(
+                height: 200,
+                child: Center(
+                  child: Text(game.gameName,
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                ),
+              );
+            },
           ),
         ),
       ),

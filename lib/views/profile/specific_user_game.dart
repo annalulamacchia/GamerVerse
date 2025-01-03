@@ -90,14 +90,20 @@ class SpecificUserGameState extends State<SpecificUserGame> {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Game Image
-          Container(
+          SizedBox(
             height: 200,
-            color: Colors.grey[300],
             child: Image.network(
               widget.game.cover,
               height: 200,
               width: double.infinity,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(
+                  Icons.image_not_supported,
+                  size: 100,
+                  color: Colors.white
+                );
+              },
             ),
           ),
           const SizedBox(height: 8),
