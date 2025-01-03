@@ -99,7 +99,7 @@ class SpecificGameSectionWidgetState extends State<SpecificGameSectionWidget> {
                       context,
                       '/series',
                       arguments: {
-                        'gameIds': gameIds,
+                        'gameIds': gameIds ?? [],
                         'title': 'Series',
                       },
                     );

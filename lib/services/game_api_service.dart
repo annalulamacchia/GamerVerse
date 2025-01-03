@@ -10,7 +10,7 @@ class GameApiService {
     final url = Uri.parse('https://api.igdb.com/v4/games');
 
     final String requestBody = '''
-      fields *;
+      fields id, cover, name, similar_games, collections, first_release_date, aggregated_rating, storyline, summary, videos, artworks, screenshots, involved_companies, genres, platforms, similar_games;
       where id = $gameId;
     ''';
 
@@ -43,7 +43,7 @@ class GameApiService {
     final url = Uri.parse('https://api.igdb.com/v4/covers');
 
     final String requestBody = '''
-      fields *;
+      fields image_id, id;
       where id = $coverId;
     ''';
 
@@ -78,7 +78,7 @@ class GameApiService {
     String gameIdsFormatted = '(${gameIds.join(',')})';
 
     final String requestBody = '''
-      fields *;
+      fields id, game, image_id;
       limit 500;
       where game = $gameIdsFormatted; sort game asc;
     ''';
@@ -116,7 +116,7 @@ class GameApiService {
     final url = Uri.parse('https://api.igdb.com/v4/screenshots');
 
     final String requestBody = '''
-      fields *;
+      fields game, image_id;
       where game = $gameId;
     ''';
 
@@ -152,7 +152,7 @@ class GameApiService {
     final url = Uri.parse('https://api.igdb.com/v4/game_videos');
 
     final String requestBody = '''
-      fields *;
+      fields game, video_id;
       where game = $gameId;
     ''';
 
@@ -189,7 +189,7 @@ class GameApiService {
     final url = Uri.parse('https://api.igdb.com/v4/artworks');
 
     final String requestBody = '''
-      fields *;
+      fields game, image_id;
       where game = $gameId;
     ''';
 
@@ -227,9 +227,9 @@ class GameApiService {
     String collectionIdsFormatted = '(${collectionIds.join(',')})';
 
     final String requestBody = '''
-      fields *;
+      fields id, games;
       limit 500;
-      where id = $collectionIdsFormatted; sort name asc;
+      where id = $collectionIdsFormatted; sort name asc; sort rating desc;
     ''';
 
     try {
@@ -266,7 +266,7 @@ class GameApiService {
     String platformsIdsFormatted = '(${platformsIds.join(',')})';
 
     final String requestBody = '''
-      fields *;
+      fields id, abbreviation;
       limit 500;
       where id = $platformsIdsFormatted; sort abbreviation asc;
     ''';
@@ -305,7 +305,7 @@ class GameApiService {
     String companiesIdsFormatted = '(${companiesIds.join(',')})';
 
     final String requestBody = '''
-      fields *;
+      fields id, developer, company, publisher;
       limit 500;
       where id = $companiesIdsFormatted;
     ''';
@@ -344,7 +344,7 @@ class GameApiService {
     String devOrPubIdsFormatted = '(${devOrPubIds.join(',')})';
 
     final String requestBody = '''
-      fields *;
+      fields id, name;
       limit 500;
       where id = $devOrPubIdsFormatted; sort name asc;
     ''';
@@ -383,7 +383,7 @@ class GameApiService {
     String genresIdsFormatted = '(${genresIds.join(',')})';
 
     final String requestBody = '''
-      fields *;
+      fields id, name;
       limit 500;
       where id = $genresIdsFormatted; sort name asc;
     ''';
@@ -468,7 +468,7 @@ class GameApiService {
     final query = '''
     fields id, name, cover.url;
     where cover != null; 
-    sort popularity desc;
+    sort rating desc;
     limit 100;
     offset $offset;
   ''';
@@ -486,6 +486,7 @@ class GameApiService {
     fields id, name, cover.url, first_release_date;
     where cover != null & first_release_date > $thirtyDaysAgo & first_release_date < $now; 
     sort first_release_date asc;
+    sort rating desc;
     limit 100;
     offset $offset;
   ''';
@@ -499,6 +500,7 @@ class GameApiService {
     fields id, name, cover.url, first_release_date;
     where cover != null & first_release_date > $now; 
     sort first_release_date asc;
+    sort rating desc;
     limit 100;
     offset $offset;
   ''';
@@ -510,7 +512,7 @@ class GameApiService {
     final query = '''
   fields id, name, cover.url;
   where name ~ *"$searchQuery"*;
-  sort popularity desc;
+  sort rating desc;
   limit 30;
   ''';
     print("Generated Query: $query"); // Debugging log
@@ -526,16 +528,38 @@ class GameApiService {
     String? page,
   }) async {
     const platformMap = {
+      'PS1': '7',
+      'PS2': '8',
+      'PS3': '9',
       'PS4': '48',
+      'PS5': '167',
+      'PlayStation VR': '165',
+      'PlayStation VR2': '390',
+      'Xbox': '11',
+      'Xbox 360': '12',
       'Xbox One': '49',
+      'Xbox Series X|S': '169',
       'PC': '6',
+      'Nintendo DS': '20',
+      'Nintendo 3DS': '37',
+      'Wii': '5',
+      'WiiU': '41',
+      'Nintendo Switch': '130',
+      'Oculust Quest': '384',
+      'Oculust Rift': '385'
     };
 
     const genreMap = {
       'Action': '4',
-      'Adventure': '5',
+      'Adventure': '31',
+      'Arcade': '33',
+      'Indie': '32',
+      'Puzzle': '9',
+      'Racing': '10',
       'RPG': '12',
-      'Shooter': '11',
+      'Shooter': '5',
+      'Sport': '14',
+      'Strategy': '15'
     };
 
     final platformId = platform != null ? platformMap[platform] : null;

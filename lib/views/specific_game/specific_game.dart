@@ -101,7 +101,7 @@ class SpecificGameState extends State<SpecificGame> {
     });
 
     //load the cover of the game
-    if (gameData != null && gameData?['cover'] != null) {
+    if (gameData != null) {
       _loadCoverGame(gameData?['cover']);
     }
 
@@ -139,21 +139,24 @@ class SpecificGameState extends State<SpecificGame> {
       setState(() {
         coverGame = null;
       });
-      return;
+    } else {
+      final cover = await GameApiService.fetchCoverGame(coverId);
+      setState(() {
+        coverGame = cover;
+      });
     }
 
-    final cover = await GameApiService.fetchCoverGame(coverId);
-    setState(() {
-      coverGame = cover;
-    });
-
-    if (gameData?['id'] != null &&
-        gameData?['name'] != null &&
-        gameData?['cover'] != null) {
+    if (gameData?['id'] != null && gameData?['name'] != null) {
+      String imageId = '';
+      if (coverGame == null) {
+        imageId = '';
+      } else {
+        imageId = coverGame?['image_id'];
+      }
       Map<String, dynamic> gameDetails = {
         'id': gameData?['id'],
         'name': gameData?['name'],
-        'cover': coverGame?['image_id'],
+        'cover': imageId,
         'aggregated_rating': gameData?['aggregated_rating'] != null
             ? gameData!['aggregated_rating']
             : 0,
@@ -163,7 +166,7 @@ class SpecificGameState extends State<SpecificGame> {
     }
   }
 
-  //load the cover of the similar games
+//load the cover of the similar games
   Future<void> _loadCoverSimilarGames(List<dynamic> gameIds) async {
     if (gameIds.isEmpty) {
       setState(() {
@@ -178,7 +181,7 @@ class SpecificGameState extends State<SpecificGame> {
     });
   }
 
-  //load the average user rating
+//load the average user rating
   Future<void> _loadAverageUserRating() async {
     if (_isLoadingUserRating) return;
     _isLoadingUserRating = true;
@@ -200,7 +203,7 @@ class SpecificGameState extends State<SpecificGame> {
     _isLoadingUserRating = false;
   }
 
-  //load the latest review
+//load the latest review
   Future<void> _loadLatestReview() async {
     if (_isLoadingLatestReview) return;
     _isLoadingLatestReview = true;
@@ -224,7 +227,7 @@ class SpecificGameState extends State<SpecificGame> {
     _isLoadingLatestReview = false;
   }
 
-  //load all the users that have that game in the wishlist
+//load all the users that have that game in the wishlist
   Future<void> _loadUsersByGame() async {
     if (_isLoadingUsers) return;
     _isLoadingUsers = true;
@@ -249,7 +252,7 @@ class SpecificGameState extends State<SpecificGame> {
     _isLoadingUsers = false;
   }
 
-  //load all the users that have that game in the wishlist
+//load all the users that have that game in the wishlist
   Future<void> _loadUsersByStatusGame() async {
     if (_isLoadingStatusUsers) return;
     _isLoadingStatusUsers = true;
@@ -326,12 +329,25 @@ class SpecificGameState extends State<SpecificGame> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Image.network(
-                'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${coverGame?['image_id']}.jpg',
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              child: coverGame == null || coverGame?['image_id'] == null
+                  ? Icon(
+                      Icons.image_not_supported,
+                      size: 200,
+                      color: Colors.grey,
+                    )
+                  : Image.network(
+                      'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${coverGame?['image_id']}.jpg',
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.image_not_supported,
+                          size: 200,
+                          color: Colors.grey,
+                        );
+                      },
+                    ),
             ),
 
             //Name game and users rating
@@ -486,9 +502,7 @@ class SpecificGameState extends State<SpecificGame> {
             const Divider(height: 30),
 
             //Series
-            if (gameData != null &&
-                gameData?['collections'] != null &&
-                gameData?['collections'].length != 0)
+            if (gameData != null && gameData?['collections'] != null)
               SpecificGameSectionWidget(
                 title: 'Series',
                 games: gameData?['collections'],

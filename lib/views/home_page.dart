@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
             games: allGames,
           ),
           CategorySection(
-            title: 'Popular Games',
+            title: 'Most Rated Games',
             onArrowTap: () {
               Navigator.pushNamed(context, '/popularGames');
             },

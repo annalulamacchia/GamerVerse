@@ -27,8 +27,39 @@ class _AllGamesPageState extends State<AllGamesPage> {
 
   // Filter options lists
   final List<String> _orderByOptions = ['Popularity', 'Alphabetical', 'Rating'];
-  final List<String> _platformOptions = ['PS4', 'Xbox One', 'PC'];
-  final List<String> _genreOptions = ['Action', 'Adventure', 'RPG', 'Shooter'];
+  final List<String> _platformOptions = [
+    'PS1',
+    'PS2',
+    'PS3',
+    'PS4',
+    'PS5',
+    'PlayStation VR',
+    'PlayStation VR2',
+    'Xbox',
+    'Xbox 360',
+    'Xbox One',
+    'Xbox Series X|S',
+    'PC',
+    'Nintendo DS',
+    'Nintendo 3DS',
+    'Wii',
+    'WiiU',
+    'Nintendo Switch',
+    'Oculust Quest',
+    'Oculust Rift',
+  ];
+  final List<String> _genreOptions = [
+    'Action',
+    'Adventure',
+    'Arcade',
+    'Indie',
+    'Puzzle',
+    'Racing',
+    'RPG',
+    'Shooter',
+    'Sport',
+    'Strategy',
+  ];
 
   @override
   void initState() {
@@ -259,7 +290,8 @@ class _AllGamesPageState extends State<AllGamesPage> {
                         Navigator.pop(context); // Close the popup
                         _fetchFilteredGames(); // Trigger API request
                       },
-                      child: const Text('Apply'),
+                      child: Text('Apply',
+                          style: TextStyle(color: AppColors.mediumGreen)),
                     ),
                   ),
                 ],

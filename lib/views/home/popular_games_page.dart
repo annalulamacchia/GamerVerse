@@ -21,14 +21,45 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
       ScrollController(); // Controller for lazy loading
 
   // Preselect Popularity as the default sorting
-  String? _selectedOrderBy = 'Popularity';
+  String? _selectedOrderBy = 'Rating';
   String? _selectedPlatform;
   String? _selectedGenre;
 
   // Filter options lists
   final List<String> _orderByOptions = ['Popularity', 'Alphabetical', 'Rating'];
-  final List<String> _platformOptions = ['PS4', 'Xbox One', 'PC'];
-  final List<String> _genreOptions = ['Action', 'Adventure', 'RPG', 'Shooter'];
+  final List<String> _platformOptions = [
+    'PS1',
+    'PS2',
+    'PS3',
+    'PS4',
+    'PS5',
+    'PlayStation VR',
+    'PlayStation VR2',
+    'Xbox',
+    'Xbox 360',
+    'Xbox One',
+    'Xbox Series X|S',
+    'PC',
+    'Nintendo DS',
+    'Nintendo 3DS',
+    'Wii',
+    'WiiU',
+    'Nintendo Switch',
+    'Oculust Quest',
+    'Oculust Rift',
+  ];
+  final List<String> _genreOptions = [
+    'Action',
+    'Adventure',
+    'Arcade',
+    'Indie',
+    'Puzzle',
+    'Racing',
+    'RPG',
+    'Shooter',
+    'Sport',
+    'Strategy',
+  ];
 
   @override
   void initState() {
@@ -260,7 +291,8 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
                         Navigator.pop(context); // Close the popup
                         _fetchFilteredGames(); // Trigger API request
                       },
-                      child: const Text('Apply'),
+                      child: Text('Apply',
+                          style: TextStyle(color: AppColors.mediumGreen)),
                     ),
                   ),
                 ],
@@ -278,7 +310,7 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
       backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
         title:
-            const Text('Popular Games', style: TextStyle(color: Colors.white)),
+            const Text('Most Rated Games', style: TextStyle(color: Colors.white)),
         backgroundColor: AppColors.darkGreen,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),

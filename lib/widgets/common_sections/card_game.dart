@@ -25,12 +25,19 @@ class ImageCardWidget extends StatelessWidget {
         margin: const EdgeInsets.all(10),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15),
-          child: Image.network(
-            imageUrl,
-            height: 200, // Fixed height for the image
-            width: double.infinity, // Make image take up full width of the card
-            fit: BoxFit.cover, // Ensure the image scales properly
-          ),
+          child: imageUrl != ''
+              ? Image.network(
+                  imageUrl,
+                  height: 200, // Fixed height for the image
+                  width: double
+                      .infinity, // Make image take up full width of the card
+                  fit: BoxFit.cover, // Ensure the image scales properly
+                )
+              : Icon(
+                  Icons.image_not_supported,
+                  size: 200,
+                  color: Colors.grey,
+                ),
         ),
       ),
     );

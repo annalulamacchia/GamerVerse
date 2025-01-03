@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/utils/colors.dart';
+import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 
 class SeriesGame extends StatefulWidget {
   final List<dynamic> gameIds;
@@ -20,9 +22,7 @@ class SeriesGameState extends State<SeriesGame> {
   @override
   void initState() {
     super.initState();
-    if (widget.gameIds.isNotEmpty) {
-      _loadCovers(widget.gameIds);
-    }
+    _loadCovers(widget.gameIds);
   }
 
   //load the cover of some games
@@ -60,31 +60,53 @@ class SeriesGameState extends State<SeriesGame> {
         padding: const EdgeInsets.all(8.0),
         child: isLoading
             ? const Center(child: CircularProgressIndicator(color: Colors.teal))
-            : GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 4,
-                  mainAxisSpacing: 4,
-                  childAspectRatio: 0.8,
-                ),
-                itemCount: widget.gameIds.length,
-                itemBuilder: (context, index) {
-                  int gameId = widget.gameIds[index];
-                  if (gameId == coverGames?[index]['game']) {
-                    final coverGame = coverGames?[index];
-                    return Container(
-                      width: 180,
-                      margin: const EdgeInsets.symmetric(horizontal: 1),
-                      child: ImageCardWidget(
-                          imageUrl:
-                              'https://images.igdb.com/igdb/image/upload/t_cover_big/${coverGame?['image_id']}.jpg',
-                          gameId: gameId),
-                    );
-                  } else {
-                    return null;
-                  }
-                },
-              ),
+            : widget.gameIds.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        NoDataList(
+                          textColor: Colors.white,
+                          icon: Icons.error_outline,
+                          message: 'No Games Found',
+                          subMessage:
+                              'Error in loading games, please try again.',
+                          color: Colors.grey,
+                        )
+                      ],
+                    ),
+                  )
+                : GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 4,
+                      mainAxisSpacing: 4,
+                      childAspectRatio: 0.8,
+                    ),
+                    itemCount: coverGames?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      final coverGame = coverGames?[index];
+                      final gameId = coverGame?['game'];
+
+                      if (gameId != null && widget.gameIds.contains(gameId)) {
+                        return Container(
+                          width: 180,
+                          margin: const EdgeInsets.symmetric(horizontal: 1),
+                          child: ImageCardWidget(
+                            imageUrl:
+                                'https://images.igdb.com/igdb/image/upload/t_cover_big/${coverGame?['image_id']}.jpg',
+                            gameId: gameId,
+                          ),
+                        );
+                      } else {
+                        return ImageCardWidget(imageUrl: '', gameId: gameId);
+                      }
+                    },
+                  ),
+      ),
+      bottomNavigationBar: const CustomBottomNavBar(
+        currentIndex: 1,
       ),
     );
   }
