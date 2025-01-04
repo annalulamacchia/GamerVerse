@@ -37,20 +37,22 @@ class LikedListState extends State<LikedList> {
 
   Future<void> fetchCurrentUserData() async {
     try {
-      final response =
-          await UserProfileService.getUserByUid(widget.currentUser);
-      if (response['success']) {
-        setState(() {
-          currentUserData = response['data'];
-          isLoadingCurrentUser = false;
+      if (widget.currentUser != null) {
+        final response =
+            await UserProfileService.getUserByUid(widget.currentUser);
+        if (response['success']) {
+          setState(() {
+            currentUserData = response['data'];
+            isLoadingCurrentUser = false;
 
-          currentUserFollowed = currentUserData!['followed'] ?? [];
-        });
-      } else {
-        setState(() {
-          errorMessage = response['message'] ?? 'Error fetching user data';
-          isLoadingCurrentUser = false;
-        });
+            currentUserFollowed = currentUserData!['followed'] ?? [];
+          });
+        } else {
+          setState(() {
+            errorMessage = response['message'] ?? 'Error fetching user data';
+            isLoadingCurrentUser = false;
+          });
+        }
       }
     } catch (e) {
       setState(() {
@@ -91,6 +93,7 @@ class LikedListState extends State<LikedList> {
                 bool isIdInFollowed = false;
                 bool isBlocked = false;
                 final user = (widget.users)[index];
+                print(user.profilePicture);
 
                 isIdInFollowed = currentUserFollowed.any((followed) =>
                     followed['id'] == user.userId &&
