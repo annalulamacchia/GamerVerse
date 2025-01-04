@@ -43,8 +43,8 @@ class _ReleasedThisMonthPageState extends State<ReleasedThisMonthPage> {
     'Wii',
     'WiiU',
     'Nintendo Switch',
-    'Oculust Quest',
-    'Oculust Rift',
+    'Oculus Quest',
+    'Oculus Rift',
   ];
   final List<String> _genreOptions = [
     'Action',

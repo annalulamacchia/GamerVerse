@@ -45,8 +45,8 @@ class _AllGamesPageState extends State<AllGamesPage> {
     'Wii',
     'WiiU',
     'Nintendo Switch',
-    'Oculust Quest',
-    'Oculust Rift',
+    'Oculus Quest',
+    'Oculus Rift',
   ];
   final List<String> _genreOptions = [
     'Action',

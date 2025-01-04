@@ -20,7 +20,7 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
   final ScrollController _scrollController = ScrollController();
 
   // Filter options
-  String? _selectedOrderBy = 'Rating';
+  String? _selectedOrderBy = 'Popularity';
   String? _selectedPlatform;
   String? _selectedGenre;
 
@@ -43,8 +43,8 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
     'Wii',
     'WiiU',
     'Nintendo Switch',
-    'Oculust Quest',
-    'Oculust Rift',
+    'Oculus Quest',
+    'Oculus Rift',
   ];
   final List<String> _genreOptions = [
     'Action',

@@ -229,7 +229,7 @@ class GameApiService {
     final String requestBody = '''
       fields id, games;
       limit 500;
-      where id = $collectionIdsFormatted; sort name asc; sort rating desc;
+      where id = $collectionIdsFormatted; sort name asc; sort aggregated_rating desc;
     ''';
 
     try {
@@ -468,7 +468,7 @@ class GameApiService {
     final query = '''
     fields id, name, cover.url;
     where cover != null; 
-    sort rating desc;
+    sort aggregated_rating desc;
     limit 100;
     offset $offset;
   ''';
@@ -486,7 +486,7 @@ class GameApiService {
     fields id, name, cover.url, first_release_date;
     where cover != null & first_release_date > $thirtyDaysAgo & first_release_date < $now; 
     sort first_release_date asc;
-    sort rating desc;
+    sort aggregated_rating desc;
     limit 100;
     offset $offset;
   ''';
@@ -499,8 +499,8 @@ class GameApiService {
     final query = '''
     fields id, name, cover.url, first_release_date;
     where cover != null & first_release_date > $now; 
+    sort popularity desc;
     sort first_release_date asc;
-    sort rating desc;
     limit 100;
     offset $offset;
   ''';
@@ -512,7 +512,7 @@ class GameApiService {
     final query = '''
   fields id, name, cover.url;
   where name ~ *"$searchQuery"*;
-  sort rating desc;
+  sort aggregated_rating desc;
   limit 30;
   ''';
     print("Generated Query: $query"); // Debugging log
@@ -545,8 +545,8 @@ class GameApiService {
       'Wii': '5',
       'WiiU': '41',
       'Nintendo Switch': '130',
-      'Oculust Quest': '384',
-      'Oculust Rift': '385'
+      'Oculus Quest': '384',
+      'Oculus Rift': '385'
     };
 
     const genreMap = {
@@ -571,7 +571,7 @@ class GameApiService {
               'Alphabetical': 'sort name asc;',
               'Popularity':
                   'sort popularity desc;', // Fixed order for Popularity
-              'Rating': 'sort rating desc;',
+              'Rating': 'sort aggregated_rating desc;',
             }[orderBy] ??
             ''
         : '';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/widgets/specific_game/youtube_player.dart';
+import 'package:photo_view/photo_view.dart';
 
 class MediaGameWidget extends StatefulWidget {
   final Map<String, dynamic>? gameData;
@@ -124,11 +125,28 @@ class MediaGameWidgetState extends State<MediaGameWidget> {
             onTap: () {
               showDialog(
                 context: context,
+                barrierDismissible: true,
+                barrierColor: Colors.black.withOpacity(0.8),
                 builder: (context) {
                   return Dialog(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: YoutubePlayerWidget(videoId: media['video_id']),
+                    insetPadding: EdgeInsets.zero,
+                    backgroundColor: Colors.transparent,
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: YoutubePlayerWidget(
+                            videoId: media['video_id'],
+                          ),
+                        ),
+                        Positioned(
+                          top: 16,
+                          right: 0,
+                          child: IconButton(
+                            icon: const Icon(Icons.close, color: Colors.white),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 },
@@ -152,8 +170,9 @@ class MediaGameWidgetState extends State<MediaGameWidget> {
       );
     }).toList());
 
-    //Images
-    mediaWidgets.addAll(images.map((media) {
+    // Images and Artworks
+    List<Map<String, dynamic>> allImages = [...images, ...artworks];
+    mediaWidgets.addAll(allImages.map((media) {
       return isLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.teal))
           : Container(
@@ -168,22 +187,8 @@ class MediaGameWidgetState extends State<MediaGameWidget> {
                 borderRadius: BorderRadius.circular(12),
                 child: GestureDetector(
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${media['image_id']}.jpg',
-                              width: double.infinity,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      },
-                    );
+                    _openImageGallery(
+                        context, allImages, allImages.indexOf(media));
                   },
                   child: Image.network(
                     'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${media['image_id']}.jpg',
@@ -195,47 +200,6 @@ class MediaGameWidgetState extends State<MediaGameWidget> {
             );
     }).toList());
 
-    //Artworks
-    mediaWidgets.addAll(artworks.map((media) {
-      return Container(
-        width: 200,
-        height: 125,
-        margin: const EdgeInsets.symmetric(horizontal: 6),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return Dialog(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${media['image_id']}.jpg',
-                        width: double.infinity,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-            child: Image.network(
-              'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${media['image_id']}.jpg',
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      );
-    }).toList());
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SingleChildScrollView(
@@ -244,6 +208,47 @@ class MediaGameWidgetState extends State<MediaGameWidget> {
           children: mediaWidgets,
         ),
       ),
+    );
+  }
+
+  void _openImageGallery(BuildContext context,
+      List<Map<String, dynamic>> images, int initialIndex) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.85),
+      builder: (context) {
+        return Dialog(
+          insetPadding: EdgeInsets.zero,
+          backgroundColor: Colors.transparent,
+          child: Stack(
+            children: [
+              PageView.builder(
+                itemCount: images.length,
+                controller: PageController(initialPage: initialIndex),
+                itemBuilder: (context, index) {
+                  return PhotoView(
+                    imageProvider: NetworkImage(
+                      'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${images[index]['image_id']}.jpg',
+                    ),
+                    backgroundDecoration: const BoxDecoration(
+                      color: Colors.transparent,
+                    ),
+                  );
+                },
+              ),
+              Positioned(
+                top: 16,
+                right: 0,
+                child: IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -45,8 +45,8 @@ class _PopularGamesPageState extends State<PopularGamesPage> {
     'Wii',
     'WiiU',
     'Nintendo Switch',
-    'Oculust Quest',
-    'Oculust Rift',
+    'Oculus Quest',
+    'Oculus Rift',
   ];
   final List<String> _genreOptions = [
     'Action',
