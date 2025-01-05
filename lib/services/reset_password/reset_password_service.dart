@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class ResetPasswordService {
   static const String baseUrl = 'https://gamerversemobile.pythonanywhere.com'; // Replace with your Flask backend URL
 
-  static Future<bool> resetPassword(String email, String newPassword) async {
+  static Future<Map<String, dynamic>>  resetPassword(String email, String newPassword) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/reset-password'),
@@ -13,14 +13,14 @@ class ResetPasswordService {
       );
 
       if (response.statusCode == 200) {
-        return true;
+        return {'success': 'true', 'message': '${response.body}'};
       } else {
-        print('Error: ${response.body}');
-        return false;
+        print('${response.body}');
+        return {'success': 'false', 'message': '${response.body}'};
       }
     } catch (e) {
-      print('Exception: $e');
-      return false;
+      print('$e');
+      return {'success': false, 'message': '$e'};
     }
   }
 }

@@ -1,13 +1,35 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
-import 'package:gamerverse/services/reset_password/reset_password_service.dart';
+
+class ResetPasswordService {
+  static const String baseUrl = 'https://gamerversemobile.pythonanywhere.com';
+
+  static Future<Map<String, dynamic>> resetPassword(String email, String newPassword) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/reset-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'new_password': newPassword}),
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true, 'message': response.body};
+      } else {
+        return {'success': false, 'message': response.body};
+      }
+    } catch (e) {
+      return {'success': false, 'message': e.toString()};
+    }
+  }
+}
 
 class NewPasswordPage extends StatefulWidget {
-  final String email; // Add email as a final field
+  final String email;
 
-  const NewPasswordPage(
-      {super.key, required this.email}); // Update constructor to accept email
+  const NewPasswordPage({super.key, required this.email});
 
   @override
   _NewPasswordPageState createState() => _NewPasswordPageState();
@@ -15,9 +37,17 @@ class NewPasswordPage extends StatefulWidget {
 
 class _NewPasswordPageState extends State<NewPasswordPage> {
   final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController repeatPasswordController =
-      TextEditingController();
+  final TextEditingController repeatPasswordController = TextEditingController();
   bool isLoading = false;
+
+  bool isPasswordSecure(String password) {
+    final hasUppercase = password.contains(RegExp(r'[A-Z]'));
+    final hasDigit = password.contains(RegExp(r'[0-9]'));
+    final hasSpecialChar = password.contains(RegExp(r'[!@#$%^&*()\-=+[\]{}|;:,.<>?/`~]')); // At least one special character
+    final isLongEnough = password.length >= 10;
+
+    return hasUppercase && hasDigit && hasSpecialChar && isLongEnough;
+  }
 
   Future<void> handleChangePassword() async {
     setState(() {
@@ -27,35 +57,37 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
     final newPassword = newPasswordController.text.trim();
     final repeatPassword = repeatPasswordController.text.trim();
 
-    if (newPassword.isEmpty ||
-        repeatPassword.isEmpty ||
-        newPassword != repeatPassword) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Passwords do not match or are empty.')),
-        );
-      });
+    if (newPassword.isEmpty || repeatPassword.isEmpty || newPassword != repeatPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match or are empty.')),
+      );
       setState(() {
         isLoading = false;
       });
       return;
     }
 
-    final success =
-        await ResetPasswordService.resetPassword(widget.email, newPassword);
+    if (!isPasswordSecure(newPassword)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password must be at least 10 characters long, include at least one number, one uppercase letter, and one special character.')),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    final response = await ResetPasswordService.resetPassword(widget.email, newPassword);
     setState(() {
       isLoading = false;
     });
 
-    if (success) {
+    if (response['success'] == true) {
       Navigator.pushReplacementNamed(context, '/login');
     } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Failed to reset password. Please try again.')),
-        );
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['message'])),
+      );
     }
   }
 
@@ -64,8 +96,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
     return Scaffold(
       backgroundColor: AppColors.darkestGreen,
       appBar: AppBar(
-        title:
-            const Text('Reset Password', style: TextStyle(color: Colors.white)),
+        title: const Text('Reset Password', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -86,82 +117,49 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
               height: 200,
               fit: BoxFit.cover,
             ),
-            Theme(
-              data: Theme.of(context).copyWith(
-                textSelectionTheme: const TextSelectionThemeData(
-                    selectionHandleColor: AppColors.mediumGreen,
-                    cursorColor: AppColors.mediumGreen,
-                    selectionColor: AppColors.mediumGreen),
-              ),
-              //Text Area
-              child: TextField(
-                controller: newPasswordController,
-                decoration: InputDecoration(
-                  labelText: 'New Password',
-                  labelStyle: const TextStyle(color: AppColors.darkGreen),
-                  fillColor: AppColors.lightGreen,
-                  filled: true,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.mediumGreen),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+            TextField(
+              controller: newPasswordController,
+              decoration: InputDecoration(
+                labelText: 'New Password',
+                labelStyle: const TextStyle(color: AppColors.darkGreen),
+                fillColor: AppColors.lightGreen,
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
                 ),
-                obscureText: true,
-                style: const TextStyle(color: AppColors.darkGreen),
               ),
+              obscureText: true,
             ),
             const SizedBox(height: 15),
-            Theme(
-              data: Theme.of(context).copyWith(
-                textSelectionTheme: const TextSelectionThemeData(
-                    selectionHandleColor: AppColors.mediumGreen,
-                    cursorColor: AppColors.mediumGreen,
-                    selectionColor: AppColors.mediumGreen),
-              ),
-              //Text Area
-              child: TextField(
-                controller: repeatPasswordController,
-                decoration: InputDecoration(
-                  labelText: 'Repeat Password',
-                  labelStyle: const TextStyle(color: AppColors.darkGreen),
-                  fillColor: AppColors.lightGreen,
-                  filled: true,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.mediumGreen),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+            TextField(
+              controller: repeatPasswordController,
+              decoration: InputDecoration(
+                labelText: 'Repeat Password',
+                labelStyle: const TextStyle(color: AppColors.darkGreen),
+                fillColor: AppColors.lightGreen,
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
                 ),
-                obscureText: true,
-                style: const TextStyle(color: AppColors.darkGreen),
               ),
+              obscureText: true,
             ),
             const SizedBox(height: 20),
             isLoading
                 ? const CircularProgressIndicator(color: Colors.teal)
                 : ElevatedButton(
-                    onPressed: handleChangePassword,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.mediumGreen,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 12),
-                    ),
-                    child: const Text('Change Password',
-                        style: TextStyle(color: AppColors.lightestGreen)),
-                  ),
+              onPressed: handleChangePassword,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.mediumGreen,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              ),
+              child: const Text(
+                'Change Password',
+                style: TextStyle(color: AppColors.lightestGreen),
+              ),
+            ),
           ],
         ),
       ),

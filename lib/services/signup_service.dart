@@ -64,10 +64,10 @@ class SignupService {
           return 'Failed to exchange custom token for ID token.';
         }
       } else {
-        return 'Error: ${response.body}';
+        return '${response.body}';
       }
     } catch (e) {
-      return 'Error: $e';
+      return '$e';
     }
   }
 }
