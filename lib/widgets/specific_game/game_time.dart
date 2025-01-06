@@ -110,7 +110,7 @@ class GameTimeWidgetState extends State<GameTimeWidget> {
 
   //redirect to login if the user is not logged
   void _toLoginForTime(BuildContext context) {
-    Navigator.pushNamed(context, '/login');
+    Navigator.pushNamed(context, '/login', arguments: 'Game');
     isLoading = false;
   }
 

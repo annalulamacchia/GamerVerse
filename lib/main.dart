@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [],
       title: 'GamerVerse',
       theme: ThemeData(
         primarySwatch: Colors.green,

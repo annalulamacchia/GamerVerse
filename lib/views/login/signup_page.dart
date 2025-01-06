@@ -6,13 +6,15 @@ import 'dart:io';
 import '../../utils/colors.dart';
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+  final String currentPage;
+
+  const SignupPage({super.key, required this.currentPage});
 
   @override
-  _SignupPageState createState() => _SignupPageState();
+  SignupPageState createState() => SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class SignupPageState extends State<SignupPage> {
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
 
@@ -117,7 +119,14 @@ class _SignupPageState extends State<SignupPage> {
     if (result != null) {
       _showError(result);
     } else {
-      Navigator.pushNamed(context, '/home');
+      if (widget.currentPage == 'Login') {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else if (widget.currentPage == 'Community') {
+        Navigator.pushReplacementNamed(context, '/community');
+      } else {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      }
     }
   }
 

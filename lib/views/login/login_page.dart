@@ -5,7 +5,9 @@ import 'package:fluttertoast/fluttertoast.dart'; // For displaying messages
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart'; // Ensure this is the correct import for your BottomNavBar
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  final String currentPage;
+
+  const LoginPage({super.key, required this.currentPage});
 
   Future<void> _handleGoogleLogin(BuildContext context) async {
     try {
@@ -14,7 +16,13 @@ class LoginPage extends StatelessWidget {
 
       if (result['success']) {
         // Navigate to '/home' if login is successful
-        Navigator.pushReplacementNamed(context, '/home');
+        if (currentPage == 'Login') {
+          Navigator.pushReplacementNamed(context, '/home');
+        } else if (currentPage == 'Community') {
+          Navigator.pushReplacementNamed(context, '/community');
+        } else {
+          Navigator.pop(context);
+        }
       } else {
         // Show error message if login failed
         Fluttertoast.showToast(
@@ -76,7 +84,8 @@ class LoginPage extends StatelessWidget {
 
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/emailLogin');
+                    Navigator.pushNamed(context, '/emailLogin',
+                        arguments: currentPage);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.lightestGreen,
@@ -113,7 +122,8 @@ class LoginPage extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         // Navigate to the signup page
-                        Navigator.pushNamed(context, '/signup');
+                        Navigator.pushNamed(context, '/signup',
+                            arguments: currentPage);
                       },
                       child: const Text(
                         'Sign-up',

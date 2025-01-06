@@ -48,7 +48,7 @@ class LikeDislikeWidgetState extends State<LikeDislikeWidget> {
 
   //function that redirect to login if the user is not logged in
   void _toLoginForLikeDislike() {
-    Navigator.pushNamed(context, '/login');
+    Navigator.pushNamed(context, '/login', arguments: 'Game');
     isLoading = false;
   }
 

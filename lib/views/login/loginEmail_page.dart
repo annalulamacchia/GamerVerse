@@ -4,13 +4,15 @@ import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/services/login/loginWithEmail_service.dart';
 
 class LoginEmailPage extends StatefulWidget {
-  const LoginEmailPage({super.key});
+  final String currentPage;
+
+  const LoginEmailPage({super.key, required this.currentPage});
 
   @override
-  _LoginEmailPageState createState() => _LoginEmailPageState();
+  LoginEmailPageState createState() => LoginEmailPageState();
 }
 
-class _LoginEmailPageState extends State<LoginEmailPage> {
+class LoginEmailPageState extends State<LoginEmailPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -40,7 +42,14 @@ class _LoginEmailPageState extends State<LoginEmailPage> {
 
     if (response['success']) {
       _showMessage('Login successful!');
-      Navigator.pushReplacementNamed(context, '/home');
+      if (widget.currentPage == 'Login') {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else if (widget.currentPage == 'Community') {
+        Navigator.pushReplacementNamed(context, '/community');
+      } else {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      }
     } else {
       _showMessage(response['message']);
     }

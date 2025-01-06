@@ -495,6 +495,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(result['message'])),
                             );
+                            Navigator.pushReplacementNamed(context, '/home');
                           } else {
                             // Show an error message if logout fails
                             ScaffoldMessenger.of(context).showSnackBar(

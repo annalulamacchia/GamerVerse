@@ -57,7 +57,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         Navigator.pushReplacementNamed(context, '/community');
       } else {
         // Redirect to SignUp page if not logged in
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushReplacementNamed(context, '/login', arguments: 'Community');
       }
     } else if (index == 2) {
       if (isLoggedIn) {
@@ -65,7 +65,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         Navigator.pushReplacementNamed(context, '/profile');
       } else {
         // Redirect to Login page if not logged in
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushReplacementNamed(context, '/login', arguments: 'Login');
       }
     } else if (isAdmin && index == 3) {
       Navigator.pushReplacementNamed(context, '/admin');

@@ -63,13 +63,27 @@ class RouteGenerator {
       case '/search':
         return MaterialPageRoute(builder: (context) => const SearchPage());
       case '/login':
-        return MaterialPageRoute(builder: (context) => const LoginPage());
+        if (args is String) {
+          return MaterialPageRoute(
+              builder: (context) => LoginPage(
+                    currentPage: args,
+                  ));
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case '/resetPassword':
         return MaterialPageRoute(builder: (context) => ResetPasswordPage());
       case '/emailLogin':
-        return MaterialPageRoute(builder: (context) => const LoginEmailPage());
+        if (args is String) {
+          return MaterialPageRoute(
+              builder: (context) => LoginEmailPage(currentPage: args));
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case '/signup':
-        return MaterialPageRoute(builder: (context) => const SignupPage());
+        if (args is String) {
+          return MaterialPageRoute(
+              builder: (context) => SignupPage(currentPage: args));
+        }
+        return MaterialPageRoute(builder: (context) => const HomePage());
       case '/comments':
         if (args is Map<String, dynamic> &&
             args.containsKey('postId') &&
