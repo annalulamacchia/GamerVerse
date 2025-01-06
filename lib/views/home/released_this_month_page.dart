@@ -3,6 +3,7 @@ import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 
 class ReleasedThisMonthPage extends StatefulWidget {
   const ReleasedThisMonthPage({super.key});
@@ -313,7 +314,16 @@ class _ReleasedThisMonthPageState extends State<ReleasedThisMonthPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.teal))
           : _errorMessage != null
-              ? Center(child: Text(_errorMessage!))
+              ? const Center(
+                  child: NoDataList(
+                    textColor: Colors.teal,
+                    icon: Icons.videogame_asset_off,
+                    message: 'No games found with those filters',
+                    subMessage:
+                        'Try adjusting your search criteria or check back later.',
+                    color: Colors.white,
+                  ),
+                )
               : Stack(
                   children: [
                     GridView.builder(

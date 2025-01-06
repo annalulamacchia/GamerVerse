@@ -64,7 +64,7 @@ class SignupService {
           return 'Failed to exchange custom token for ID token.';
         }
       } else {
-        return '${response.body}';
+        return response.body;
       }
     } catch (e) {
       return '$e';

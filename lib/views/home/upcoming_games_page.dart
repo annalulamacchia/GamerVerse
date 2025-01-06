@@ -3,6 +3,7 @@ import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/widgets/common_sections/card_game.dart';
 import 'package:gamerverse/widgets/common_sections/bottom_navbar.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 
 class UpcomingGamesPage extends StatefulWidget {
   const UpcomingGamesPage({super.key});
@@ -86,7 +87,7 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
         orderBy: _selectedOrderBy,
         platform: _selectedPlatform,
         genre: _selectedGenre,
-        limit: 100,
+        limit: 500,
         offset: _offset,
         page: 'UPCOMING',
       );
@@ -314,40 +315,52 @@ class _UpcomingGamesPageState extends State<UpcomingGamesPage> {
           ? const Center(child: CircularProgressIndicator(color: Colors.teal))
           : _errorMessage != null
               ? Center(child: Text(_errorMessage!))
-              : Stack(
-                  children: [
-                    GridView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.all(10.0),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 0.8,
+              : _games.isEmpty
+                  ? const Center(
+                      child: NoDataList(
+                        textColor: Colors.teal,
+                        icon: Icons.videogame_asset_off,
+                        message: 'No games found with those filters',
+                        subMessage:
+                            'Try adjusting your search criteria or check back later.',
+                        color: Colors.white,
                       ),
-                      itemCount: _games.length,
-                      itemBuilder: (context, index) {
-                        final game = _games[index];
-                        final coverUrl = game['coverUrl'] ??
-                            'https://via.placeholder.com/400x200?text=No+Image';
-                        return ImageCardWidget(
-                          imageUrl: coverUrl,
-                          gameId: game['id'],
-                        );
-                      },
-                    ),
-                    if (_isLoadingMore)
-                      Positioned(
-                        bottom: 10,
-                        left: 0,
-                        right: 0,
-                        child: const Center(
-                          child: CircularProgressIndicator(color: Colors.teal),
+                    )
+                  : Stack(
+                      children: [
+                        GridView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.all(10.0),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
+                            childAspectRatio: 0.8,
+                          ),
+                          itemCount: _games.length,
+                          itemBuilder: (context, index) {
+                            final game = _games[index];
+                            final coverUrl = game['coverUrl'] ??
+                                'https://via.placeholder.com/400x200?text=No+Image';
+                            return ImageCardWidget(
+                              imageUrl: coverUrl,
+                              gameId: game['id'],
+                            );
+                          },
                         ),
-                      ),
-                  ],
-                ),
+                        if (_isLoadingMore)
+                          Positioned(
+                            bottom: 10,
+                            left: 0,
+                            right: 0,
+                            child: const Center(
+                              child:
+                                  CircularProgressIndicator(color: Colors.teal),
+                            ),
+                          ),
+                      ],
+                    ),
       bottomNavigationBar: const CustomBottomNavBar(currentIndex: 1),
     );
   }

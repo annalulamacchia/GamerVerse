@@ -13,10 +13,10 @@ class ResetPasswordService {
       );
 
       if (response.statusCode == 200) {
-        return {'success': 'true', 'message': '${response.body}'};
+        return {'success': 'true', 'message': response.body};
       } else {
-        print('${response.body}');
-        return {'success': 'false', 'message': '${response.body}'};
+        print(response.body);
+        return {'success': 'false', 'message': response.body};
       }
     } catch (e) {
       print('$e');

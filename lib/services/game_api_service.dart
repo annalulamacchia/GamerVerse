@@ -500,7 +500,6 @@ class GameApiService {
     fields id, name, cover.url, first_release_date;
     where cover != null & first_release_date > $now; 
     sort popularity desc;
-    sort first_release_date asc;
     limit 100;
     offset $offset;
   ''';
@@ -583,8 +582,8 @@ class GameApiService {
 
     // Build the where clause conditionally
     List<String> whereConditions = [];
-    if (platformId != null) whereConditions.add('platforms = $platformId');
-    if (genreId != null) whereConditions.add('genres = $genreId');
+    if (platformId != null) whereConditions.add('platforms = [$platformId]');
+    if (genreId != null) whereConditions.add('genres = [$genreId]');
 
     // Add date filtering for specific pages
     if (page == 'RELEASED_THIS_MONTH') {
@@ -594,7 +593,7 @@ class GameApiService {
           1000;
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       whereConditions.add('first_release_date > $thirtyDaysAgo');
-      whereConditions.add('first_release_date < $now');
+      whereConditions.add('first_release_date <= $now');
     } else if (page == 'UPCOMING') {
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       whereConditions.add('first_release_date > $now');
@@ -614,7 +613,7 @@ class GameApiService {
 
       // Prepare the request body
       final String body = '''
-      fields id,name,cover.url,genres,platforms,rating;
+      fields id,name,cover.url,genres,platforms,aggregated_rating,first_release_date;
       $whereClause
       $sortClause
       limit $limit;

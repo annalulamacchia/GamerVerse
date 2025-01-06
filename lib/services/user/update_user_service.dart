@@ -54,7 +54,7 @@ class UpdateUserService {
       return {'success': true};
     } else {
       print('Failed to update user: ${response.statusCode}');
-      return {'success': false, 'message': '${response.body}'};
+      return {'success': false, 'message': response.body};
     }
   }
 }
