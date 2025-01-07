@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/widgets/specific_game/youtube_player.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:http/http.dart' as http;
 
 class MediaGameWidget extends StatefulWidget {
   final Map<String, dynamic>? gameData;
@@ -101,6 +102,15 @@ class MediaGameWidgetState extends State<MediaGameWidget> {
     });
   }
 
+  Future<bool> _checkImageExists(String url) async {
+    try {
+      final response = await http.head(Uri.parse(url));
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final images = screenshotsGame ?? [];
@@ -175,28 +185,42 @@ class MediaGameWidgetState extends State<MediaGameWidget> {
     mediaWidgets.addAll(allImages.map((media) {
       return isLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.teal))
-          : Container(
-              width: 200,
-              height: 125,
-              margin: const EdgeInsets.symmetric(horizontal: 6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+          : FutureBuilder<bool>(
+              future: _checkImageExists(
+                'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${media['image_id']}.jpg',
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: GestureDetector(
-                  onTap: () {
-                    _openImageGallery(
-                        context, allImages, allImages.indexOf(media));
-                  },
-                  child: Image.network(
-                    'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${media['image_id']}.jpg',
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError || !(snapshot.data ?? false)) {
+                    return SizedBox.shrink();
+                  }
+                  return Container(
+                    width: 200,
+                    height: 125,
+                    margin: const EdgeInsets.symmetric(horizontal: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: GestureDetector(
+                        onTap: () {
+                          _openImageGallery(
+                              context, allImages, allImages.indexOf(media));
+                        },
+                        child: Image.network(
+                          'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${media['image_id']}.jpg',
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return SizedBox.shrink();
+                }
+              },
             );
     }).toList());
 
