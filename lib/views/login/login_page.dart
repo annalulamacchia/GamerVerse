@@ -20,10 +20,15 @@ class LoginPage extends StatelessWidget {
           Navigator.pushReplacementNamed(context, '/home');
         } else if (currentPage == 'Community') {
           Navigator.pushReplacementNamed(context, '/home');
-          Navigator.pushReplacementNamed(context, '/community');
+          Future.delayed(Duration(milliseconds: 100), () {
+            Navigator.pushReplacementNamed(context, '/community');
+          });
         } else {
           Navigator.pushReplacementNamed(context, '/home');
-          Navigator.pushReplacementNamed(context, '/game', arguments: int.parse(currentPage));
+          Future.delayed(Duration(milliseconds: 100), () {
+            Navigator.pushReplacementNamed(context, '/game',
+                arguments: int.parse(currentPage));
+          });
         }
       } else {
         // Show error message if login failed

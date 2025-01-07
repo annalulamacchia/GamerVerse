@@ -44,7 +44,10 @@ class PostService {
 
       // Gestione della risposta del server
       if (response.statusCode == 200) {
-        return {"success": true, "message": "Success to create post"}; // Risposta corretta
+        return {
+          "success": true,
+          "message": "Success to create post"
+        }; // Risposta corretta
       } else {
         return {"success": false, "message": "Failed to create post"};
       }
@@ -104,7 +107,7 @@ class PostService {
         body: jsonEncode({
           'postId': postId,
           'userId': userId,
-          'comment': comment,
+          'comment': comment.codeUnits,
         }),
       );
 

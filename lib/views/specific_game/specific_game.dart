@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/game.dart';
 import 'package:gamerverse/models/review.dart';
@@ -57,6 +59,7 @@ class SpecificGameState extends State<SpecificGame> {
   bool _isLoadingLatestReview = false;
   bool _isLoadingUsers = false;
   bool _isLoadingStatusUsers = false;
+  bool _isLoadingUser = true;
   List<User>? users;
   List<User>? userStatus;
   ValueNotifier<Review> latestReviewNotifier = ValueNotifier<Review>(Review(
@@ -314,7 +317,7 @@ class SpecificGameState extends State<SpecificGame> {
         ),
 
         //Name and Add to Wishlist button
-        title: Text(gameData?['name'],
+        title: Text(utf8.decode(gameData?['name'].codeUnits),
             style: const TextStyle(color: Colors.white)),
         actions: [
           FavoriteButton(
@@ -360,7 +363,7 @@ class SpecificGameState extends State<SpecificGame> {
                   Flexible(
                     flex: 1,
                     child: Text(
-                      gameData?['name'] ?? 'N/A',
+                      utf8.decode(gameData?['name'].codeUnits) ?? 'N/A',
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
