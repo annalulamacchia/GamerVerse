@@ -224,9 +224,9 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
     // Crea i dati da inviare
     final dataToUpdate = {
-      'name': utf8.decode(nameController.text.codeUnits),
-      'username': utf8.decode(usernameController.text.codeUnits),
-      'email': utf8.decode(emailController.text.codeUnits),
+      'name': nameController.text,
+      'username': usernameController.text,
+      'email': emailController.text,
       'password': oldPasswordController.text,
       'new_password': newPasswordController.text,
       'uid': uid,

@@ -107,7 +107,7 @@ class PostService {
         body: jsonEncode({
           'postId': postId,
           'userId': userId,
-          'comment': comment.codeUnits,
+          'comment': comment,
         }),
       );
 
