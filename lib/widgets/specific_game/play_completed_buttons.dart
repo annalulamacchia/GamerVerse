@@ -114,7 +114,7 @@ class PlayCompleteButtonsState extends State<PlayCompleteButtons> {
 
   //redirect to login if the user is not logged
   void _toLoginForStatus() {
-    Navigator.pushNamed(context, '/login', arguments: 'Game');
+    Navigator.pushNamed(context, '/login', arguments: widget.game.id);
     isLoading = false;
   }
 

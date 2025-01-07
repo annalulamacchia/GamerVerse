@@ -19,9 +19,11 @@ class LoginPage extends StatelessWidget {
         if (currentPage == 'Login') {
           Navigator.pushReplacementNamed(context, '/home');
         } else if (currentPage == 'Community') {
+          Navigator.pushReplacementNamed(context, '/home');
           Navigator.pushReplacementNamed(context, '/community');
         } else {
-          Navigator.pop(context);
+          Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushReplacementNamed(context, '/game', arguments: int.parse(currentPage));
         }
       } else {
         // Show error message if login failed

@@ -62,7 +62,7 @@ class FavoriteButtonState extends State<FavoriteButton> {
 
   //function to redirect to login if the user is not logged
   void _toLoginForWishlist() {
-    Navigator.pushNamed(context, '/login', arguments: 'Game');
+    Navigator.pushNamed(context, '/login', arguments: widget.game!.id);
     isLoading = false;
   }
 

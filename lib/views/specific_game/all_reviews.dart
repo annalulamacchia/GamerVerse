@@ -49,7 +49,7 @@ class _ReviewPageState extends State<ReviewPage> {
 
   //redirect to login if the user is not logged
   void _toLoginForReview(BuildContext context) {
-    Navigator.pushNamed(context, '/login', arguments: 'Game');
+    Navigator.pushNamed(context, '/login', arguments: widget.game.id);
   }
 
   //function to show the modal to Add Review

@@ -47,8 +47,8 @@ class LoginEmailPageState extends State<LoginEmailPage> {
       } else if (widget.currentPage == 'Community') {
         Navigator.pushReplacementNamed(context, '/community');
       } else {
-        Navigator.pop(context);
-        Navigator.pop(context);
+        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(context, '/game', arguments: int.parse(widget.currentPage));
       }
     } else {
       _showMessage(response['message']);
