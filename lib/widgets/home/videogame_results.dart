@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
 import 'package:gamerverse/utils/colors.dart';
@@ -114,11 +116,13 @@ class _VideoGameResultsState extends State<VideoGameResults> {
                 );
               },
               child: Card(
-                color: Colors.white, // White card background
+                color: Colors.white,
+                // White card background
                 elevation: 4,
                 margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15), // Rounded corners for card
+                  borderRadius:
+                      BorderRadius.circular(15), // Rounded corners for card
                 ),
                 child: Row(
                   children: [
@@ -130,21 +134,21 @@ class _VideoGameResultsState extends State<VideoGameResults> {
                       ),
                       child: game['coverUrl'] != null
                           ? Image.network(
-                        game['coverUrl']!,
-                        width: 125,
-                        height: 125,
-                        fit: BoxFit.cover,
-                      )
+                              game['coverUrl']!,
+                              width: 125,
+                              height: 125,
+                              fit: BoxFit.cover,
+                            )
                           : Container(
-                        width: 125,
-                        height: 125,
-                        color: AppColors.lightGreenishWhite,
-                        child: const Icon(
-                          Icons.image_not_supported,
-                          size: 50,
-                          color: Colors.grey,
-                        ),
-                      ),
+                              width: 125,
+                              height: 125,
+                              color: AppColors.lightGreenishWhite,
+                              child: const Icon(
+                                Icons.image_not_supported,
+                                size: 50,
+                                color: Colors.grey,
+                              ),
+                            ),
                     ),
 
                     // Game Details - Occupies the right side
@@ -155,7 +159,8 @@ class _VideoGameResultsState extends State<VideoGameResults> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              game['name'] ?? 'Unknown Game',
+                              utf8.decode(game['name'].codeUnits) ??
+                                  'Unknown Game',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -188,7 +193,6 @@ class _VideoGameResultsState extends State<VideoGameResults> {
                   ],
                 ),
               ),
-
             );
           },
         );
@@ -208,7 +212,8 @@ class AnimatedCard extends StatelessWidget {
       opacity: 1.0,
       duration: Duration(milliseconds: 500),
       child: Card(
-        color: Colors.white, // White card background
+        color: Colors.white,
+        // White card background
         elevation: 8,
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
         shape: RoundedRectangleBorder(
@@ -218,19 +223,19 @@ class AnimatedCard extends StatelessWidget {
           contentPadding: const EdgeInsets.all(15),
           leading: game['coverUrl'] != null
               ? ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              game['coverUrl']!,
-              width: 90,
-              height: 90,
-              fit: BoxFit.cover,
-            ),
-          )
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    game['coverUrl']!,
+                    width: 90,
+                    height: 90,
+                    fit: BoxFit.cover,
+                  ),
+                )
               : const Icon(
-            Icons.image_not_supported,
-            size: 90,
-            color: Colors.grey,
-          ),
+                  Icons.image_not_supported,
+                  size: 90,
+                  color: Colors.grey,
+                ),
           title: Text(
             game['name'] ?? 'Unknown Game',
             style: const TextStyle(

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Game {
   final String id;
   final String name;
@@ -15,7 +17,7 @@ class Game {
   factory Game.fromJson(Map<String, dynamic> json) {
     return Game(
       id: json['id'].toString(),
-      name: json['name'],
+      name: utf8.decode(json['name'].codeUnits),
       cover:
           'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${json['cover']}.jpg',
       criticsRating: json['aggregated_rating'] != null

@@ -122,10 +122,16 @@ class SignupPageState extends State<SignupPage> {
       if (widget.currentPage == 'Login') {
         Navigator.pushReplacementNamed(context, '/home');
       } else if (widget.currentPage == 'Community') {
-        Navigator.pushReplacementNamed(context, '/community');
+        Navigator.pushReplacementNamed(context, '/home');
+        Future.delayed(Duration(milliseconds: 100), () {
+          Navigator.pushReplacementNamed(context, '/community');
+        });
       } else {
         Navigator.pushReplacementNamed(context, '/home');
-        Navigator.pushReplacementNamed(context, '/game', arguments: int.parse(widget.currentPage));
+        Future.delayed(Duration(milliseconds: 100), () {
+          Navigator.pushReplacementNamed(context, '/game',
+              arguments: int.parse(widget.currentPage));
+        });
       }
     }
   }

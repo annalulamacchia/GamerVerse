@@ -40,12 +40,12 @@ class SignupService {
         Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'email': email,
-          'username': username,
-          'name': name,
+          'email': utf8.decode(email.codeUnits),
+          'username': utf8.decode(username.codeUnits),
+          'name': utf8.decode(name.codeUnits),
           'password': password,
           'question': question,
-          'answer': answer,
+          'answer': utf8.decode(answer.codeUnits),
           'profile_picture': profilePictureUrl,
         }),
       );

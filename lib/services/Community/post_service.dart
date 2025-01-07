@@ -34,7 +34,7 @@ class PostService {
         body: json.encode({
           "writer_id": userId, // L'ID dell'utente
           "game_id": gameId, // L'ID del gioco
-          "description": description, // La descrizione del post
+          "description": utf8.decode(description.codeUnits), // La descrizione del post
           "father": "0", // Se è un post principale
           "timestamp": timestamp, // Aggiungi il timestamp generato dal client
         }),
@@ -104,7 +104,7 @@ class PostService {
         body: jsonEncode({
           'postId': postId,
           'userId': userId,
-          'comment': comment,
+          'comment': utf8.decode(comment.codeUnits),
         }),
       );
 
