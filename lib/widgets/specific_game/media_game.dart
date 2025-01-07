@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/services/game_api_service.dart';
+import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 import 'package:gamerverse/widgets/specific_game/youtube_player.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:http/http.dart' as http;
@@ -109,6 +110,20 @@ class MediaGameWidgetState extends State<MediaGameWidget> {
     } catch (e) {
       return false;
     }
+  }
+
+  Future<List<Map<String, dynamic>>> _filterValidImages(
+      List<Map<String, dynamic>> images) async {
+    List<Map<String, dynamic>> validImages = [];
+    for (var image in images) {
+      final imageUrl =
+          'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${image['image_id']}.jpg';
+      final isValid = await _checkImageExists(imageUrl);
+      if (isValid) {
+        validImages.add(image);
+      }
+    }
+    return validImages;
   }
 
   @override
@@ -239,38 +254,59 @@ class MediaGameWidgetState extends State<MediaGameWidget> {
       List<Map<String, dynamic>> images, int initialIndex) {
     showDialog(
       context: context,
-      barrierDismissible: true,
-      barrierColor: Colors.black.withOpacity(0.85),
       builder: (context) {
-        return Dialog(
-          insetPadding: EdgeInsets.zero,
-          backgroundColor: Colors.transparent,
-          child: Stack(
-            children: [
-              PageView.builder(
-                itemCount: images.length,
-                controller: PageController(initialPage: initialIndex),
-                itemBuilder: (context, index) {
-                  return PhotoView(
-                    imageProvider: NetworkImage(
-                      'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${images[index]['image_id']}.jpg',
+        return FutureBuilder<List<Map<String, dynamic>>>(
+          future: _filterValidImages(images),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(color: Colors.teal),
+              );
+            }
+
+            if (snapshot.hasError || (snapshot.data?.isEmpty ?? true)) {
+              return Center(
+                  child: NoDataList(
+                      textColor: Colors.teal,
+                      icon: Icons.image_not_supported_outlined,
+                      message: 'Image not available',
+                      subMessage: 'There is a problem in loading this image',
+                      color: Colors.white));
+            }
+
+            final validImages = snapshot.data!;
+
+            return Dialog(
+              insetPadding: EdgeInsets.zero,
+              backgroundColor: Colors.black.withOpacity(0.7),
+              child: Stack(
+                children: [
+                  PageView.builder(
+                    itemCount: validImages.length,
+                    controller: PageController(initialPage: initialIndex),
+                    itemBuilder: (context, index) {
+                      return PhotoView(
+                        imageProvider: NetworkImage(
+                          'https://images.igdb.com/igdb/image/upload/t_screenshot_huge/${validImages[index]['image_id']}.jpg',
+                        ),
+                        backgroundDecoration: BoxDecoration(
+                          color: Colors.transparent,
+                        ),
+                      );
+                    },
+                  ),
+                  Positioned(
+                    top: 16,
+                    right: 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
-                    backgroundDecoration: const BoxDecoration(
-                      color: Colors.transparent,
-                    ),
-                  );
-                },
+                  ),
+                ],
               ),
-              Positioned(
-                top: 16,
-                right: 0,
-                child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
