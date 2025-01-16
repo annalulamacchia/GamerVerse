@@ -122,7 +122,7 @@ class AdminReportPageState extends State<AdminReportPage> {
                   Map<String, List<dynamic>> reportsData = snapshot.data!;
                   if (reportsData['Users']!.isEmpty &&
                       reportsData['Posts']!.isEmpty &&
-                      reportsData['Reviews']!.isEmpty && reportsData['BlockedUsers']!.isEmpty) {
+                      reportsData['Reviews']!.isEmpty) {
                     if (selectedStatus == 'Declined') {
                       return NoDataList(
                         message: 'No reports available.',
@@ -139,7 +139,7 @@ class AdminReportPageState extends State<AdminReportPage> {
                         textColor: Colors.white,
                         icon: Icons.report_off,
                       );
-                    } else {
+                    } else if(selectedStatus == 'Pending' && reportsData['BlockedUsers'] != null && reportsData['BlockedUsers']!.isEmpty){
                       return NoDataList(
                         message: 'No reports available.',
                         subMessage: 'There are no Pending reports yet',

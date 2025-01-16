@@ -36,9 +36,10 @@ class SpecificUserGameState extends State<SpecificUserGame> {
   }
 
   Future<void> _loadPostsByGame() async {
+    print(widget.currentUser);
     setState(() {
       postsFuture = PostService.getPostsByGame(
-          userId: widget.userId, gameId: widget.game.gameId);
+          userId: widget.userId, gameId: widget.game.gameId, currentUser: widget.currentUser);
     });
   }
 
@@ -213,6 +214,7 @@ class SpecificUserGameState extends State<SpecificUserGame> {
                 final shouldShow = widget.userId == widget.currentUser ||
                     followedList
                         .any((follower) => follower['id'] == widget.userId);
+                print(widget.currentFollowedNotifier!.value);
                 return shouldShow
                     ? FloatingActionButton(
                         onPressed: () {

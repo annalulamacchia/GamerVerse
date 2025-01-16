@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamerverse/services/user/Get_user_info.dart';
 import 'package:gamerverse/utils/colors.dart';
 import 'package:gamerverse/utils/firebase_auth_helper.dart';
 import 'package:gamerverse/widgets/common_sections/report_block_menu.dart';
@@ -30,6 +31,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
   ValueNotifier<List<dynamic>>? currentFollowedNotifier =
       ValueNotifier<List<dynamic>>([]);
   final ValueNotifier<bool>? gamesLoadingNotifier = ValueNotifier<bool>(true);
+  Map<String, dynamic>? currentUserData;
+  bool isLoadingCurrentUser = true;
+  List<dynamic> currentUserFollowed = [];
+  String errorMessage = '';
 
   @override
   void initState() {
@@ -43,10 +48,48 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final prefs = await SharedPreferences.getInstance();
     final String? uid = prefs.getString('user_uid');
     final valid = await FirebaseAuthHelper.checkTokenValidity();
+    if (valid) {
+      setState(() {
+        currentUser = uid;
+      });
+    } else {
+      setState(() {
+        currentUser = null;
+      });
+    }
+    _fetchCurrentUser();
+  }
 
-    setState(() {
-      currentUser = valid ? uid : null;
-    });
+  Future<void> _fetchCurrentUser() async {
+    try {
+      if (currentUser != null) {
+        final response =
+        await UserProfileService.getUserByUid(currentUser);
+        if (response['success']) {
+          setState(() {
+            currentUserData = response['data'];
+            currentUserFollowed = currentUserData!['followed'] ?? [];
+            currentFollowedNotifier!.value = currentUserFollowed;
+
+            isLoadingCurrentUser = false;
+          });
+        } else {
+          setState(() {
+            errorMessage = response['error'] ?? 'Error fetching user data';
+            isLoadingCurrentUser = false;
+          });
+        }
+      } else {
+        setState(() {
+          isLoadingCurrentUser = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'An unexpected error occurred: $e';
+        isLoadingCurrentUser = false;
+      });
+    }
   }
 
   Future<void> _loadWishlist(String userId) async {
@@ -137,8 +180,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     blockedNotifier: blockedNotifier,
                     isFollowedNotifier: isFollowedNotifier,
                     followersNotifier: followersNotifier,
-                    currentUser: currentUser,
+                    currentUser: currentUser ?? '',
                     currentFollowedNotifier: currentFollowedNotifier,
+                    onCurrent: _fetchCurrentUser,
                   ),
                 ),
                 const SizedBox(height: 10),

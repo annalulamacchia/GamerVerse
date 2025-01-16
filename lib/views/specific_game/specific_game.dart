@@ -59,7 +59,6 @@ class SpecificGameState extends State<SpecificGame> {
   bool _isLoadingLatestReview = false;
   bool _isLoadingUsers = false;
   bool _isLoadingStatusUsers = false;
-  bool _isLoadingUser = true;
   List<User>? users;
   List<User>? userStatus;
   ValueNotifier<Review> latestReviewNotifier = ValueNotifier<Review>(Review(
@@ -363,7 +362,7 @@ class SpecificGameState extends State<SpecificGame> {
                   Flexible(
                     flex: 1,
                     child: Text(
-                      utf8.decode(gameData?['name'].codeUnits) ?? 'N/A',
+                      utf8.decode(gameData?['name'].codeUnits ?? 'N/A'),
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -672,7 +671,7 @@ class SpecificGameState extends State<SpecificGame> {
                   children:
                       List.generate(coverSimilarGames?.length ?? 0, (index) {
                     final similarGame = gameData?['similar_games'][index];
-                    if (similarGame == coverSimilarGames?[index]['game']) {
+                    if (coverSimilarGames!.any((element) => element['game'] == similarGame)) {
                       final coverSimilar = coverSimilarGames?[index];
                       return Container(
                         width: 180,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamerverse/models/post.dart';
 import 'package:gamerverse/utils/colors.dart';
-import 'package:gamerverse/widgets/community/PostCardCommunity.dart';
+import 'package:gamerverse/widgets/profile_or_users/posts/PostCardProfile.dart';
 import 'package:gamerverse/widgets/specific_game/no_data_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:gamerverse/services/Community/post_service.dart';
@@ -182,7 +182,6 @@ class _UserPostsState extends State<UserPosts> {
                             itemCount: posts.length,
                             itemBuilder: (context, index) {
                               final post = posts[index];
-                              final username = usernames[index];
                               final gameName = gamesNames[index];
                               final cover = gamesCovers[index];
 
@@ -200,16 +199,13 @@ class _UserPostsState extends State<UserPosts> {
                                 gameId: post.gameId,
                                 userId: post.writerId,
                                 content: post.description,
-                                imageUrl: cover,
+                                gameCover: cover,
                                 timestamp: post.timestamp,
                                 likeCount: likeCount,
                                 commentCount: commentCount,
                                 likedBy: likedBy,
                                 currentUser: currentUser,
-                                username: username,
                                 gameName: gameName,
-                                gameCover: cover,
-                                profilePicture: '',
                               );
                             },
                           );
@@ -238,7 +234,6 @@ class _UserPostsState extends State<UserPosts> {
                       itemCount: posts.length,
                       itemBuilder: (context, index) {
                         final post = posts[index];
-                        final username = usernames[index];
                         final gameName = gamesNames[index];
                         final cover = gamesCovers[index];
 
@@ -255,14 +250,11 @@ class _UserPostsState extends State<UserPosts> {
                           gameId: post.gameId,
                           userId: post.writerId,
                           content: post.description,
-                          imageUrl: cover,
                           timestamp: post.timestamp,
                           likeCount: likeCount,
-                          profilePicture: '',
                           commentCount: commentCount,
                           likedBy: likedBy,
                           currentUser: currentUser,
-                          username: username,
                           gameName: gameName,
                           gameCover: cover,
                         );

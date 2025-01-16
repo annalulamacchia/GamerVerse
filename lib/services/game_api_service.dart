@@ -116,7 +116,7 @@ class GameApiService {
     final url = Uri.parse('https://api.igdb.com/v4/screenshots');
 
     final String requestBody = '''
-      fields game, image_id;
+      fields game, image_id, id;
       where game = $gameId;
     ''';
 

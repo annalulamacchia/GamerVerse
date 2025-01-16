@@ -196,7 +196,7 @@ class LoginEmailPageState extends State<LoginEmailPage> {
                           const SizedBox(height: 20),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, '/signup');
+                              Navigator.pushNamed(context, '/signup', arguments: widget.currentPage);
                             },
                             child: const Text(
                               "Not subscribed? Sign-up",

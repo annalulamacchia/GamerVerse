@@ -271,7 +271,7 @@ class PostService {
   }
 
   static Future<List<GamePost>> getPostsByGame(
-      {required String userId, required String gameId}) async {
+      {required String userId, required String gameId, required String currentUser}) async {
     final url = Uri.parse('$_baseUrl/get_posts_by_game');
     try {
       // Creazione della richiesta
@@ -281,6 +281,7 @@ class PostService {
         body: jsonEncode({
           "userId": userId,
           "gameId": gameId,
+          "currentId": currentUser
         }),
       );
 

@@ -195,7 +195,7 @@ class ReportCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String image = '';
-    if (title == 'Users') {
+    if (title == 'Users' || title == 'Temporarily Blocked Users') {
       image = report.profilePicture;
     } else if (title == 'Posts') {
       image = report.gameCover!;
