@@ -31,18 +31,31 @@ dependencies:
   flutter:
     sdk: flutter
 
-  image_picker: ^0.8.5+3  # Replace with the latest version if available
+  image_picker: ^1.1.2  # Replace with the latest version if available
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1
-  firebase_core: ^3.6.0
+  firebase_core: ^3.8.0
+  firebase_auth: ^5.3.3
+  firebase_database: ^11.1.6
   youtube_player_iframe: ^5.2.0
   flutter_form_builder: ^9.5.0
   http: ^1.2.2
   location: ^7.0.1
   provider: ^6.1.2
-
+  hugeicons: ^0.0.7
+  crypto: ^3.0.0
+  shared_preferences: ^2.1.0
+  google_sign_in: ^6.2.2
+  fluttertoast: ^8.0.9
+  youtube_player_flutter: ^9.1.1
+  timeago: ^3.7.0
+  intl: ^0.19.0
+  geolocator: ^13.0.2
+  permission_handler: ^11.3.1
+  flutter_launcher_icons: ^0.14.2
+  photo_view: ^0.15.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -52,7 +65,15 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.2
+
+flutter_launcher_icons:
+  android: true
+  min_sdk_android: 21
+  image_path: "assets/gamerverse.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/gamerverse.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -66,6 +87,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/gamerverse.png
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
